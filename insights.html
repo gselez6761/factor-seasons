@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Factor Seasons - How Factor Returns Rotate</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #FAF9F7;
+      --paper: #FFFFFF;
+      --surface: #F2F1ED;
+      --surface2: #E8E7E3;
+      --border: #C8C6C0;
+      --rule: #1A1A1A;
+      --text: #1A1A1A;
+      --text-soft: #3A3835;
+      --muted: #6B6860;
+      --muted-light: #A8A6A2;
+      --accent: #C8232C;
+      --pos: #1A6B3C;
+      --neg: #A52313;
+      --navy: #1B3D6B;
+      --topbar: 44px;
+      --serif-display: 'Playfair Display', 'Times New Roman', Georgia, serif;
+      --serif-body: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+      --sans: 'IBM Plex Sans', -apple-system, system-ui, sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--serif-body);
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* Top bar */
+    #top-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: var(--topbar);
+      border-bottom: 3px double var(--rule);
+      padding: 0 1.5rem;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      background: var(--bg);
+    }
+
+    #top-bar .section-tag {
+      font-family: var(--sans);
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    #top-bar .masthead {
+      font-family: var(--serif-display);
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: var(--text);
+      letter-spacing: .005em;
+      text-align: center;
+    }
+
+    #top-bar .meta {
+      font-family: var(--sans);
+      font-size: .65rem;
+      color: var(--muted);
+      text-align: right;
+      letter-spacing: .04em;
+    }
+
+    /* Hero */
+    #hero {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 3.5rem 2rem 2.25rem;
+      text-align: center;
+    }
+
+    .article-kicker {
+      font-family: var(--sans);
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      justify-content: center;
+    }
+
+    .article-kicker::before,
+    .article-kicker::after {
+      content: '';
+      display: inline-block;
+      width: 28px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    #hero h1 {
+      font-family: var(--serif-display);
+      font-size: clamp(2.1rem, 5.2vw, 3.8rem);
+      font-weight: 900;
+      line-height: 1.08;
+      color: var(--text);
+      margin-bottom: 1.1rem;
+      letter-spacing: -.012em;
+    }
+
+    .article-deck {
+      font-family: var(--serif-body);
+      font-size: clamp(1rem, 1.8vw, 1.18rem);
+      color: var(--text-soft);
+      line-height: 1.55;
+      margin-bottom: 1.4rem;
+      font-weight: 400;
+      font-style: italic;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .article-rule {
+      border: none;
+      border-top: 1px solid var(--border);
+      max-width: 220px;
+      margin: 1.4rem auto;
+    }
+
+    .byline-bar {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .byline {
+      font-family: var(--sans);
+      font-size: .73rem;
+      color: var(--muted);
+      letter-spacing: .03em;
+    }
+
+    .byline strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .byline .sep {
+      display: inline-block;
+      width: 3px;
+      height: 3px;
+      background: var(--muted-light);
+      border-radius: 50%;
+      vertical-align: middle;
+      margin: 0 .5rem;
+    }
+
+    .read-time {
+      font-family: var(--sans);
+      font-size: .7rem;
+      color: var(--muted-light);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+    }
+
+    /* Lede */
+    #lede {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: .25rem 2rem 2.5rem;
+    }
+
+    #lede p {
+      font-family: var(--serif-body);
+      font-size: 1.08rem;
+      line-height: 1.75;
+      color: var(--text);
+      margin-bottom: 1rem;
+    }
+
+    #lede p:first-of-type::first-letter {
+      font-family: var(--serif-display);
+      font-size: 4.2rem;
+      font-weight: 900;
+      float: left;
+      line-height: .9;
+      padding: .35rem .55rem 0 0;
+      color: var(--accent);
+    }
+
+    /* Primer */
+    #primer {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 0 2rem 3rem;
+    }
+
+    .primer-box {
+      background: var(--paper);
+      border: 1px solid var(--border);
+      border-top: 4px solid var(--navy);
+      padding: 1.75rem 2rem;
+      position: relative;
+    }
+
+    .primer-box::before {
+      content: 'A PRIMER';
+      position: absolute;
+      top: -.55rem;
+      left: 1.5rem;
+      background: var(--bg);
+      padding: 0 .6rem;
+      font-family: var(--sans);
+      font-size: .6rem;
+      font-weight: 700;
+      letter-spacing: .22em;
+      color: var(--navy);
+    }
+
+    .primer-box h3 {
+      font-family: var(--serif-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: .85rem;
+      color: var(--text);
+    }
+
+    .primer-box p {
+      font-family: var(--serif-body);
+      font-size: .95rem;
+      line-height: 1.75;
+      color: var(--text-soft);
+      margin-bottom: .65rem;
+    }
+
+    .factor-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: .65rem;
+      margin-top: 1.25rem;
+    }
+
+    .factor-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--navy);
+      padding: .85rem 1rem;
+    }
+
+    .fc-name {
+      font-family: var(--sans);
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: .15rem;
+    }
+
+    .fc-key {
+      font-family: var(--sans);
+      font-size: .65rem;
+      color: var(--muted);
+      margin-bottom: .4rem;
+    }
+
+    .fc-desc {
+      font-family: var(--serif-body);
+      font-size: .8rem;
+      color: var(--text-soft);
+      line-height: 1.55;
+    }
+
+    @media (max-width: 720px) {
+      .factor-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .factor-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Insight section */
+    .insight {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3.5rem 2rem 1rem;
+    }
+
+    .insight-num {
+      font-family: var(--sans);
+      font-size: 4.5rem;
+      font-weight: 900;
+      color: var(--accent);
+      line-height: 1;
+      letter-spacing: -.04em;
+      opacity: .15;
+      margin-bottom: -1.3rem;
+      margin-left: -.2rem;
+    }
+
+    .section-break {
+      border-top: 3px double var(--rule);
+      padding-top: 1.5rem;
+      margin-bottom: 1.75rem;
+      max-width: 880px;
+    }
+
+    .section-break .sec-label {
+      font-family: var(--sans);
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: .4rem;
+    }
+
+    .section-break .sec-headline {
+      font-family: var(--serif-display);
+      font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.12;
+      margin-bottom: .75rem;
+      letter-spacing: -.008em;
+    }
+
+    .section-break .sec-deck {
+      font-family: var(--serif-body);
+      font-size: 1rem;
+      color: var(--text-soft);
+      line-height: 1.65;
+      max-width: 720px;
+    }
+
+    .section-break .sec-deck strong {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .card-wrap {
+      background: var(--paper);
+      border: 1px solid var(--border);
+      padding: 1.4rem;
+      overflow-x: auto;
+    }
+
+    .figure-caption {
+      font-family: var(--sans);
+      font-size: .72rem;
+      color: var(--muted);
+      margin-top: .65rem;
+      letter-spacing: .03em;
+      max-width: 880px;
+      line-height: 1.5;
+    }
+
+    .figure-caption strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .loading-msg {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 220px;
+      color: var(--muted);
+      font-family: var(--sans);
+      font-size: .85rem;
+      letter-spacing: .04em;
+    }
+
+    /* Chart axes & primitives */
+    .axis text {
+      fill: var(--muted);
+      font-size: 11px;
+      font-family: var(--sans);
+    }
+
+    .axis line,
+    .axis path {
+      stroke: var(--border);
+    }
+
+    .grid line {
+      stroke: var(--border);
+      stroke-dasharray: 2 4;
+      opacity: .55;
+    }
+
+    .grid path {
+      stroke: none;
+    }
+
+    .crosshair-line {
+      stroke: var(--muted);
+      stroke-width: 1;
+      stroke-dasharray: 3 4;
+      pointer-events: none;
+    }
+
+    /* Tooltip */
+    #tooltip {
+      position: fixed;
+      background: var(--paper);
+      border: 1px solid var(--rule);
+      padding: .7rem .95rem;
+      font-size: .78rem;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .12s;
+      z-index: 200;
+      min-width: 175px;
+      max-width: 320px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, .12);
+    }
+
+    #tooltip .tip-date {
+      font-family: var(--sans);
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: .35rem;
+      font-size: .76rem;
+      letter-spacing: .03em;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: .3rem;
+    }
+
+    #tooltip .tip-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 2px 0;
+      font-family: var(--sans);
+    }
+
+    #tooltip .tip-name {
+      color: var(--muted);
+    }
+
+    #tooltip .tip-val {
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    #tooltip .tip-explain {
+      font-family: var(--serif-body);
+      font-size: .8rem;
+      line-height: 1.55;
+      color: var(--text-soft);
+      margin-top: .45rem;
+      padding-top: .4rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .hover-hint {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      font-family: var(--sans);
+      font-size: .68rem;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: .35rem .7rem;
+      border: 1px solid var(--accent);
+      background: var(--paper);
+      margin-bottom: .9rem;
+    }
+
+    .hover-hint::before {
+      content: '👆';
+      font-size: .9rem;
+      filter: grayscale(1) contrast(1.5);
+    }
+
+    /* Closing */
+    #closing {
+      max-width: 720px;
+      margin: 5rem auto 0;
+      padding: 2rem;
+      border-top: 3px double var(--rule);
+    }
+
+    #closing .lbl {
+      font-family: var(--sans);
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: .85rem;
+    }
+
+    #closing h3 {
+      font-family: var(--serif-display);
+      font-size: 1.7rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: var(--text);
+      line-height: 1.2;
+    }
+
+    #closing p {
+      font-family: var(--serif-body);
+      font-size: 1rem;
+      line-height: 1.75;
+      color: var(--text-soft);
+      margin-bottom: .85rem;
+    }
+
+    /* Footer */
+    #site-footer {
+      border-top: 3px double var(--rule);
+      padding: 2.5rem 2rem 2rem;
+      max-width: 1400px;
+      margin: 3rem auto 0;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.25rem;
+      margin-bottom: 2rem;
+    }
+
+    .footer-col h3 {
+      font-family: var(--sans);
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--text);
+      border-bottom: 1px solid var(--rule);
+      padding-bottom: .45rem;
+      margin-bottom: .65rem;
+    }
+
+    .footer-col p,
+    .footer-col li {
+      font-family: var(--serif-body);
+      font-size: .8rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .footer-col ul {
+      list-style: none;
+    }
+
+    .footer-bottom {
+      border-top: 1px solid var(--border);
+      padding-top: 1.1rem;
+      font-family: var(--sans);
+      font-size: .68rem;
+      color: var(--muted-light);
+      text-align: center;
+      letter-spacing: .05em;
+    }
+
+    @media (max-width: 860px) {
+      .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+
+      #hero,
+      #lede,
+      #primer {
+        padding-left: 1.25rem;
+        padding-right: 1.25rem;
+      }
+
+      .insight {
+        padding: 2.5rem 1rem 1rem;
+      }
+
+      #closing {
+        padding: 1.5rem;
+      }
+
+      #top-bar {
+        padding: 0 1rem;
+      }
+
+      #top-bar .masthead {
+        font-size: .95rem;
+      }
+
+      #top-bar .section-tag,
+      #top-bar .meta {
+        font-size: .58rem;
+      }
+
+      #lede p:first-of-type::first-letter {
+        font-size: 3.4rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- TOP BAR -->
+  <div id="top-bar">
+    <div class="section-tag">Markets &amp; Investing</div>
+    <div class="masthead">Factor Seasons</div>
+    <div class="meta">Spring 2026 · CMSC&nbsp;471</div>
+  </div>
+
+  <!-- HERO -->
+  <header id="hero">
+    <div class="article-kicker">Factor Seasons</div>
+    <h1>How Factor Returns Rotate</h1>
+    <p class="article-deck">
+      Sixty years of data. Six systematic risk premia. Four findings on how factor
+      leadership shifts across macroeconomic regimes.
+    </p>
+    <hr class="article-rule">
+    <div class="byline-bar">
+      <span class="byline">
+        By <strong>Gregory Seleznev</strong>, <strong>Martin Ye</strong>, and <strong>Alex Dong</strong>
+        <span class="sep"></span> University of Maryland
+      </span>
+      <span class="read-time">8 min read</span>
+    </div>
+  </header>
+
+  <!-- LEDE -->
+  <div id="lede">
+    <p>
+      When the news says "the market was up today," it actually papers over a much weirder
+      truth. There isn't really one stock market — there are at least six, each driven by
+      a different rule for picking stocks. Researchers call these rules <strong>factors</strong>.
+      Some have made fortunes. Some have quietly disappeared. None of them work all the time.
+    </p>
+    <p>
+      Below, four findings from sixty-two years of data — selected because they each say
+      something a person who has never opened a brokerage account would not have guessed.
+    </p>
+  </div>
+
+  <!-- PRIMER -->
+  <div id="primer">
+    <div class="primer-box">
+      <h3>What's a "factor," in one paragraph</h3>
+      <p>
+        A factor is a measurable trait of a company — its size, how cheaply it trades, how
+        profitable it is — that decades of data have shown predicts future stock returns.
+        Researchers build a factor by buying companies that score high on the trait and
+        shorting (betting against) companies that score low. The six factors below are the
+        ones academic finance has converged on.
+      </p>
+      <div class="factor-grid" id="factor-cards-grid"></div>
+    </div>
+  </div>
+
+  <!-- INSIGHT 1: CUMULATIVE GROWTH -->
+  <section class="insight">
+    <div class="insight-num">01</div>
+    <div class="section-break">
+      <div class="sec-label">Finding One · The Sixty-Year Race</div>
+      <div class="sec-headline">A Dollar Invested in 1963 Became Forty-Four — or Three.</div>
+      <div class="sec-deck">
+        Same time period. Same starting capital. Six different rules for picking stocks. The
+        chart tracks the growth of $1 in each factor's <strong>academic long-short portfolio</strong>
+        from July 1963 — the Market line is "stocks minus T-bills"; the other five each go long
+        one set of stocks and short another. Momentum and the Market run almost neck-and-neck for
+        decades — until Momentum's vertical drop in 2009. The Size factor, the textbook's
+        first-ever factor, barely triples in sixty years.
+      </div>
+    </div>
+    <div class="card-wrap">
+      <div class="loading-msg" id="cum-loading">Loading…</div>
+      <div id="chart-cumulative"></div>
+    </div>
+    <div class="figure-caption">
+      <strong>How to read this.</strong> The y-axis is logarithmic — equal vertical distance
+      represents equal multiplicative growth — so a steady-sloped line is steady compounding.
+      Hover anywhere on the chart for the exact value of each factor on that date.
+      <br><strong>One caveat.</strong> These are theoretical academic returns, costless and
+      frictionless. Real-world products that try to replicate factors (long-short hedge funds,
+      factor ETFs) underperform them by roughly 0.5–2% per year due to financing, transaction
+      costs, and short-borrow fees.
+      <br><strong>Source.</strong> Ken French Data Library — Fama/French 5 Factors (2×3) and Momentum,
+      monthly excess returns, compounded.
+    </div>
+  </section>
+
+  <!-- INSIGHT 2: ANNUAL HEATMAP -->
+  <section class="insight">
+    <div class="insight-num">02</div>
+    <div class="section-break">
+      <div class="sec-label">Finding Two · The Disagreement</div>
+      <div class="sec-headline">In Only 13 Months Out of 752 Did All Six Factors Move the Same Way.</div>
+      <div class="sec-deck">
+        Twelve of those months had all six factors positive. <strong>Exactly one</strong> had
+        all six negative. The rest of the time — 98% of months — the factors are arguing.
+        Below, every year since 1964, factor by factor: green is a winning year, red is a
+        losing one. The strip beneath the grid shows which factor came in <em>first</em>
+        that year.
+      </div>
+    </div>
+    <div class="card-wrap">
+      <div class="loading-msg" id="hm-loading">Loading…</div>
+      <div id="chart-heatmap"></div>
+    </div>
+    <div class="figure-caption">
+      <strong>How to read this.</strong> Each cell is one factor's return in one year, color-graded
+      from red (worst year) to green (best). Hover any cell for the exact number. The strip below
+      the grid shows the year's top-performing factor as a colored square.
+      <br><strong>Source.</strong> Ken French Data Library — annual returns.
+    </div>
+  </section>
+
+  <!-- INSIGHT 3: DECADE WINNERS -->
+  <section class="insight">
+    <div class="insight-num">03</div>
+    <div class="section-break">
+      <div class="sec-label">Finding Three · The Rotation</div>
+      <div class="sec-headline">Every Decade Has a Different Winner — Including the One Where the Market Lost.</div>
+      <div class="sec-deck">
+        The chart below shows each factor's <strong>compounded return for each decade</strong> —
+        what a $1 investment at the start of the decade would have grown to. Momentum dominated
+        the 70s, 80s, and 90s. Then in the 2000s — the dot-com bust and Financial Crisis decade —
+        the Market itself <em>lost 27%</em>, while the Profitability factor <em>gained 108%</em>.
+        A 135-percentage-point gap between two strategies, for an entire ten-year stretch.
+      </div>
+    </div>
+    <span class="hover-hint">Hover any factor in any decade for the historical context</span>
+    <div class="card-wrap">
+      <div class="loading-msg" id="dec-loading">Loading…</div>
+      <div id="chart-decades"></div>
+    </div>
+    <div class="figure-caption">
+      <strong>How to read this.</strong> Each row is a decade; each bar is one factor's
+      <strong>compounded</strong> cumulative return — i.e. what $1 became — across that decade's
+      months. Greener = bigger gain. The 2000s row is highlighted because it's the only decade
+      in which the Market itself was the losing factor — and notably, Momentum lost money too,
+      because the April 2009 crash erased years of small monthly gains.
+      <br><strong>Source.</strong> Ken French Data Library — monthly factor returns, compounded
+      by decade.
+    </div>
+  </section>
+
+  <!-- INSIGHT 4: HIGH-VIX FLIP -->
+  <section class="insight">
+    <div class="insight-num">04</div>
+    <div class="section-break">
+      <div class="sec-label">Finding Four · Market vs. Quality</div>
+      <div class="sec-headline">When Investors Are Afraid, the Market Becomes the Worst Factor.</div>
+      <div class="sec-deck">
+        The textbook story says risky assets earn higher returns. The data says the opposite —
+        at least when fear is high. We split every month from <strong>1990 through 2025</strong>
+        (when the VIX has been published) into "calm" (VIX below its long-run median of 17.5)
+        and "fearful" (VIX above). In <strong>fearful months</strong>, the Market loses on
+        average and "boring" Profitability wins handily. The other four factors barely move —
+        so this is really a story about <em>two</em> factors trading places.
+      </div>
+    </div>
+    <span class="hover-hint">Hover any factor for why it sits where it does</span>
+    <div class="card-wrap">
+      <div class="loading-msg" id="vix-loading">Loading…</div>
+      <div id="chart-vix"></div>
+    </div>
+    <div class="figure-caption">
+      <strong>How to read this.</strong> Two side-by-side panels — calm months on the left, fearful
+      months on the right. Each row is a factor's average monthly return in that regime. The order
+      of the bars is sorted within each panel. Read left-to-right, factor by factor: the ranking
+      barely resembles itself.
+      <br><strong>Source.</strong> Ken French Data Library + CBOE VIX Index. n = 217 months in each regime.
+    </div>
+  </section>
+
+  <!-- CLOSING -->
+  <section id="closing">
+    <div class="lbl">A Closing Thought</div>
+    <h3>There is no permanent winner. Owning more than one factor is the whole point.</h3>
+    <p>
+      If the past sixty years prove anything, it's that no single rule — not "buy the index,"
+      not "buy small caps," not "follow the trend" — works across every economic season. The
+      Market dominated 2010s. Profitability quietly won the 2000s. Momentum lost five years
+      of gains in eight months. The size premium has all but disappeared.
+    </p>
+    <p>
+      What the data <em>does</em> support is owning a portfolio that exposes you to several
+      factors at once. The factors are imperfectly correlated (only 13 months in 752 had them
+      all moving together). When one is having a bad decade, another is usually compensating.
+      That's not financial advice — but it is what the numbers above keep showing, decade
+      after decade.
+    </p>
+  </section>
+
+  <!-- FOOTER -->
+  <footer id="site-footer">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h3>The Team</h3>
+        <ul>
+          <li>Gregory Seleznev</li>
+          <li>Martin Ye</li>
+          <li>Alex Dong</li>
+        </ul>
+        <p style="margin-top:.5rem">CMSC&nbsp;471 · Introduction to Information Visualization<br>
+          University of Maryland · Spring 2026 · Team 10</p>
+      </div>
+      <div class="footer-col">
+        <h3>Data Sources</h3>
+        <ul>
+          <li>Ken French Data Library — Fama/French 5 Factors (2×3) and Momentum Factor</li>
+          <li>FRED — NBER Recession Indicator (USREC), Federal Funds Rate (FEDFUNDS)</li>
+          <li>CBOE / Yahoo Finance — VIX Index</li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3>Acknowledgements</h3>
+        <ul>
+          <li>Eugene Fama &amp; Kenneth French — foundational factor research</li>
+          <li>Daniel &amp; Moskowitz — momentum crashes (2016)</li>
+          <li>Asness et al. — "Size Matters, If You Control Your Junk" (2018)</li>
+          <li>D3.js by Mike Bostock</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      Factor Seasons · CMSC&nbsp;471 Final Project · Spring 2026 · Team 10 ·
+      Built with D3.js
+    </div>
+  </footer>
+
+  <div id="tooltip"></div>
+
+  <script>
+    // ─────────────────────────────────────────────────────────
+    //  Constants
+    // ─────────────────────────────────────────────────────────
+
+    const FACTORS = ['Mkt-RF', 'SMB', 'HML', 'RMW', 'CMA', 'Mom']
+
+    const FM = {
+      'Mkt-RF': {
+        label: 'Market', color: '#1B3D6B', short: 'Stocks minus T-bills',
+        desc: 'The equity risk premium — owning stocks instead of risk-free Treasuries. Every other factor is measured relative to this baseline.'
+      },
+      'SMB': {
+        label: 'Size', color: '#C26A00', short: 'Small minus Big',
+        desc: 'Small-cap companies vs. large-caps. Smaller firms are less liquid and harder to research, so investors historically demanded extra return.'
+      },
+      'HML': {
+        label: 'Value', color: '#1A6B3C', short: 'Cheap minus Expensive',
+        desc: 'Stocks that trade cheaply relative to their book value vs. expensive growth stocks. Buying the unloved and waiting for mean-reversion.'
+      },
+      'RMW': {
+        label: 'Profitability', color: '#A52313', short: 'Profitable minus Weak',
+        desc: 'Companies with strong operating profits vs. those with weak ones. Financial strength tends to compound over time.'
+      },
+      'CMA': {
+        label: 'Investment', color: '#6B4A9E', short: 'Conservative minus Aggressive',
+        desc: 'Firms that invest conservatively vs. those that aggressively expand. Capital discipline beats empire-building.'
+      },
+      'Mom': {
+        label: 'Momentum', color: '#9E1A5E', short: 'Winners minus Losers',
+        desc: 'Recent winners vs. recent losers. Investors update beliefs slowly, so trends persist — until they snap.'
+      },
+    }
+
+    const C = {
+      bg: '#FAF9F7', paper: '#FFFFFF', surface: '#F2F1ED',
+      border: '#C8C6C0', borderDark: '#999490', rule: '#1A1A1A',
+      text: '#1A1A1A', muted: '#6B6860', mutedLight: '#A8A6A2',
+      accent: '#C8232C', navy: '#1B3D6B', pos: '#1A6B3C', neg: '#A52313', amber: '#C26A00',
+    }
+
+    const DB = {}
+    const pd = d3.timeParse('%Y-%m-%d')
+    const tip = document.getElementById('tooltip')
+
+    // ─────────────────────────────────────────────────────────
+    //  Load data
+    // ─────────────────────────────────────────────────────────
+
+    Promise.all([
+      d3.json('data/cumulative_6f.json'),
+      d3.json('data/annual_6f.json'),
+      d3.json('data/monthly_6f_regimes.json'),
+    ]).then(([cum, annual, monthly]) => {
+      DB.cumulative = cum.map(d => ({ ...d, date: pd(d.date) }))
+      DB.annual = annual.map(d => ({ ...d, date: new Date(+d.date, 0, 1) }))
+      DB.monthly = monthly.map(d => ({ ...d, date: pd(d.date) }))
+
+      buildFactorCards()
+      renderCumulative()
+      renderHeatmap()
+      renderDecades()
+      renderVixFlip()
+        ;['cum-loading', 'hm-loading', 'dec-loading', 'vix-loading'].forEach(id =>
+          document.getElementById(id).style.display = 'none')
+    }).catch(err => console.error('Data load error:', err))
+
+    // ─────────────────────────────────────────────────────────
+    //  Factor cards
+    // ─────────────────────────────────────────────────────────
+
+    function buildFactorCards() {
+      const grid = document.getElementById('factor-cards-grid')
+      FACTORS.forEach(f => {
+        const m = FM[f]
+        const el = document.createElement('div')
+        el.className = 'factor-card'
+        el.style.borderTopColor = m.color
+        el.innerHTML = `<div class="fc-name" style="color:${m.color}">${m.label}</div>
+      <div class="fc-key">${m.short}</div>
+      <div class="fc-desc">${m.desc}</div>`
+        grid.appendChild(el)
+      })
+    }
+
+    // ─────────────────────────────────────────────────────────
+    //  Insight 1: Cumulative growth ($1 race)
+    // ─────────────────────────────────────────────────────────
+
+    function renderCumulative() {
+      const el = document.getElementById('chart-cumulative')
+      el.innerHTML = ''
+      const W = Math.min(1100, el.parentElement.clientWidth - 32)
+      const H = 480
+      const M = { top: 24, right: 130, bottom: 40, left: 64 }
+      const cw = W - M.left - M.right
+      const ch = H - M.top - M.bottom
+
+      // Convert cumulative % to dollar value: $1 → 1 + cum/100
+      const rows = DB.cumulative.map(d => {
+        const out = { date: d.date }
+        FACTORS.forEach(f => { out[f] = d[f] != null ? 1 + d[f] / 100 : null })
+        return out
+      })
+
+      const x = d3.scaleTime().domain(d3.extent(rows, d => d.date)).range([0, cw])
+      const allY = rows.flatMap(r => FACTORS.map(f => r[f]).filter(v => v != null && v > 0))
+      const y = d3.scaleLog().domain([d3.min(allY) * .9, d3.max(allY) * 1.1]).range([ch, 0])
+
+      const svg = d3.select(el).append('svg').attr('width', W).attr('height', H)
+      const g = svg.append('g').attr('transform', `translate(${M.left},${M.top})`)
+
+      // Gridlines
+      g.append('g').attr('class', 'grid')
+        .call(d3.axisLeft(y).tickValues([1, 2, 5, 10, 20, 50]).tickSize(-cw).tickFormat(''))
+        .call(ax => { ax.select('.domain').remove(); ax.selectAll('line').attr('stroke', C.border).attr('stroke-dasharray', '2 4') })
+
+      // $1 baseline
+      g.append('line').attr('x1', 0).attr('x2', cw).attr('y1', y(1)).attr('y2', y(1))
+        .attr('stroke', C.borderDark).attr('stroke-width', 1)
+      g.append('text').attr('x', 4).attr('y', y(1) - 4)
+        .attr('font-size', 9).attr('font-weight', 700).attr('fill', C.muted)
+        .style('font-family', 'IBM Plex Sans,sans-serif').text('$1 (starting capital)')
+
+      // Axes
+      g.append('g').attr('class', 'axis').attr('transform', `translate(0,${ch})`)
+        .call(d3.axisBottom(x).ticks(d3.timeYear.every(10)).tickSize(0).tickPadding(8))
+        .call(ax => ax.select('.domain').remove())
+      g.append('g').attr('class', 'axis')
+        .call(d3.axisLeft(y).tickValues([1, 2, 5, 10, 20, 50]).tickSize(0).tickPadding(8).tickFormat(d => '$' + d))
+        .call(ax => ax.select('.domain').remove())
+
+      svg.append('text').attr('transform', 'rotate(-90)')
+        .attr('x', -(M.top + ch / 2)).attr('y', 16).attr('text-anchor', 'middle')
+        .attr('font-size', 10).attr('fill', C.muted)
+        .style('font-family', 'IBM Plex Sans,sans-serif').style('letter-spacing', '.06em').style('text-transform', 'uppercase')
+        .text('Growth of $1 (log scale)')
+
+      // Lines
+      const lineGen = f => d3.line()
+        .x(d => x(d.date)).y(d => y(d[f]))
+        .defined(d => d[f] != null && d[f] > 0).curve(d3.curveMonotoneX)
+
+      FACTORS.forEach(f => {
+        g.append('path')
+          .datum(rows).attr('fill', 'none')
+          .attr('stroke', FM[f].color).attr('stroke-width', 2)
+          .attr('d', lineGen(f))
+        // End label
+        const last = rows[rows.length - 1]
+        g.append('text').attr('x', cw + 6).attr('y', y(last[f])).attr('dy', '0.35em')
+          .attr('font-size', 10).attr('font-weight', 700)
+          .style('font-family', 'IBM Plex Sans,sans-serif')
+          .attr('fill', FM[f].color)
+          .text(`${FM[f].label}  $${last[f].toFixed(2)}`)
+      })
+
+      // Hover crosshair
+      const crossLine = g.append('line').attr('y1', 0).attr('y2', ch)
+        .attr('class', 'crosshair-line').style('opacity', 0)
+      g.append('rect').attr('width', cw).attr('height', ch).attr('fill', 'none').attr('pointer-events', 'all')
+        .on('mousemove', function (ev) {
+          const [mx] = d3.pointer(ev)
+          const date = x.invert(mx)
+          const bi = d3.bisector(d => d.date).left
+          const i = bi(rows, date, 1)
+          const d0 = rows[i - 1], d1 = rows[i]
+          const d = !d1 ? d0 : !d0 ? d1 : (date - d0.date < d1.date - date ? d0 : d1)
+          if (!d) return
+          crossLine.style('opacity', 1).attr('x1', x(d.date)).attr('x2', x(d.date))
+          const sortedFactors = [...FACTORS].sort((a, b) => (d[b] ?? 0) - (d[a] ?? 0))
+          const lines = sortedFactors.filter(f => d[f] != null).map(f => {
+            return `<div class="tip-row">
+          <span class="tip-name" style="color:${FM[f].color}">${FM[f].label}</span>
+          <span class="tip-val" style="color:${C.text}">$${d[f].toFixed(2)}</span></div>`
+          }).join('')
+          tip.innerHTML = `<div class="tip-date">${d3.timeFormat('%b %Y')(d.date)}</div>${lines}`
+          tip.style.opacity = '1'; posTip(ev)
+        })
+        .on('mouseleave', () => { crossLine.style('opacity', 0); tip.style.opacity = '0' })
+    }
+
+    // ─────────────────────────────────────────────────────────
+    //  Insight 2: Annual heatmap with winner strip
+    // ─────────────────────────────────────────────────────────
+
+    function renderHeatmap() {
+      const annual = DB.annual
+      const el = document.getElementById('chart-heatmap')
+      el.innerHTML = ''
+      const years = annual.map(d => d.date.getFullYear())
+      const ny = years.length
+
+      const yearStats = annual.map(d => {
+        const pairs = FACTORS.map(f => ({ f, v: d[f] })).filter(p => p.v != null && !isNaN(p.v))
+        const sorted = [...pairs].sort((a, b) => b.v - a.v)
+        return { year: d.date.getFullYear(), winner: sorted[0], range: sorted[0].v - sorted[sorted.length - 1].v }
+      })
+
+      const cw = 16, chr = 30, stripH = 16, annoH = 38
+      const M = { top: 22, right: 16, bottom: stripH + annoH + 12, left: 120 }
+      const totalH = FACTORS.length * chr + M.top + M.bottom
+
+      const svg = d3.select(el).append('svg')
+        .attr('width', ny * cw + M.left + M.right).attr('height', totalH)
+      const g = svg.append('g').attr('transform', `translate(${M.left},${M.top})`)
+
+      const allVals = annual.flatMap(d => FACTORS.map(f => d[f])).filter(v => v != null && !isNaN(v))
+      const maxAbs = Math.max(Math.abs(d3.min(allVals)), Math.abs(d3.max(allVals)))
+      const color = d3.scaleDiverging([-maxAbs, 0, maxAbs], d3.interpolateRdYlGn).clamp(true)
+
+      // Year labels every 10
+      years.forEach((yr, i) => {
+        if (yr % 10 !== 0 && i !== 0 && i !== years.length - 1) return
+        g.append('text').attr('x', i * cw + cw / 2).attr('y', -6).attr('text-anchor', 'middle')
+          .attr('font-size', 10).attr('font-weight', 600).attr('fill', C.muted)
+          .style('font-family', 'IBM Plex Sans,sans-serif').text(yr)
+      })
+
+      FACTORS.forEach((f, fi) => {
+        g.append('text').attr('x', -8).attr('y', fi * chr + chr / 2).attr('dy', '0.35em')
+          .attr('text-anchor', 'end').attr('font-size', 12).attr('font-weight', 700)
+          .style('font-family', 'IBM Plex Sans,sans-serif')
+          .attr('fill', FM[f].color).text(FM[f].label)
+        annual.forEach((d, yi) => {
+          const v = d[f]
+          if (v == null || isNaN(v)) return
+          const cellG = g.append('g').attr('transform', `translate(${yi * cw}, ${fi * chr})`)
+          cellG.append('rect').attr('width', cw - 1).attr('height', chr - 1).attr('rx', 1)
+            .attr('fill', color(v)).attr('opacity', .94)
+          cellG.append('text').attr('x', cw / 2).attr('y', chr / 2).attr('dy', '0.35em').attr('text-anchor', 'middle')
+            .attr('font-size', 7).attr('font-weight', 600)
+            .style('font-family', 'IBM Plex Sans,sans-serif')
+            .attr('fill', getLum(color(v)) > .45 ? '#111' : '#F5F5F5').text(d3.format('+.0f')(v))
+          cellG.append('rect').attr('width', cw - 1).attr('height', chr - 1).attr('fill', 'transparent')
+            .on('mouseover', function (ev) {
+              tip.innerHTML = `<div class="tip-date">${years[yi]} · ${FM[f].label}</div>
+            <div class="tip-row"><span class="tip-name">${FM[f].short}</span>
+            <span class="tip-val" style="color:${v > 0 ? C.pos : C.neg}">${d3.format('+.1f')(v)}%</span></div>`
+              tip.style.opacity = '1'; posTip(ev)
+              d3.select(this.parentNode).select('rect').attr('stroke', C.rule).attr('stroke-width', 1.5)
+            })
+            .on('mousemove', posTip)
+            .on('mouseout', function () { tip.style.opacity = '0'; d3.select(this.parentNode).select('rect').attr('stroke', null) })
+        })
+      })
+
+      // Winner strip
+      const stripY = FACTORS.length * chr + 8
+      g.append('text').attr('x', -8).attr('y', stripY + stripH / 2).attr('dy', '0.35em')
+        .attr('text-anchor', 'end').attr('font-size', 10).attr('font-weight', 700)
+        .style('font-family', 'IBM Plex Sans,sans-serif').style('letter-spacing', '.08em').style('text-transform', 'uppercase')
+        .attr('fill', C.text).text("Year's leader")
+
+      yearStats.forEach((s, yi) => {
+        if (!s.winner) return
+        const wcol = FM[s.winner.f].color
+        g.append('rect').attr('x', yi * cw).attr('y', stripY)
+          .attr('width', cw - 1).attr('height', stripH - 1).attr('rx', 1)
+          .attr('fill', wcol).attr('opacity', .92).style('cursor', 'pointer')
+          .on('mouseover', function (ev) {
+            tip.innerHTML = `<div class="tip-date">${s.year} · Top factor</div>
+          <div class="tip-row"><span class="tip-name" style="color:${wcol}">${FM[s.winner.f].label}</span>
+          <span class="tip-val" style="color:${C.pos}">${d3.format('+.1f')(s.winner.v)}%</span></div>
+          <div class="tip-row"><span class="tip-name">Range (best − worst)</span>
+          <span class="tip-val" style="color:${C.muted}">${d3.format('+.1f')(s.range)} pp</span></div>`
+            tip.style.opacity = '1'; posTip(ev)
+            d3.select(this).attr('stroke', C.rule).attr('stroke-width', 1.5)
+          })
+          .on('mousemove', posTip)
+          .on('mouseout', function () { tip.style.opacity = '0'; d3.select(this).attr('stroke', null) })
+      })
+
+      // Key year annotations
+      const KEY_YEARS = [
+        { yr: 1980, label: 'Volcker rate spike' },
+        { yr: 1999, label: 'Dot-com peak' },
+        { yr: 2008, label: 'Financial Crisis' },
+        { yr: 2020, label: 'COVID whiplash' },
+      ]
+      const annoY = stripY + stripH + 6
+      KEY_YEARS.forEach(k => {
+        const i = years.indexOf(k.yr)
+        if (i < 0) return
+        const xc = i * cw + cw / 2
+        g.append('line').attr('x1', xc).attr('x2', xc).attr('y1', annoY).attr('y2', annoY + 10)
+          .attr('stroke', C.rule).attr('stroke-width', .8)
+        g.append('text').attr('x', xc).attr('y', annoY + 22).attr('text-anchor', 'middle')
+          .attr('font-size', 9).attr('font-weight', 600)
+          .style('font-family', 'IBM Plex Sans,sans-serif').attr('fill', C.text).text(k.yr)
+        g.append('text').attr('x', xc).attr('y', annoY + 33).attr('text-anchor', 'middle')
+          .attr('font-size', 8.5).style('font-family', 'Source Serif 4,Georgia,serif').style('font-style', 'italic')
+          .attr('fill', C.muted).text(k.label)
+      })
+    }
+
+    // ─────────────────────────────────────────────────────────
+    //  Insight 3: Decade winners (small multiples bar chart)
+    // ─────────────────────────────────────────────────────────
+
+    // Decade-by-decade historical context per factor (real macro events)
+    const DECADE_REASONS = {
+      '1964': {
+        'Mkt-RF': "Late-stage 'Go-Go' bull market. Speculative excess in conglomerates and 'tronics' stocks pushed equities higher, but inflation was building for the next decade.",
+        'SMB': "The decade's winner. The 1965–69 small-cap boom favored hot 'tronics' and conglomerate stocks; risk appetite chased the smallest names.",
+        'HML': "Value lagged. Growth and acquisition stories dominated; cheap industrials were unfashionable next to tech-adjacent conglomerates.",
+        'RMW': "Profits didn't lead. Stocks traded on acquisition narratives and growth promises, not operating margins.",
+        'CMA': "The decade's loser. The conglomerate era rewarded empire-builders like ITT and Litton — exactly what CMA bets against.",
+        'Mom': "Trends were strong as the bull matured. Speculative leadership persisted year after year.",
+      },
+      '1970': {
+        'Mkt-RF': "A miserable decade. Two oil shocks (1973, 1979), stagflation, and the worst bear market since the Depression. Stocks barely beat T-bills.",
+        'SMB': "Mixed. Small caps were crushed in the 1973–74 crash but rebounded sharply in the late 70s as inflation lifted commodity-heavy small firms.",
+        'HML': "Value's revenge. Cheap industrials, energy, and materials outperformed as the Nifty Fifty's premium valuations collapsed.",
+        'RMW': "Lost decade for quality. Inflation eroded reported earnings; even strong firms got dragged down by stagflation.",
+        'CMA': "Conservative firms held up. Empire-builders from the 60s couldn't service their debt as rates spiked; capital discipline began looking smart.",
+        'Mom': "Best decade for momentum in the sample. Persistent trends in commodities and inflation hedges — once gold or oil began rising, they kept rising.",
+      },
+      '1980': {
+        'Mkt-RF': "The great bull market began in August 1982 after Volcker broke inflation. Reagan tax cuts and deregulation propelled equities for the rest of the decade.",
+        'SMB': "Large caps led the recovery — GE, IBM, Coca-Cola. Small caps lagged, beginning a multi-decade underperformance.",
+        'HML': "Value did fine but didn't dominate. Reagan-era growth stories — tech IPOs, biotech, branded consumer — competed with cheap old-economy stocks.",
+        'RMW': "Profitable firms rebounded as inflation receded. With real rates positive, balance-sheet quality mattered again.",
+        'CMA': "Mixed. The LBO/junk-bond boom rewarded some aggressive financing, but Drexel's collapse and the S&L crisis hurt empire-builders late in the decade.",
+        'Mom': "Trends stuck in a long bull market. Once the 1982 rally started, leadership patterns persisted — exactly what momentum exploits.",
+      },
+      '1990': {
+        'Mkt-RF': "Best decade for U.S. stocks in history (until then). The internet boom from 1995 onward fueled a roughly 20–25%/year compound rally.",
+        'SMB': "Mega-cap tech — Microsoft, Cisco, Intel — dominated the indexes. Small caps were left behind in their worst decade of the sample.",
+        'HML': "Value died for years as growth stocks ran wild. P/E ratios stopped mattering — eyeballs and clicks-per-day were the new metrics.",
+        'RMW': "Quality lagged the dot-com mania. Investors paid for revenue growth, not profits; profitable old-economy firms looked dull.",
+        'CMA': "Aggressive tech firms with negative cash flows commanded sky-high valuations. Conservative capital stewardship was 'old economy.'",
+        'Mom': "The classic momentum decade. Internet stocks went up because they had been going up. The trend WAS the trade — until March 2000.",
+      },
+      '2000': {
+        'Mkt-RF': "The 'lost decade.' Dot-com crash (2000–02) wiped out trillions; the housing crash and GFC (2008–09) finished the job. Compounded, the Market lost 27%.",
+        'SMB': "Small caps actually beat large caps this decade — partly because the dot-com bust hit large-cap tech hardest.",
+        'HML': "Value's vindication. Cheap stocks beaten down in the bubble had nowhere to go but up. HML compounded +104% — its best decade in our sample.",
+        'RMW': "The 'flight to quality' decade. Profitable firms held up in two crashes. RMW compounded +108% while the Market lost 27% — a 135-point gap.",
+        'CMA': "Conservative balance sheets paid off. Firms that hadn't binged on debt or acquisitions survived 2008 with stock prices mostly intact.",
+        'Mom': "The infamous momentum crash of April 2009 — Mom dropped 34% in a single month as beaten-down losers rebounded violently. Despite strong earlier years, momentum LOST money for the decade.",
+      },
+      '2010': {
+        'Mkt-RF': "ZIRP-era megabull. Zero interest rates, FAANG dominance, and an unbroken expansion produced the best decade for the Market itself in our sample.",
+        'SMB': "Mediocre. Mega-cap tech led every year; small caps lagged in relative terms even as the broad market rose.",
+        'HML': "Value's lost decade. With near-zero rates making growth stocks' future cash flows extremely valuable, value (banks, energy, autos) underperformed for a generation.",
+        'RMW': "Quality did fine but couldn't keep up with tech. The market only rewarded profitable AND fast-growing — which the FAANGs were.",
+        'CMA': "Conservative firms underperformed aggressive tech that reinvested everything. Amazon's 'no profits, just growth' was the decade's playbook.",
+        'Mom': "Momentum recovered from 2009 but trends were softer. ZIRP markets had less directional persistence — every dip got bought.",
+      },
+      '2020': {
+        'Mkt-RF': "COVID stimulus + AI boom. Despite the brutal 2022 bear market, mega-cap tech (the 'Magnificent 7') drove the Market to new highs.",
+        'SMB': "Small caps got crushed by rising rates in 2022 and never caught up. The size factor has been deeply negative for the entire 2020s.",
+        'HML': "Value flickered to life in 2022 (the rate-hike year, when growth crashed) but faded again as tech rebounded in 2023–24.",
+        'RMW': "Profitability is positive but unspectacular. The Mag 7 are both profitable AND growth — they're being absorbed into the Market premium, not the Quality premium.",
+        'CMA': "Conservative firms had a small edge after the 2022 rate shock punished aggressive growth. Capital discipline came back into fashion, briefly.",
+        'Mom': "Momentum did well. The AI trade has had strong, persistent leadership concentrated in a handful of stocks — exactly what momentum is designed to ride.",
+      },
+    }
+
+    function renderDecades() {
+      const el = document.getElementById('chart-decades')
+      el.innerHTML = ''
+
+      const decades = [
+        { label: '1964–1969', lo: '1964', hi: '1969' },
+        { label: '1970s', lo: '1970', hi: '1979' },
+        { label: '1980s', lo: '1980', hi: '1989' },
+        { label: '1990s', lo: '1990', hi: '1999' },
+        { label: '2000s', lo: '2000', hi: '2009', highlight: true },
+        { label: '2010s', lo: '2010', hi: '2019' },
+        { label: '2020s', lo: '2020', hi: '2025' },
+      ]
+
+      // Compute compound cumulative returns per factor per decade
+      // Compound = (∏(1 + r/100) - 1) * 100, expressed as %.
+      decades.forEach(dec => {
+        const rows = DB.monthly.filter(r => {
+          const yr = r.date.getFullYear().toString()
+          return yr >= dec.lo && yr <= dec.hi
+        })
+        dec.values = FACTORS.map(f => {
+          let prod = 1
+          rows.forEach(r => { if (r[f] != null) prod *= (1 + r[f] / 100) })
+          return { f, cum: (prod - 1) * 100 }
+        }).sort((a, b) => b.cum - a.cum)
+        dec.n = rows.length
+      })
+
+      const W = Math.min(1100, el.parentElement.clientWidth - 32)
+      const rowH = 88
+      const labelW = 90
+      // Left margin = 105 (matches the right) + label area + gap
+      const M = { top: 16, right: 105, bottom: 26, left: 105 + labelW + 12 }
+      const cw = W - M.left - M.right
+      const H = decades.length * rowH + M.top + M.bottom
+
+      const allVals = decades.flatMap(d => d.values.map(v => v.cum))
+      const dataMax = d3.max(allVals)
+      const xMin = -50            // fixed clean bound on the negative side
+      const xMax = dataMax * 1.08 // ~ +278% (data max ~ +257%)
+      const x = d3.scaleLinear().domain([xMin, xMax]).range([0, cw])
+
+      const svg = d3.select(el).append('svg').attr('width', W).attr('height', H)
+      const g = svg.append('g').attr('transform', `translate(${M.left},${M.top})`)
+
+      // Decade rows
+      decades.forEach((dec, di) => {
+        const yTop = di * rowH
+
+        // Highlight band for the 2000s
+        if (dec.highlight) {
+          svg.append('rect')
+            .attr('x', 0).attr('y', M.top + yTop - 6)
+            .attr('width', W).attr('height', rowH - 4)
+            .attr('fill', '#FFF4E5').attr('opacity', .7)
+        }
+
+        // Decade label
+        g.append('text').attr('x', -12).attr('y', yTop + 16).attr('text-anchor', 'end')
+          .attr('font-family', 'var(--serif-display), Playfair Display, Georgia, serif')
+          .attr('font-size', 16).attr('font-weight', 700).attr('fill', C.text)
+          .style('font-family', 'Playfair Display,Georgia,serif')
+          .text(dec.label)
+        g.append('text').attr('x', -12).attr('y', yTop + 30).attr('text-anchor', 'end')
+          .attr('font-size', 9).attr('fill', C.muted)
+          .style('font-family', 'IBM Plex Sans,sans-serif').style('font-style', 'italic')
+          .text(`${dec.n} mo`)
+
+        if (dec.highlight) {
+          g.append('text').attr('x', -12).attr('y', yTop + 46).attr('text-anchor', 'end')
+            .attr('font-size', 8.5).attr('font-weight', 700).attr('fill', C.accent)
+            .style('font-family', 'IBM Plex Sans,sans-serif').style('letter-spacing', '.05em').style('text-transform', 'uppercase')
+            .text('Market lost.')
+          g.append('text').attr('x', -12).attr('y', yTop + 58).attr('text-anchor', 'end')
+            .attr('font-size', 8.5).attr('font-weight', 700).attr('fill', C.accent)
+            .style('font-family', 'IBM Plex Sans,sans-serif').style('letter-spacing', '.05em').style('text-transform', 'uppercase')
+            .text('Quality won.')
+        }
+
+        // Bars per factor
+        const barH = 9, barGap = 2
+        const xZero = x(0)
+        g.append('line').attr('x1', xZero).attr('x2', xZero)
+          .attr('y1', yTop + 8).attr('y2', yTop + 8 + 6 * (barH + barGap))
+          .attr('stroke', C.borderDark).attr('stroke-width', 1)
+
+        // Sort bars: keep canonical FACTORS order so cross-decade comparison is easy
+        FACTORS.forEach((f, fi) => {
+          const v = dec.values.find(x => x.f === f).cum
+          const rank = dec.values.findIndex(x => x.f === f) + 1
+          const by = yTop + 12 + fi * (barH + barGap)
+          const bw = Math.abs(x(v) - xZero)
+          const bx = v >= 0 ? xZero : x(v)
+
+          const barRect = g.append('rect')
+            .attr('x', bx).attr('y', by)
+            .attr('width', 0).attr('height', barH)
+            .attr('fill', FM[f].color).attr('opacity', .88)
+          barRect.transition().duration(550).delay(di * 40 + fi * 30).attr('width', bw)
+
+          // Factor label INSIDE or NEXT TO bar
+          const valTxt = (v >= 0 ? '+' : '') + Math.round(v) + '%'
+          g.append('text')
+            .attr('x', v >= 0 ? x(v) + 5 : x(v) - 5)
+            .attr('y', by + barH / 2 + .5).attr('dy', '0.35em')
+            .attr('text-anchor', v >= 0 ? 'start' : 'end')
+            .attr('font-size', 9).attr('font-weight', 700)
+            .style('font-family', 'IBM Plex Sans,sans-serif')
+            .attr('fill', FM[f].color)
+            .text(`${FM[f].label} ${valTxt}`)
+
+          // Hover hit area covering the whole bar row
+          g.append('rect')
+            .attr('x', -labelW).attr('y', by - 1)
+            .attr('width', labelW + cw + 8).attr('height', barH + 2)
+            .attr('fill', 'transparent')
+            .style('cursor', 'help')
+            .on('mouseover', function (ev) {
+              barRect.attr('opacity', 1).attr('stroke', C.rule).attr('stroke-width', 1)
+              const reason = (DECADE_REASONS[dec.lo] && DECADE_REASONS[dec.lo][f]) || ''
+              tip.innerHTML = `<div class="tip-date">${dec.label} · #${rank} · ${FM[f].label}</div>
+            <div class="tip-row">
+              <span class="tip-name">Compound return</span>
+              <span class="tip-val" style="color:${v >= 0 ? C.pos : C.neg}">${valTxt}</span>
+            </div>
+            <div class="tip-row">
+              <span class="tip-name">Months</span>
+              <span class="tip-val" style="color:${C.muted}">${dec.n}</span>
+            </div>
+            <div class="tip-explain">${reason}</div>`
+              tip.style.opacity = '1'; posTip(ev)
+            })
+            .on('mousemove', posTip)
+            .on('mouseout', function () {
+              barRect.attr('opacity', .88).attr('stroke', null)
+              tip.style.opacity = '0'
+            })
+        })
+
+        // Row separator
+        if (di < decades.length - 1) {
+          g.append('line')
+            .attr('x1', -labelW).attr('x2', cw)
+            .attr('y1', yTop + rowH - 4).attr('y2', yTop + rowH - 4)
+            .attr('stroke', C.border).attr('stroke-width', .6)
+        }
+      })
+
+      // X axis at the bottom
+      g.append('g').attr('transform', `translate(0, ${decades.length * rowH})`)
+        .call(d3.axisBottom(x).ticks(7).tickSize(0).tickPadding(4).tickFormat(v => d3.format('+.0f')(v) + '%'))
+        .call(ax => { ax.select('.domain').remove(); ax.selectAll('text').attr('fill', C.muted).attr('font-size', 9.5).style('font-family', 'IBM Plex Sans,sans-serif') })
+    }
+
+    // ─────────────────────────────────────────────────────────
+    //  Insight 4: Calm vs. Fearful (high-VIX flip)
+    // ─────────────────────────────────────────────────────────
+
+    // Explanations for why each factor sits where it does, per regime
+    const VIX_REASONS = {
+      calm: {
+        'Mkt-RF': 'Calm markets are mostly bull markets. With no fear holding investors back, they buy stocks aggressively — and the equity premium pays its biggest reward when confidence is high.',
+        'Mom': 'Trends persist when nothing shocks them. Calm markets let recent winners keep winning, which is exactly what momentum is designed to capture.',
+        'HML': 'Value earns a small premium even in bull markets, but is usually overshadowed by growth stocks. Investors chase exciting stories when there is no panic to dampen risk appetite.',
+        'SMB': 'Small caps get a tiny lift from risk appetite, but the modern size effect is weak. Most bull-market gains concentrate in a handful of mega-cap leaders.',
+        'RMW': 'Quality is out of fashion in bull markets. Investors do not need defensive companies — they want growth. Steadily profitable, "boring" firms underperform flashier rivals.',
+        'CMA': 'Conservative firms — the ones that do not aggressively expand — look uninspired in bull markets. Empire-builders look smart when capital is cheap and demand is rising; this factor goes slightly negative on average.',
+      },
+      fear: {
+        'RMW': 'When fear strikes, investors flee toward companies with strong margins and low debt. Profitable firms can survive a downturn; weak ones cannot. This is the classic "flight to quality."',
+        'Mom': 'Trends still persist in fear regimes — they are just downward trends. Betting against persistent losers (momentum\'s short side) pays off. Momentum only crashes during sharp regime <em>transitions</em>, like March 2009.',
+        'CMA': 'Conservative firms — those that grew their assets slowly — were less exposed to the kinds of overpriced acquisitions and aggressive capex that get repriced when fear hits. Their stock prices hold up better when the cycle turns.',
+        'HML': 'Value is mixed in fear. Cheap stocks are often cheap <em>because</em> they are cyclical or financially stressed. They can rally when panic is unwarranted but get crushed when it is justified — see 2008, when the cheapest stocks were the banks.',
+        'SMB': 'Small caps get hit harder in fear (less liquidity, more leverage), but the size factor is so heterogeneous that the average is roughly flat across high-VIX months.',
+        'Mkt-RF': 'Fear means selling. The equity premium evaporates when the average investor is rushing for the exits. On average, the market loses money in months when the VIX is above its long-run median.',
+      },
+    }
+
+    function renderVixFlip() {
+      const el = document.getElementById('chart-vix')
+      el.innerHTML = ''
+
+      const calm = DB.monthly.filter(d => d.vix_regime === 'low')
+      const fear = DB.monthly.filter(d => d.vix_regime === 'high')
+
+      const groups = [
+        { key: 'calm', label: 'Calm markets', sub: 'VIX below 17.5', n: calm.length, rows: calm },
+        { key: 'fear', label: 'Fearful markets', sub: 'VIX above 17.5', n: fear.length, rows: fear },
+      ]
+
+      // Compute means
+      groups.forEach(gp => {
+        gp.values = FACTORS.map(f => ({
+          f,
+          mean: d3.mean(gp.rows, r => r[f]),
+        })).sort((a, b) => b.mean - a.mean)
+      })
+
+      const allVals = groups.flatMap(gp => gp.values.map(v => v.mean))
+      const xMax = Math.max(0.05, d3.max(allVals.map(Math.abs))) * 1.15
+
+      const W = Math.min(1100, el.parentElement.clientWidth - 32)
+      const colW = (W - 40) / 2
+      const H = 360
+      const M = { top: 60, right: 20, bottom: 36, left: 20 }
+      const innerW = colW - M.left - M.right
+      const innerH = H - M.top - M.bottom
+
+      const svg = d3.select(el).append('svg').attr('width', W).attr('height', H)
+
+      groups.forEach((gp, gi) => {
+        const cx = gi * (colW + 40)
+        const colG = svg.append('g').attr('transform', `translate(${cx + M.left},${M.top})`)
+
+        // Header
+        svg.append('text').attr('x', cx + M.left + innerW / 2).attr('y', 22)
+          .attr('text-anchor', 'middle')
+          .attr('font-family', 'Playfair Display,Georgia,serif')
+          .attr('font-size', 18).attr('font-weight', 700).attr('fill', C.text)
+          .text(gp.label)
+        svg.append('text').attr('x', cx + M.left + innerW / 2).attr('y', 40)
+          .attr('text-anchor', 'middle')
+          .attr('font-size', 10).attr('fill', C.muted)
+          .style('font-family', 'Source Serif 4,Georgia,serif').style('font-style', 'italic')
+          .text(`${gp.sub} · n = ${gp.n} months`)
+
+        // Scales
+        const x = d3.scaleLinear().domain([-xMax, xMax]).range([0, innerW])
+        const y = d3.scaleBand().domain(d3.range(FACTORS.length)).range([0, innerH]).padding(.2)
+
+        // Zero line
+        colG.append('line').attr('x1', x(0)).attr('x2', x(0)).attr('y1', 0).attr('y2', innerH)
+          .attr('stroke', C.borderDark).attr('stroke-width', 1)
+
+        // Bars
+        gp.values.forEach((v, i) => {
+          const f = v.f
+          const m = v.mean
+          const yPos = y(i)
+          const bx = m >= 0 ? x(0) : x(m)
+          const bw = Math.abs(x(m) - x(0))
+          const barH = y.bandwidth()
+          const rank = i + 1
+
+          colG.append('rect')
+            .attr('x', bx).attr('y', yPos)
+            .attr('width', 0).attr('height', barH)
+            .attr('fill', FM[f].color).attr('opacity', .88)
+            .transition().duration(600).delay(gi * 60 + i * 30)
+            .attr('width', bw)
+
+          // Factor label (left of zero line)
+          colG.append('text')
+            .attr('x', x(0) - 6).attr('y', yPos + barH / 2).attr('dy', '0.35em')
+            .attr('text-anchor', 'end')
+            .attr('font-size', 11).attr('font-weight', 700)
+            .style('font-family', 'IBM Plex Sans,sans-serif')
+            .attr('fill', FM[f].color)
+            .text(FM[f].label)
+
+          // Value label (at end of bar)
+          colG.append('text')
+            .attr('x', m >= 0 ? x(m) + 5 : x(m) - 5)
+            .attr('y', yPos + barH / 2).attr('dy', '0.35em')
+            .attr('text-anchor', m >= 0 ? 'start' : 'end')
+            .attr('font-size', 10).attr('font-weight', 700)
+            .style('font-family', 'IBM Plex Sans,sans-serif')
+            .attr('fill', m >= 0 ? C.pos : C.neg)
+            .text(d3.format('+.2f')(m) + '%/mo')
+
+          // Hover hit area covering the full row width
+          const hitG = colG.append('g').style('cursor', 'help')
+          hitG.append('rect')
+            .attr('x', -90).attr('y', yPos - 1)
+            .attr('width', innerW + 100).attr('height', barH + 2)
+            .attr('fill', 'transparent')
+          hitG
+            .on('mouseover', function (ev) {
+              // Highlight the bar
+              d3.select(this.parentNode).selectAll('rect')
+                .filter(function () { return d3.select(this).attr('fill') === FM[f].color })
+                .attr('opacity', 1)
+              tip.innerHTML = `<div class="tip-date">#${rank} · ${FM[f].label} · ${gp.label}</div>
+            <div class="tip-row">
+              <span class="tip-name">Avg monthly return</span>
+              <span class="tip-val" style="color:${m >= 0 ? C.pos : C.neg}">${d3.format('+.2f')(m)}%</span>
+            </div>
+            <div class="tip-row">
+              <span class="tip-name">Hit rate</span>
+              <span class="tip-val" style="color:${C.muted}">${Math.round(d3.sum(gp.rows, r => r[f] > 0 ? 1 : 0) / gp.rows.filter(r => r[f] != null).length * 100)}%</span>
+            </div>
+            <div class="tip-explain">${VIX_REASONS[gp.key][f]}</div>`
+              tip.style.opacity = '1'; posTip(ev)
+            })
+            .on('mousemove', posTip)
+            .on('mouseout', function () {
+              d3.select(this.parentNode).selectAll('rect')
+                .filter(function () { return d3.select(this).attr('fill') === FM[f].color })
+                .attr('opacity', .88)
+              tip.style.opacity = '0'
+            })
+        })
+
+        // X axis
+        colG.append('g').attr('transform', `translate(0,${innerH})`)
+          .call(d3.axisBottom(x).ticks(5).tickSize(0).tickPadding(6).tickFormat(v => d3.format('+.1f')(v) + '%'))
+          .call(ax => { ax.select('.domain').remove(); ax.selectAll('text').attr('fill', C.muted).attr('font-size', 9).style('font-family', 'IBM Plex Sans,sans-serif') })
+      })
+
+      // Center divider
+      svg.append('line')
+        .attr('x1', W / 2).attr('x2', W / 2)
+        .attr('y1', 50).attr('y2', H - 30)
+        .attr('stroke', C.border).attr('stroke-width', .8)
+
+      // Center caption
+      svg.append('text')
+        .attr('x', W / 2).attr('y', 56).attr('text-anchor', 'middle')
+        .attr('font-size', 9).attr('font-weight', 700).attr('fill', C.accent)
+        .style('font-family', 'IBM Plex Sans,sans-serif').style('letter-spacing', '.15em').style('text-transform', 'uppercase')
+        .text('Market ⇄ Quality')
+    }
+
+    // ─────────────────────────────────────────────────────────
+    //  Utilities
+    // ─────────────────────────────────────────────────────────
+
+    function posTip(ev) {
+      const tw = 220
+      const lx = ev.clientX + 22 + tw > window.innerWidth ? ev.clientX - tw - 14 : ev.clientX + 22
+      tip.style.left = lx + 'px'
+      tip.style.top = Math.min(ev.clientY - 10, window.innerHeight - 240) + 'px'
+    }
+
+    function getLum(hex) {
+      const c = d3.color(hex); if (!c) return .5
+      const lin = v => { v /= 255; return v <= .03928 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4 }
+      return .2126 * lin(c.r) + .7152 * lin(c.g) + .0722 * lin(c.b)
+    }
+
+    // Resize
+    let _rzTimer
+    window.addEventListener('resize', () => {
+      clearTimeout(_rzTimer)
+      _rzTimer = setTimeout(() => {
+        if (DB.cumulative) {
+          renderCumulative(); renderHeatmap(); renderDecades(); renderVixFlip()
+        }
+      }, 250)
+    })
+  </script>
+</body>
+
+</html>

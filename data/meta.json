@@ -1,0 +1,41 @@
+{
+  "factors": [
+    {
+      "key": "Mkt-RF",
+      "label": "Market",
+      "color": "#1f77b4",
+      "short": "Stocks minus T-bills"
+    },
+    {
+      "key": "SMB",
+      "label": "Size (SMB)",
+      "color": "#ff7f0e",
+      "short": "Small minus Big"
+    },
+    {
+      "key": "HML",
+      "label": "Value (HML)",
+      "color": "#2ca02c",
+      "short": "Cheap minus Expensive"
+    },
+    {
+      "key": "RMW",
+      "label": "Profitability (RMW)",
+      "color": "#d62728",
+      "short": "Profitable minus Unprofitable"
+    },
+    {
+      "key": "CMA",
+      "label": "Investment (CMA)",
+      "color": "#9467bd",
+      "short": "Conservative minus Aggressive"
+    },
+    {
+      "key": "Mom",
+      "label": "Momentum",
+      "color": "#e377c2",
+      "short": "Winners minus Losers"
+    }
+  ],
+  "vix_median": 17.49
+}
