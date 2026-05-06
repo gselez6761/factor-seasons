@@ -171,6 +171,94 @@ two factors" qualifier).
 
 ---
 
+---
+
+## Session 2 - May 2026 polish and editorial pass
+
+This session was a sustained back-and-forth between the primary author (Gregory) and Claude
+Code focused on copy quality, chart UX, and removing the "AI-written" feel from the page.
+The session did not add new visualizations or data - it refined what existed.
+
+### What AI did in this session
+
+**Copy editing (human-directed):**
+- Replaced all em-dashes with hyphens site-wide after the author flagged the prose sounded
+  AI-generated. ("I don't want it to read like an AI-generated article.")
+- Rewrote the intro paragraph twice - first to be more CFA-defensible ("systematic patterns
+  inside that number"), then again after the author rejected a specific sentence as "not
+  seeming like a very true statement."
+- Updated the page title and lede paragraph under author direction.
+- Rewrote the ZIRP tooltip after the author caught that "every rally faded" was factually
+  wrong - rallies in 2009-2015 *persisted*, it was cross-factor leadership that rotated.
+- Added an inline VIX definition after the author noted readers wouldn't know what it means.
+
+**CFA-level copy audit:**
+The author asked Claude to scan all body paragraphs for overgeneralizations "with the
+knowledge of a CFA." Nine issues were identified and fixed:
+- "Predicts future stock returns" softened to "historically been associated with higher returns"
+- "Academic finance has converged on" changed to "among the most widely studied"
+- "Dominated" softened to "led" (re: Momentum in the 70s–90s)
+- Finding 4 headline changed from "becomes the worst factor" to "has averaged the weakest returns"
+- "The data says the opposite" reframed to apply only to high-fear months, not broadly
+- "Size premium has all but disappeared" softened to "weakened significantly" (the Asness
+  et al. 2018 result shows it persists when controlling for quality)
+- "Usually compensating" softened to "has often helped offset"
+- HML card rewritten: removed "waiting for mean-reversion" (one-sided theory) and replaced
+  with acknowledgment that the mechanism is still debated
+- Stale reference to the leader strip (already deleted) removed from Finding 2 deck
+
+**Finance Q&A:**
+The author asked several finance questions during the session - why Value does poorly in
+crises, why Profitability and Value both fell in 1999, and what ZIRP means in the tooltip
+context. These were answered and where relevant the answers were used to improve the copy.
+The author also asked whether a CFA would agree with a proposed sentence, leading to a
+revision before the change was committed.
+
+**Visualization changes (human-directed):**
+- Heatmap: removed numbers inside cells, tightened color scale domain for more contrast,
+  removed the "Year's leader" strip, fixed SVG overflow (switched to viewBox), restored key
+  year timeline annotations with plainer typography, added a red-to-green gradient legend,
+  added All/Winners/Losers toggle buttons, added 1973 "Oil embargo / stagflation" annotation.
+- Chart 1 (cumulative): replaced clipping end-of-line labels with a clickable legend in the
+  top-left corner. Clicking a factor isolates it (dims others to 7% opacity). Hovering over
+  the legend blocks the crosshair tooltip from firing. Dollar values removed from legend
+  after author found them confusing.
+- Chart 2 (VIX flip): negative bar value labels moved to right of zero line to stop clipping
+  with factor names; factor names moved to a fixed left margin outside the chart area.
+- Chart 4 (decades): bars made taller (barH 9 → 14), gap between decade labels and chart
+  area increased, 2000s highlight band removed at author's request.
+- Axis labels added to all charts that were missing them.
+- Visualization order changed: VIX flip moved from Finding 4 to Finding 2 after the author
+  agreed it was the strongest analytical result and was being buried at the end.
+- `insights.html` deleted at author's request (consolidated into `index.html`).
+- Various UI labels removed: "Market ⇄ Quality" center caption, top navigation bar,
+  double-rule border on section headers.
+
+### What the human directed in this session
+
+Every change in this session was initiated by the author. Examples of human judgment calls:
+- Rejecting the first CFA-audit rewrite of a sentence as "not a very true statement"
+- Catching that "every rally faded" was factually wrong before it was committed
+- Deciding the VIX flip was the strongest finding and should move earlier
+- Rejecting the first legend design as "ugly and not intuitive" - the dollar values were
+  removed entirely after the author asked "why does it have numbers in it?"
+- Asking follow-up finance questions ("why did Value do badly in financial crises?") and
+  using the answers to evaluate whether the tooltip copy was correct
+- Choosing to delete insights.html rather than maintain two files
+
+### What AI got wrong in this session
+
+- **"Every rally faded"** - written in the ZIRP tooltip rewrite, immediately caught by the
+  author. The 2009-2015 bull market was a sustained rally; the correct observation was that
+  factor *leadership* rotated, not that rallies reversed. Fixed before committing.
+- **Legend with dollar values** - the initial legend redesign included final dollar values
+  per factor. The author rejected this as confusing. The second version removed them entirely.
+- **`maxAbs` initialization error** - the color scale legend was inserted before the `maxAbs`
+  variable was defined, causing a `ReferenceError` at runtime. Caught immediately from the
+  browser console and fixed by reordering the declarations.
+
+---
+
 ## Tooling list
 
 | Tool | Used for |
