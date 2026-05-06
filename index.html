@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Factor Seasons - How Factor Returns Rotate</title>
+  <title>Factor Seasons: No Investment Strategy Wins Every Year</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -329,7 +329,6 @@
     }
 
     .section-break {
-      border-top: 3px double var(--rule);
       padding-top: 1.5rem;
       margin-bottom: 1.75rem;
       max-width: 880px;
@@ -373,6 +372,38 @@
       border: 1px solid var(--border);
       padding: 1.4rem;
       overflow-x: auto;
+    }
+
+    .heatmap-controls {
+      display: flex;
+      gap: .5rem;
+      margin-bottom: .75rem;
+    }
+
+    .hm-btn {
+      font-family: var(--sans);
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: .3rem .75rem;
+      border: 1px solid var(--border);
+      background: var(--paper);
+      color: var(--muted);
+      cursor: pointer;
+      border-radius: 2px;
+      transition: all .15s;
+    }
+
+    .hm-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .hm-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
     }
 
     .figure-caption {
@@ -634,11 +665,7 @@
 <body>
 
   <!-- TOP BAR -->
-  <div id="top-bar">
-    <div class="section-tag">Markets &amp; Investing</div>
-    <div class="masthead">Factor Seasons</div>
-    <div class="meta">Spring 2026 · CMSC&nbsp;471</div>
-  </div>
+
 
   <!-- HERO -->
   <header id="hero">
@@ -661,14 +688,14 @@
   <!-- LEDE -->
   <div id="lede">
     <p>
-      When the news says "the market was up today," it actually papers over a much weirder
-      truth. There isn't really one stock market — there are at least six, each driven by
-      a different rule for picking stocks. Researchers call these rules <strong>factors</strong>.
-      Some have made fortunes. Some have quietly disappeared. None of them work all the time.
+      When the news says "the market was up today," they mean one number. But researchers have
+      identified systematic patterns inside that number - groups of stocks that consistently
+      behave differently from each other, decade after decade. The six most studied are called
+      <strong>factors</strong>. Some have rewarded investors for sixty years. None of them work all the time.
     </p>
     <p>
-      Below, four findings from sixty-two years of data — selected because they each say
-      something a person who has never opened a brokerage account would not have guessed.
+      Four findings from sixty-two years of data. Which factor wins changes by decade, by
+      regime, and by how scared the market is. The charts below show how.
     </p>
   </div>
 
@@ -677,11 +704,11 @@
     <div class="primer-box">
       <h3>What's a "factor," in one paragraph</h3>
       <p>
-        A factor is a measurable trait of a company — its size, how cheaply it trades, how
-        profitable it is — that decades of data have shown predicts future stock returns.
+        A factor is a measurable trait of a company - its size, how cheaply it trades, how
+        profitable it is - that has historically been associated with higher returns.
         Researchers build a factor by buying companies that score high on the trait and
-        shorting (betting against) companies that score low. The six factors below are the
-        ones academic finance has converged on.
+        shorting (betting against) companies that score low. The six factors below are among
+        the most widely studied in academic finance.
       </p>
       <div class="factor-grid" id="factor-cards-grid"></div>
     </div>
@@ -692,13 +719,13 @@
     <div class="insight-num">01</div>
     <div class="section-break">
       <div class="sec-label">Finding One · The Sixty-Year Race</div>
-      <div class="sec-headline">A Dollar Invested in 1963 Became Forty-Four — or Three.</div>
+      <div class="sec-headline">A Dollar Invested in 1963 Became Forty-Four - or Three.</div>
       <div class="sec-deck">
         Same time period. Same starting capital. Six different rules for picking stocks. The
         chart tracks the growth of $1 in each factor's <strong>academic long-short portfolio</strong>
-        from July 1963 — the Market line is "stocks minus T-bills"; the other five each go long
+        from July 1963 - the Market line is "stocks minus T-bills"; the other five each go long
         one set of stocks and short another. Momentum and the Market run almost neck-and-neck for
-        decades — until Momentum's vertical drop in 2009. The Size factor, the textbook's
+        decades - until Momentum's vertical drop in 2009. The Size factor, the textbook's
         first-ever factor, barely triples in sixty years.
       </div>
     </div>
@@ -707,31 +734,65 @@
       <div id="chart-cumulative"></div>
     </div>
     <div class="figure-caption">
-      <strong>How to read this.</strong> The y-axis is logarithmic — equal vertical distance
-      represents equal multiplicative growth — so a steady-sloped line is steady compounding.
+      <strong>How to read this.</strong> The y-axis is logarithmic - equal vertical distance
+      represents equal multiplicative growth - so a steady-sloped line is steady compounding.
       Hover anywhere on the chart for the exact value of each factor on that date.
       <br><strong>One caveat.</strong> These are theoretical academic returns, costless and
       frictionless. Real-world products that try to replicate factors (long-short hedge funds,
       factor ETFs) underperform them by roughly 0.5–2% per year due to financing, transaction
       costs, and short-borrow fees.
-      <br><strong>Source.</strong> Ken French Data Library — Fama/French 5 Factors (2×3) and Momentum,
+      <br><strong>Source.</strong> Ken French Data Library - Fama/French 5 Factors (2×3) and Momentum,
       monthly excess returns, compounded.
     </div>
   </section>
 
-  <!-- INSIGHT 2: ANNUAL HEATMAP -->
+  <!-- INSIGHT 2: HIGH-VIX FLIP -->
   <section class="insight">
     <div class="insight-num">02</div>
     <div class="section-break">
-      <div class="sec-label">Finding Two · The Disagreement</div>
+      <div class="sec-label">Finding Two · Market vs. Quality</div>
+      <div class="sec-headline">When Investors Are Afraid, the Market Has Averaged the Weakest Returns.</div>
+      <div class="sec-deck">
+        Investors who take on more market risk should be compensated with higher returns. In high-fear months
+        specifically, that relationship inverts. We use the VIX - the CBOE's index of expected stock market volatility,
+        often called the "fear gauge" - as a proxy for investor anxiety. We split every month from <strong>1990 through 2025</strong>
+        into "calm" (VIX below its long-run median of 17.5)
+        and "fearful" (VIX above). In <strong>fearful months</strong>, the Market loses on
+        average and "boring" Profitability wins handily. The other four factors barely move -
+        so this is really a story about <em>two</em> factors trading places.
+      </div>
+    </div>
+    <span class="hover-hint">Hover any factor for why it sits where it does</span>
+    <div class="card-wrap">
+      <div class="loading-msg" id="vix-loading">Loading…</div>
+      <div id="chart-vix"></div>
+    </div>
+    <div class="figure-caption">
+      <strong>How to read this.</strong> Two side-by-side panels - calm months on the left, fearful
+      months on the right. Each row is a factor's average monthly return in that regime. The order
+      of the bars is sorted within each panel. Read left-to-right, factor by factor: the ranking
+      barely resembles itself.
+      <br><strong>Source.</strong> Ken French Data Library + CBOE VIX Index. n = 217 months in each regime.
+    </div>
+  </section>
+
+  <!-- INSIGHT 3: ANNUAL HEATMAP -->
+  <section class="insight">
+    <div class="insight-num">03</div>
+    <div class="section-break">
+      <div class="sec-label">Finding Three · The Disagreement</div>
       <div class="sec-headline">In Only 13 Months Out of 752 Did All Six Factors Move the Same Way.</div>
       <div class="sec-deck">
         Twelve of those months had all six factors positive. <strong>Exactly one</strong> had
-        all six negative. The rest of the time — 98% of months — the factors are arguing.
+        all six negative. The rest of the time - 98% of months - the factors are arguing.
         Below, every year since 1964, factor by factor: green is a winning year, red is a
-        losing one. The strip beneath the grid shows which factor came in <em>first</em>
-        that year.
+        losing one.
       </div>
+    </div>
+    <div class="heatmap-controls">
+      <button class="hm-btn active" data-filter="all">All</button>
+      <button class="hm-btn" data-filter="winners">Winners only</button>
+      <button class="hm-btn" data-filter="losers">Losers only</button>
     </div>
     <div class="card-wrap">
       <div class="loading-msg" id="hm-loading">Loading…</div>
@@ -739,22 +800,21 @@
     </div>
     <div class="figure-caption">
       <strong>How to read this.</strong> Each cell is one factor's return in one year, color-graded
-      from red (worst year) to green (best). Hover any cell for the exact number. The strip below
-      the grid shows the year's top-performing factor as a colored square.
-      <br><strong>Source.</strong> Ken French Data Library — annual returns.
+      from red (losing year) to green (winning year). Hover any cell for the exact number.
+      <br><strong>Source.</strong> Ken French Data Library - annual returns.
     </div>
   </section>
 
-  <!-- INSIGHT 3: DECADE WINNERS -->
+  <!-- INSIGHT 4: DECADE WINNERS -->
   <section class="insight">
-    <div class="insight-num">03</div>
+    <div class="insight-num">04</div>
     <div class="section-break">
-      <div class="sec-label">Finding Three · The Rotation</div>
-      <div class="sec-headline">Every Decade Has a Different Winner — Including the One Where the Market Lost.</div>
+      <div class="sec-label">Finding Four · The Rotation</div>
+      <div class="sec-headline">Every Decade Has a Different Winner - Including the One Where the Market Lost.</div>
       <div class="sec-deck">
-        The chart below shows each factor's <strong>compounded return for each decade</strong> —
-        what a $1 investment at the start of the decade would have grown to. Momentum dominated
-        the 70s, 80s, and 90s. Then in the 2000s — the dot-com bust and Financial Crisis decade —
+        The chart below shows each factor's <strong>compounded return for each decade</strong> -
+        what a $1 investment at the start of the decade would have grown to. Momentum led
+        the 70s, 80s, and 90s. Then in the 2000s - the dot-com bust and Financial Crisis decade -
         the Market itself <em>lost 27%</em>, while the Profitability factor <em>gained 108%</em>.
         A 135-percentage-point gap between two strategies, for an entire ten-year stretch.
       </div>
@@ -766,41 +826,12 @@
     </div>
     <div class="figure-caption">
       <strong>How to read this.</strong> Each row is a decade; each bar is one factor's
-      <strong>compounded</strong> cumulative return — i.e. what $1 became — across that decade's
-      months. Greener = bigger gain. The 2000s row is highlighted because it's the only decade
-      in which the Market itself was the losing factor — and notably, Momentum lost money too,
-      because the April 2009 crash erased years of small monthly gains.
-      <br><strong>Source.</strong> Ken French Data Library — monthly factor returns, compounded
+      <strong>compounded</strong> cumulative return - i.e. what $1 became - across that decade's
+      months. Greener = bigger gain. The 2000s is the only decade in which the Market itself
+      was the losing factor - and notably, Momentum lost money too, because the April 2009 crash
+      erased years of small monthly gains.
+      <br><strong>Source.</strong> Ken French Data Library - monthly factor returns, compounded
       by decade.
-    </div>
-  </section>
-
-  <!-- INSIGHT 4: HIGH-VIX FLIP -->
-  <section class="insight">
-    <div class="insight-num">04</div>
-    <div class="section-break">
-      <div class="sec-label">Finding Four · Market vs. Quality</div>
-      <div class="sec-headline">When Investors Are Afraid, the Market Becomes the Worst Factor.</div>
-      <div class="sec-deck">
-        The textbook story says risky assets earn higher returns. The data says the opposite —
-        at least when fear is high. We split every month from <strong>1990 through 2025</strong>
-        (when the VIX has been published) into "calm" (VIX below its long-run median of 17.5)
-        and "fearful" (VIX above). In <strong>fearful months</strong>, the Market loses on
-        average and "boring" Profitability wins handily. The other four factors barely move —
-        so this is really a story about <em>two</em> factors trading places.
-      </div>
-    </div>
-    <span class="hover-hint">Hover any factor for why it sits where it does</span>
-    <div class="card-wrap">
-      <div class="loading-msg" id="vix-loading">Loading…</div>
-      <div id="chart-vix"></div>
-    </div>
-    <div class="figure-caption">
-      <strong>How to read this.</strong> Two side-by-side panels — calm months on the left, fearful
-      months on the right. Each row is a factor's average monthly return in that regime. The order
-      of the bars is sorted within each panel. Read left-to-right, factor by factor: the ranking
-      barely resembles itself.
-      <br><strong>Source.</strong> Ken French Data Library + CBOE VIX Index. n = 217 months in each regime.
     </div>
   </section>
 
@@ -809,17 +840,16 @@
     <div class="lbl">A Closing Thought</div>
     <h3>There is no permanent winner. Owning more than one factor is the whole point.</h3>
     <p>
-      If the past sixty years prove anything, it's that no single rule — not "buy the index,"
-      not "buy small caps," not "follow the trend" — works across every economic season. The
-      Market dominated 2010s. Profitability quietly won the 2000s. Momentum lost five years
-      of gains in eight months. The size premium has all but disappeared.
+      If the past sixty years prove anything, it's that no single rule - not "buy the index,"
+      not "buy small caps," not "follow the trend" - works across every economic season. The
+      Market led the 2010s. Profitability quietly won the 2000s. Momentum lost five years
+      of gains in eight months. The size premium has weakened significantly in recent decades.
     </p>
     <p>
       What the data <em>does</em> support is owning a portfolio that exposes you to several
       factors at once. The factors are imperfectly correlated (only 13 months in 752 had them
-      all moving together). When one is having a bad decade, another is usually compensating.
-      That's not financial advice — but it is what the numbers above keep showing, decade
-      after decade.
+      all moving together). When one is having a bad decade, another has often helped offset the loss.
+
     </p>
   </section>
 
@@ -839,17 +869,17 @@
       <div class="footer-col">
         <h3>Data Sources</h3>
         <ul>
-          <li>Ken French Data Library — Fama/French 5 Factors (2×3) and Momentum Factor</li>
-          <li>FRED — NBER Recession Indicator (USREC), Federal Funds Rate (FEDFUNDS)</li>
-          <li>CBOE / Yahoo Finance — VIX Index</li>
+          <li>Ken French Data Library - Fama/French 5 Factors (2×3) and Momentum Factor</li>
+          <li>FRED - NBER Recession Indicator (USREC), Federal Funds Rate (FEDFUNDS)</li>
+          <li>CBOE / Yahoo Finance - VIX Index</li>
         </ul>
       </div>
       <div class="footer-col">
         <h3>Acknowledgements</h3>
         <ul>
-          <li>Eugene Fama &amp; Kenneth French — foundational factor research</li>
-          <li>Daniel &amp; Moskowitz — momentum crashes (2016)</li>
-          <li>Asness et al. — "Size Matters, If You Control Your Junk" (2018)</li>
+          <li>Eugene Fama &amp; Kenneth French - foundational factor research</li>
+          <li>Daniel &amp; Moskowitz - momentum crashes (2016)</li>
+          <li>Asness et al. - "Size Matters, If You Control Your Junk" (2018)</li>
           <li>D3.js by Mike Bostock</li>
         </ul>
       </div>
@@ -872,7 +902,7 @@
     const FM = {
       'Mkt-RF': {
         label: 'Market', color: '#1B3D6B', short: 'Stocks minus T-bills',
-        desc: 'The equity risk premium — owning stocks instead of risk-free Treasuries. Every other factor is measured relative to this baseline.'
+        desc: 'The equity risk premium - owning stocks instead of risk-free Treasuries. Every other factor is measured relative to this baseline.'
       },
       'SMB': {
         label: 'Size', color: '#C26A00', short: 'Small minus Big',
@@ -880,7 +910,7 @@
       },
       'HML': {
         label: 'Value', color: '#1A6B3C', short: 'Cheap minus Expensive',
-        desc: 'Stocks that trade cheaply relative to their book value vs. expensive growth stocks. Buying the unloved and waiting for mean-reversion.'
+        desc: 'Stocks that trade cheaply relative to their book value vs. expensive growth stocks. Whether the premium reflects higher risk or behavioral mispricing is still debated.'
       },
       'RMW': {
         label: 'Profitability', color: '#A52313', short: 'Profitable minus Weak',
@@ -892,7 +922,7 @@
       },
       'Mom': {
         label: 'Momentum', color: '#9E1A5E', short: 'Winners minus Losers',
-        desc: 'Recent winners vs. recent losers. Investors update beliefs slowly, so trends persist — until they snap.'
+        desc: 'Recent winners vs. recent losers. Investors update beliefs slowly, so trends persist - until they snap.'
       },
     }
 
@@ -925,6 +955,17 @@
       renderHeatmap()
       renderDecades()
       renderVixFlip()
+
+      // Heatmap toggle buttons
+      document.querySelectorAll('.hm-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+          document.querySelectorAll('.hm-btn').forEach(b => b.classList.remove('active'))
+          this.classList.add('active')
+          const filter = this.dataset.filter
+          d3.selectAll('.hm-winner').style('opacity', filter === 'losers' ? 0.08 : null)
+          d3.selectAll('.hm-loser').style('opacity', filter === 'winners' ? 0.08 : null)
+        })
+      })
         ;['cum-loading', 'hm-loading', 'dec-loading', 'vix-loading'].forEach(id =>
           document.getElementById(id).style.display = 'none')
     }).catch(err => console.error('Data load error:', err))
@@ -956,7 +997,7 @@
       el.innerHTML = ''
       const W = Math.min(1100, el.parentElement.clientWidth - 32)
       const H = 480
-      const M = { top: 24, right: 130, bottom: 40, left: 64 }
+      const M = { top: 24, right: 20, bottom: 40, left: 64 }
       const cw = W - M.left - M.right
       const ch = H - M.top - M.bottom
 
@@ -993,6 +1034,9 @@
       g.append('g').attr('class', 'axis')
         .call(d3.axisLeft(y).tickValues([1, 2, 5, 10, 20, 50]).tickSize(0).tickPadding(8).tickFormat(d => '$' + d))
         .call(ax => ax.select('.domain').remove())
+      g.append('text').attr('x', cw / 2).attr('y', ch + 34).attr('text-anchor', 'middle')
+        .attr('font-size', 9).attr('fill', C.muted).style('font-family', 'IBM Plex Sans,sans-serif')
+        .style('letter-spacing', '.06em').style('text-transform', 'uppercase').text('Year')
 
       svg.append('text').attr('transform', 'rotate(-90)')
         .attr('x', -(M.top + ch / 2)).attr('y', 16).attr('text-anchor', 'middle')
@@ -1010,13 +1054,45 @@
           .datum(rows).attr('fill', 'none')
           .attr('stroke', FM[f].color).attr('stroke-width', 2)
           .attr('d', lineGen(f))
-        // End label
-        const last = rows[rows.length - 1]
-        g.append('text').attr('x', cw + 6).attr('y', y(last[f])).attr('dy', '0.35em')
-          .attr('font-size', 10).attr('font-weight', 700)
-          .style('font-family', 'IBM Plex Sans,sans-serif')
-          .attr('fill', FM[f].color)
-          .text(`${FM[f].label}  $${last[f].toFixed(2)}`)
+      })
+
+      // Legend (top-left) — click to isolate a factor
+      let selectedFactor = null
+      const legRowH = 20, legPad = 8
+      const legW = 110, legH = legPad + FACTORS.length * legRowH + legPad
+      const leg = g.append('g').attr('transform', `translate(4,4)`)
+
+      leg.append('rect').attr('width', legW).attr('height', legH).attr('rx', 2)
+        .attr('fill', C.paper).attr('stroke', C.border).attr('stroke-width', 1).attr('opacity', 0.93)
+        .on('mousemove', ev => ev.stopPropagation())
+        .on('mouseover', () => { crossLine.style('opacity', 0); tip.style.opacity = '0' })
+
+      FACTORS.forEach((f, i) => {
+        const ry = legPad + i * legRowH
+        const row = leg.append('g').attr('class', 'leg-row').attr('data-f', f)
+          .style('cursor', 'pointer')
+          .on('mousemove', ev => ev.stopPropagation())
+          .on('mouseover', ev => ev.stopPropagation())
+          .on('click', () => {
+            selectedFactor = selectedFactor === f ? null : f
+            g.selectAll('path').attr('opacity', function () {
+              const stroke = d3.select(this).attr('stroke')
+              const isSelected = Object.keys(FM).find(k => FM[k].color === stroke) === selectedFactor
+              return selectedFactor === null || isSelected ? 1 : 0.07
+            })
+            leg.selectAll('.leg-row').attr('opacity', function () {
+              const rowF = d3.select(this).attr('data-f')
+              return selectedFactor === null || rowF === selectedFactor ? 1 : 0.3
+            })
+          })
+
+        row.append('rect').attr('x', 0).attr('y', ry).attr('width', legW).attr('height', legRowH).attr('fill', 'transparent')
+        row.append('line').attr('x1', legPad).attr('x2', legPad + 16).attr('y1', ry + legRowH / 2).attr('y2', ry + legRowH / 2)
+          .attr('stroke', FM[f].color).attr('stroke-width', 2.5)
+        row.append('text').attr('x', legPad + 22).attr('y', ry + legRowH / 2).attr('dy', '0.35em')
+          .attr('font-size', 11).attr('font-weight', 600)
+          .style('font-family', 'IBM Plex Sans,sans-serif').attr('fill', FM[f].color)
+          .text(FM[f].label)
       })
 
       // Hover crosshair
@@ -1061,17 +1137,43 @@
         return { year: d.date.getFullYear(), winner: sorted[0], range: sorted[0].v - sorted[sorted.length - 1].v }
       })
 
-      const cw = 16, chr = 30, stripH = 16, annoH = 38
-      const M = { top: 22, right: 16, bottom: stripH + annoH + 12, left: 120 }
+      const cw = 16, chr = 30
+      const M = { top: 22, right: 16, bottom: 50, left: 120 }
       const totalH = FACTORS.length * chr + M.top + M.bottom
 
+      const svgW = ny * cw + M.left + M.right
+      const svgH = totalH + 40
+
       const svg = d3.select(el).append('svg')
-        .attr('width', ny * cw + M.left + M.right).attr('height', totalH)
+        .attr('width', '100%').attr('viewBox', `0 0 ${svgW} ${svgH}`)
+        .attr('preserveAspectRatio', 'xMinYMid meet').style('display', 'block')
+
       const g = svg.append('g').attr('transform', `translate(${M.left},${M.top})`)
 
       const allVals = annual.flatMap(d => FACTORS.map(f => d[f])).filter(v => v != null && !isNaN(v))
-      const maxAbs = Math.max(Math.abs(d3.min(allVals)), Math.abs(d3.max(allVals)))
+      const maxAbs = Math.max(Math.abs(d3.min(allVals)), Math.abs(d3.max(allVals))) * 0.5
       const color = d3.scaleDiverging([-maxAbs, 0, maxAbs], d3.interpolateRdYlGn).clamp(true)
+
+      // Color scale legend (rendered after color scale is defined)
+      const legendW = 120
+      const legendX = M.left
+      const legendY = totalH + 8
+      const defs = svg.append('defs')
+      const gradId = 'hm-legend-grad'
+      const grad = defs.append('linearGradient').attr('id', gradId)
+        .attr('x1', '0%').attr('x2', '100%')
+        ;[-maxAbs, -maxAbs * 0.5, 0, maxAbs * 0.5, maxAbs].forEach((v, i) => {
+          grad.append('stop').attr('offset', `${i * 25}%`).attr('stop-color', color(v))
+        })
+      svg.append('rect').attr('x', legendX).attr('y', legendY)
+        .attr('width', legendW).attr('height', 8).attr('rx', 1)
+        .attr('fill', `url(#${gradId})`)
+      svg.append('text').attr('x', legendX).attr('y', legendY + 18)
+        .attr('font-size', 8).attr('fill', C.muted).style('font-family', 'IBM Plex Sans,sans-serif')
+        .text('Negative')
+      svg.append('text').attr('x', legendX + legendW).attr('y', legendY + 18)
+        .attr('font-size', 8).attr('fill', C.muted).style('font-family', 'IBM Plex Sans,sans-serif')
+        .attr('text-anchor', 'end').text('Positive')
 
       // Year labels every 10
       years.forEach((yr, i) => {
@@ -1090,12 +1192,9 @@
           const v = d[f]
           if (v == null || isNaN(v)) return
           const cellG = g.append('g').attr('transform', `translate(${yi * cw}, ${fi * chr})`)
+            .attr('class', v >= 0 ? 'hm-cell hm-winner' : 'hm-cell hm-loser')
           cellG.append('rect').attr('width', cw - 1).attr('height', chr - 1).attr('rx', 1)
             .attr('fill', color(v)).attr('opacity', .94)
-          cellG.append('text').attr('x', cw / 2).attr('y', chr / 2).attr('dy', '0.35em').attr('text-anchor', 'middle')
-            .attr('font-size', 7).attr('font-weight', 600)
-            .style('font-family', 'IBM Plex Sans,sans-serif')
-            .attr('fill', getLum(color(v)) > .45 ? '#111' : '#F5F5F5').text(d3.format('+.0f')(v))
           cellG.append('rect').attr('width', cw - 1).attr('height', chr - 1).attr('fill', 'transparent')
             .on('mouseover', function (ev) {
               tip.innerHTML = `<div class="tip-date">${years[yi]} · ${FM[f].label}</div>
@@ -1109,40 +1208,15 @@
         })
       })
 
-      // Winner strip
-      const stripY = FACTORS.length * chr + 8
-      g.append('text').attr('x', -8).attr('y', stripY + stripH / 2).attr('dy', '0.35em')
-        .attr('text-anchor', 'end').attr('font-size', 10).attr('font-weight', 700)
-        .style('font-family', 'IBM Plex Sans,sans-serif').style('letter-spacing', '.08em').style('text-transform', 'uppercase')
-        .attr('fill', C.text).text("Year's leader")
-
-      yearStats.forEach((s, yi) => {
-        if (!s.winner) return
-        const wcol = FM[s.winner.f].color
-        g.append('rect').attr('x', yi * cw).attr('y', stripY)
-          .attr('width', cw - 1).attr('height', stripH - 1).attr('rx', 1)
-          .attr('fill', wcol).attr('opacity', .92).style('cursor', 'pointer')
-          .on('mouseover', function (ev) {
-            tip.innerHTML = `<div class="tip-date">${s.year} · Top factor</div>
-          <div class="tip-row"><span class="tip-name" style="color:${wcol}">${FM[s.winner.f].label}</span>
-          <span class="tip-val" style="color:${C.pos}">${d3.format('+.1f')(s.winner.v)}%</span></div>
-          <div class="tip-row"><span class="tip-name">Range (best − worst)</span>
-          <span class="tip-val" style="color:${C.muted}">${d3.format('+.1f')(s.range)} pp</span></div>`
-            tip.style.opacity = '1'; posTip(ev)
-            d3.select(this).attr('stroke', C.rule).attr('stroke-width', 1.5)
-          })
-          .on('mousemove', posTip)
-          .on('mouseout', function () { tip.style.opacity = '0'; d3.select(this).attr('stroke', null) })
-      })
-
       // Key year annotations
       const KEY_YEARS = [
+        { yr: 1973, label: 'Oil embargo / stagflation' },
         { yr: 1980, label: 'Volcker rate spike' },
         { yr: 1999, label: 'Dot-com peak' },
         { yr: 2008, label: 'Financial Crisis' },
         { yr: 2020, label: 'COVID whiplash' },
       ]
-      const annoY = stripY + stripH + 6
+      const annoY = FACTORS.length * chr + 8
       KEY_YEARS.forEach(k => {
         const i = years.indexOf(k.yr)
         if (i < 0) return
@@ -1150,12 +1224,13 @@
         g.append('line').attr('x1', xc).attr('x2', xc).attr('y1', annoY).attr('y2', annoY + 10)
           .attr('stroke', C.rule).attr('stroke-width', .8)
         g.append('text').attr('x', xc).attr('y', annoY + 22).attr('text-anchor', 'middle')
-          .attr('font-size', 9).attr('font-weight', 600)
+          .attr('font-size', 11).attr('font-weight', 700)
           .style('font-family', 'IBM Plex Sans,sans-serif').attr('fill', C.text).text(k.yr)
-        g.append('text').attr('x', xc).attr('y', annoY + 33).attr('text-anchor', 'middle')
-          .attr('font-size', 8.5).style('font-family', 'Source Serif 4,Georgia,serif').style('font-style', 'italic')
+        g.append('text').attr('x', xc).attr('y', annoY + 35).attr('text-anchor', 'middle')
+          .attr('font-size', 10).style('font-family', 'IBM Plex Sans,sans-serif')
           .attr('fill', C.muted).text(k.label)
       })
+
     }
 
     // ─────────────────────────────────────────────────────────
@@ -1169,7 +1244,7 @@
         'SMB': "The decade's winner. The 1965–69 small-cap boom favored hot 'tronics' and conglomerate stocks; risk appetite chased the smallest names.",
         'HML': "Value lagged. Growth and acquisition stories dominated; cheap industrials were unfashionable next to tech-adjacent conglomerates.",
         'RMW': "Profits didn't lead. Stocks traded on acquisition narratives and growth promises, not operating margins.",
-        'CMA': "The decade's loser. The conglomerate era rewarded empire-builders like ITT and Litton — exactly what CMA bets against.",
+        'CMA': "The decade's loser. The conglomerate era rewarded empire-builders like ITT and Litton - exactly what CMA bets against.",
         'Mom': "Trends were strong as the bull matured. Speculative leadership persisted year after year.",
       },
       '1970': {
@@ -1178,47 +1253,47 @@
         'HML': "Value's revenge. Cheap industrials, energy, and materials outperformed as the Nifty Fifty's premium valuations collapsed.",
         'RMW': "Lost decade for quality. Inflation eroded reported earnings; even strong firms got dragged down by stagflation.",
         'CMA': "Conservative firms held up. Empire-builders from the 60s couldn't service their debt as rates spiked; capital discipline began looking smart.",
-        'Mom': "Best decade for momentum in the sample. Persistent trends in commodities and inflation hedges — once gold or oil began rising, they kept rising.",
+        'Mom': "Best decade for momentum in the sample. Persistent trends in commodities and inflation hedges - once gold or oil began rising, they kept rising.",
       },
       '1980': {
         'Mkt-RF': "The great bull market began in August 1982 after Volcker broke inflation. Reagan tax cuts and deregulation propelled equities for the rest of the decade.",
-        'SMB': "Large caps led the recovery — GE, IBM, Coca-Cola. Small caps lagged, beginning a multi-decade underperformance.",
-        'HML': "Value did fine but didn't dominate. Reagan-era growth stories — tech IPOs, biotech, branded consumer — competed with cheap old-economy stocks.",
+        'SMB': "Large caps led the recovery - GE, IBM, Coca-Cola. Small caps lagged, beginning a multi-decade underperformance.",
+        'HML': "Value did fine but didn't dominate. Reagan-era growth stories - tech IPOs, biotech, branded consumer - competed with cheap old-economy stocks.",
         'RMW': "Profitable firms rebounded as inflation receded. With real rates positive, balance-sheet quality mattered again.",
         'CMA': "Mixed. The LBO/junk-bond boom rewarded some aggressive financing, but Drexel's collapse and the S&L crisis hurt empire-builders late in the decade.",
-        'Mom': "Trends stuck in a long bull market. Once the 1982 rally started, leadership patterns persisted — exactly what momentum exploits.",
+        'Mom': "Trends stuck in a long bull market. Once the 1982 rally started, leadership patterns persisted - exactly what momentum exploits.",
       },
       '1990': {
         'Mkt-RF': "Best decade for U.S. stocks in history (until then). The internet boom from 1995 onward fueled a roughly 20–25%/year compound rally.",
-        'SMB': "Mega-cap tech — Microsoft, Cisco, Intel — dominated the indexes. Small caps were left behind in their worst decade of the sample.",
-        'HML': "Value died for years as growth stocks ran wild. P/E ratios stopped mattering — eyeballs and clicks-per-day were the new metrics.",
+        'SMB': "Mega-cap tech - Microsoft, Cisco, Intel - dominated the indexes. Small caps were left behind in their worst decade of the sample.",
+        'HML': "Value died for years as growth stocks ran wild. P/E ratios stopped mattering - eyeballs and clicks-per-day were the new metrics.",
         'RMW': "Quality lagged the dot-com mania. Investors paid for revenue growth, not profits; profitable old-economy firms looked dull.",
         'CMA': "Aggressive tech firms with negative cash flows commanded sky-high valuations. Conservative capital stewardship was 'old economy.'",
-        'Mom': "The classic momentum decade. Internet stocks went up because they had been going up. The trend WAS the trade — until March 2000.",
+        'Mom': "The classic momentum decade. Internet stocks went up because they had been going up. The trend WAS the trade - until March 2000.",
       },
       '2000': {
         'Mkt-RF': "The 'lost decade.' Dot-com crash (2000–02) wiped out trillions; the housing crash and GFC (2008–09) finished the job. Compounded, the Market lost 27%.",
-        'SMB': "Small caps actually beat large caps this decade — partly because the dot-com bust hit large-cap tech hardest.",
-        'HML': "Value's vindication. Cheap stocks beaten down in the bubble had nowhere to go but up. HML compounded +104% — its best decade in our sample.",
-        'RMW': "The 'flight to quality' decade. Profitable firms held up in two crashes. RMW compounded +108% while the Market lost 27% — a 135-point gap.",
+        'SMB': "Small caps actually beat large caps this decade - partly because the dot-com bust hit large-cap tech hardest.",
+        'HML': "Value's vindication. Cheap stocks beaten down in the bubble had nowhere to go but up. HML compounded +104% - its best decade in our sample.",
+        'RMW': "The 'flight to quality' decade. Profitable firms held up in two crashes. RMW compounded +108% while the Market lost 27% - a 135-point gap.",
         'CMA': "Conservative balance sheets paid off. Firms that hadn't binged on debt or acquisitions survived 2008 with stock prices mostly intact.",
-        'Mom': "The infamous momentum crash of April 2009 — Mom dropped 34% in a single month as beaten-down losers rebounded violently. Despite strong earlier years, momentum LOST money for the decade.",
+        'Mom': "The infamous momentum crash of April 2009 - Mom dropped 34% in a single month as beaten-down losers rebounded violently. Despite strong earlier years, momentum LOST money for the decade.",
       },
       '2010': {
         'Mkt-RF': "ZIRP-era megabull. Zero interest rates, FAANG dominance, and an unbroken expansion produced the best decade for the Market itself in our sample.",
         'SMB': "Mediocre. Mega-cap tech led every year; small caps lagged in relative terms even as the broad market rose.",
         'HML': "Value's lost decade. With near-zero rates making growth stocks' future cash flows extremely valuable, value (banks, energy, autos) underperformed for a generation.",
-        'RMW': "Quality did fine but couldn't keep up with tech. The market only rewarded profitable AND fast-growing — which the FAANGs were.",
+        'RMW': "Quality did fine but couldn't keep up with tech. The market only rewarded profitable AND fast-growing - which the FAANGs were.",
         'CMA': "Conservative firms underperformed aggressive tech that reinvested everything. Amazon's 'no profits, just growth' was the decade's playbook.",
-        'Mom': "Momentum recovered from 2009 but trends were softer. ZIRP markets had less directional persistence — every dip got bought.",
+        'Mom': "Momentum recovered from 2009 but trends were softer. With rates near zero, capital flowed indiscriminately - the rising tide lifted most boats, so the gap between winners and losers narrowed and momentum had less to exploit.",
       },
       '2020': {
         'Mkt-RF': "COVID stimulus + AI boom. Despite the brutal 2022 bear market, mega-cap tech (the 'Magnificent 7') drove the Market to new highs.",
         'SMB': "Small caps got crushed by rising rates in 2022 and never caught up. The size factor has been deeply negative for the entire 2020s.",
         'HML': "Value flickered to life in 2022 (the rate-hike year, when growth crashed) but faded again as tech rebounded in 2023–24.",
-        'RMW': "Profitability is positive but unspectacular. The Mag 7 are both profitable AND growth — they're being absorbed into the Market premium, not the Quality premium.",
+        'RMW': "Profitability is positive but unspectacular. The Mag 7 are both profitable AND growth - they're being absorbed into the Market premium, not the Quality premium.",
         'CMA': "Conservative firms had a small edge after the 2022 rate shock punished aggressive growth. Capital discipline came back into fashion, briefly.",
-        'Mom': "Momentum did well. The AI trade has had strong, persistent leadership concentrated in a handful of stocks — exactly what momentum is designed to ride.",
+        'Mom': "Momentum did well. The AI trade has had strong, persistent leadership concentrated in a handful of stocks - exactly what momentum is designed to ride.",
       },
     }
 
@@ -1252,10 +1327,9 @@
       })
 
       const W = Math.min(1100, el.parentElement.clientWidth - 32)
-      const rowH = 88
+      const rowH = 120
       const labelW = 90
-      // Left margin = 105 (matches the right) + label area + gap
-      const M = { top: 16, right: 105, bottom: 26, left: 105 + labelW + 12 }
+      const M = { top: 16, right: 105, bottom: 26, left: 105 + labelW + 28 }
       const cw = W - M.left - M.right
       const H = decades.length * rowH + M.top + M.bottom
 
@@ -1273,37 +1347,30 @@
         const yTop = di * rowH
 
         // Highlight band for the 2000s
-        if (dec.highlight) {
-          svg.append('rect')
-            .attr('x', 0).attr('y', M.top + yTop - 6)
-            .attr('width', W).attr('height', rowH - 4)
-            .attr('fill', '#FFF4E5').attr('opacity', .7)
-        }
-
         // Decade label
-        g.append('text').attr('x', -12).attr('y', yTop + 16).attr('text-anchor', 'end')
+        g.append('text').attr('x', -28).attr('y', yTop + 16).attr('text-anchor', 'end')
           .attr('font-family', 'var(--serif-display), Playfair Display, Georgia, serif')
           .attr('font-size', 16).attr('font-weight', 700).attr('fill', C.text)
           .style('font-family', 'Playfair Display,Georgia,serif')
           .text(dec.label)
-        g.append('text').attr('x', -12).attr('y', yTop + 30).attr('text-anchor', 'end')
+        g.append('text').attr('x', -28).attr('y', yTop + 30).attr('text-anchor', 'end')
           .attr('font-size', 9).attr('fill', C.muted)
           .style('font-family', 'IBM Plex Sans,sans-serif').style('font-style', 'italic')
           .text(`${dec.n} mo`)
 
         if (dec.highlight) {
-          g.append('text').attr('x', -12).attr('y', yTop + 46).attr('text-anchor', 'end')
+          g.append('text').attr('x', -28).attr('y', yTop + 46).attr('text-anchor', 'end')
             .attr('font-size', 8.5).attr('font-weight', 700).attr('fill', C.accent)
             .style('font-family', 'IBM Plex Sans,sans-serif').style('letter-spacing', '.05em').style('text-transform', 'uppercase')
             .text('Market lost.')
-          g.append('text').attr('x', -12).attr('y', yTop + 58).attr('text-anchor', 'end')
+          g.append('text').attr('x', -28).attr('y', yTop + 58).attr('text-anchor', 'end')
             .attr('font-size', 8.5).attr('font-weight', 700).attr('fill', C.accent)
             .style('font-family', 'IBM Plex Sans,sans-serif').style('letter-spacing', '.05em').style('text-transform', 'uppercase')
             .text('Quality won.')
         }
 
         // Bars per factor
-        const barH = 9, barGap = 2
+        const barH = 14, barGap = 4
         const xZero = x(0)
         g.append('line').attr('x1', xZero).attr('x2', xZero)
           .attr('y1', yTop + 8).attr('y2', yTop + 8 + 6 * (barH + barGap))
@@ -1375,6 +1442,10 @@
       g.append('g').attr('transform', `translate(0, ${decades.length * rowH})`)
         .call(d3.axisBottom(x).ticks(7).tickSize(0).tickPadding(4).tickFormat(v => d3.format('+.0f')(v) + '%'))
         .call(ax => { ax.select('.domain').remove(); ax.selectAll('text').attr('fill', C.muted).attr('font-size', 9.5).style('font-family', 'IBM Plex Sans,sans-serif') })
+      g.append('text').attr('x', cw / 2).attr('y', decades.length * rowH + 22)
+        .attr('text-anchor', 'middle').attr('font-size', 9).attr('fill', C.muted)
+        .style('font-family', 'IBM Plex Sans,sans-serif').style('letter-spacing', '.06em').style('text-transform', 'uppercase')
+        .text('Compounded return (%)')
     }
 
     // ─────────────────────────────────────────────────────────
@@ -1384,18 +1455,18 @@
     // Explanations for why each factor sits where it does, per regime
     const VIX_REASONS = {
       calm: {
-        'Mkt-RF': 'Calm markets are mostly bull markets. With no fear holding investors back, they buy stocks aggressively — and the equity premium pays its biggest reward when confidence is high.',
+        'Mkt-RF': 'Calm markets are mostly bull markets. With no fear holding investors back, they buy stocks aggressively - and the equity premium pays its biggest reward when confidence is high.',
         'Mom': 'Trends persist when nothing shocks them. Calm markets let recent winners keep winning, which is exactly what momentum is designed to capture.',
         'HML': 'Value earns a small premium even in bull markets, but is usually overshadowed by growth stocks. Investors chase exciting stories when there is no panic to dampen risk appetite.',
         'SMB': 'Small caps get a tiny lift from risk appetite, but the modern size effect is weak. Most bull-market gains concentrate in a handful of mega-cap leaders.',
-        'RMW': 'Quality is out of fashion in bull markets. Investors do not need defensive companies — they want growth. Steadily profitable, "boring" firms underperform flashier rivals.',
-        'CMA': 'Conservative firms — the ones that do not aggressively expand — look uninspired in bull markets. Empire-builders look smart when capital is cheap and demand is rising; this factor goes slightly negative on average.',
+        'RMW': 'Quality is out of fashion in bull markets. Investors do not need defensive companies - they want growth. Steadily profitable, "boring" firms underperform flashier rivals.',
+        'CMA': 'Conservative firms - the ones that do not aggressively expand - look uninspired in bull markets. Empire-builders look smart when capital is cheap and demand is rising; this factor goes slightly negative on average.',
       },
       fear: {
         'RMW': 'When fear strikes, investors flee toward companies with strong margins and low debt. Profitable firms can survive a downturn; weak ones cannot. This is the classic "flight to quality."',
-        'Mom': 'Trends still persist in fear regimes — they are just downward trends. Betting against persistent losers (momentum\'s short side) pays off. Momentum only crashes during sharp regime <em>transitions</em>, like March 2009.',
-        'CMA': 'Conservative firms — those that grew their assets slowly — were less exposed to the kinds of overpriced acquisitions and aggressive capex that get repriced when fear hits. Their stock prices hold up better when the cycle turns.',
-        'HML': 'Value is mixed in fear. Cheap stocks are often cheap <em>because</em> they are cyclical or financially stressed. They can rally when panic is unwarranted but get crushed when it is justified — see 2008, when the cheapest stocks were the banks.',
+        'Mom': 'Trends still persist in fear regimes - they are just downward trends. Betting against persistent losers (momentum\'s short side) pays off. Momentum only crashes during sharp regime <em>transitions</em>, like March 2009.',
+        'CMA': 'Conservative firms - those that grew their assets slowly - were less exposed to the kinds of overpriced acquisitions and aggressive capex that get repriced when fear hits. Their stock prices hold up better when the cycle turns.',
+        'HML': 'Value is mixed in fear. Cheap stocks are often cheap <em>because</em> they are cyclical or financially stressed. They can rally when panic is unwarranted but get crushed when it is justified - see 2008, when the cheapest stocks were the banks.',
         'SMB': 'Small caps get hit harder in fear (less liquidity, more leverage), but the size factor is so heterogeneous that the average is roughly flat across high-VIX months.',
         'Mkt-RF': 'Fear means selling. The equity premium evaporates when the average investor is rushing for the exits. On average, the market loses money in months when the VIX is above its long-run median.',
       },
@@ -1427,7 +1498,7 @@
       const W = Math.min(1100, el.parentElement.clientWidth - 32)
       const colW = (W - 40) / 2
       const H = 360
-      const M = { top: 60, right: 20, bottom: 36, left: 20 }
+      const M = { top: 60, right: 20, bottom: 36, left: 90 }
       const innerW = colW - M.left - M.right
       const innerH = H - M.top - M.bottom
 
@@ -1474,20 +1545,20 @@
             .transition().duration(600).delay(gi * 60 + i * 30)
             .attr('width', bw)
 
-          // Factor label (left of zero line)
+          // Factor label (fixed left margin, outside chart area)
           colG.append('text')
-            .attr('x', x(0) - 6).attr('y', yPos + barH / 2).attr('dy', '0.35em')
+            .attr('x', -8).attr('y', yPos + barH / 2).attr('dy', '0.35em')
             .attr('text-anchor', 'end')
             .attr('font-size', 11).attr('font-weight', 700)
             .style('font-family', 'IBM Plex Sans,sans-serif')
             .attr('fill', FM[f].color)
             .text(FM[f].label)
 
-          // Value label (at end of bar)
+          // Value label (right of bar for positive, right of zero line for negative)
           colG.append('text')
-            .attr('x', m >= 0 ? x(m) + 5 : x(m) - 5)
+            .attr('x', m >= 0 ? x(m) + 5 : x(0) + 5)
             .attr('y', yPos + barH / 2).attr('dy', '0.35em')
-            .attr('text-anchor', m >= 0 ? 'start' : 'end')
+            .attr('text-anchor', 'start')
             .attr('font-size', 10).attr('font-weight', 700)
             .style('font-family', 'IBM Plex Sans,sans-serif')
             .attr('fill', m >= 0 ? C.pos : C.neg)
@@ -1530,6 +1601,10 @@
         colG.append('g').attr('transform', `translate(0,${innerH})`)
           .call(d3.axisBottom(x).ticks(5).tickSize(0).tickPadding(6).tickFormat(v => d3.format('+.1f')(v) + '%'))
           .call(ax => { ax.select('.domain').remove(); ax.selectAll('text').attr('fill', C.muted).attr('font-size', 9).style('font-family', 'IBM Plex Sans,sans-serif') })
+        colG.append('text').attr('x', innerW / 2).attr('y', innerH + 30)
+          .attr('text-anchor', 'middle').attr('font-size', 9).attr('fill', C.muted)
+          .style('font-family', 'IBM Plex Sans,sans-serif').style('letter-spacing', '.06em').style('text-transform', 'uppercase')
+          .text('Avg. monthly return (%)')
       })
 
       // Center divider
@@ -1538,12 +1613,6 @@
         .attr('y1', 50).attr('y2', H - 30)
         .attr('stroke', C.border).attr('stroke-width', .8)
 
-      // Center caption
-      svg.append('text')
-        .attr('x', W / 2).attr('y', 56).attr('text-anchor', 'middle')
-        .attr('font-size', 9).attr('font-weight', 700).attr('fill', C.accent)
-        .style('font-family', 'IBM Plex Sans,sans-serif').style('letter-spacing', '.15em').style('text-transform', 'uppercase')
-        .text('Market ⇄ Quality')
     }
 
     // ─────────────────────────────────────────────────────────

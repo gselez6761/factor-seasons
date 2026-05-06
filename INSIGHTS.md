@@ -10,7 +10,7 @@
 
 `insights.html` is a tightened, editorially-driven companion to the main `index.html` page.
 The full version contains a 14-step scrollytelling tour, a recession scorecard, regime
-bar charts, an annual heatmap, and a 25-portfolio explorer — useful breadth, but enough
+bar charts, an annual heatmap, and a 25-portfolio explorer - useful breadth, but enough
 surface area that a first-time reader can lose the thread.
 
 This page strips that down to **four findings**, each accompanied by exactly one chart,
@@ -24,17 +24,17 @@ wine), thin double-rule section breaks, and a WSJ-red accent.
 
 ## The four findings
 
-### Finding 01 — The Sixty-Year Race
+### Finding 01 - The Sixty-Year Race
 A log-scale cumulative growth chart. Six factors, sixty-two years, **$1 starting capital**.
 The end values: Momentum $44.47, Market $40.15, Value $6.55, Profitability $6.14,
 Investment $5.55, **Size $2.83**. The momentum cliff in 2009 is visible as a vertical drop.
 The Size factor's flatlining is visible as the bottom line.
 
-> **Caveat printed on the page:** these are *academic long-short factor returns* — frictionless,
+> **Caveat printed on the page:** these are *academic long-short factor returns* - frictionless,
 > costless, and not directly investable. Real-world factor ETFs underperform academic returns
 > by roughly 0.5–2% per year due to financing, transaction costs, and short-borrow fees.
 
-### Finding 02 — The Disagreement
+### Finding 02 - The Disagreement
 An annual heatmap (62 years × 6 factors) with a "Year's leader" colored strip beneath it
 and four key-year annotations (1980 Volcker, 1999 Dot-com peak, 2008 Financial Crisis, 2020
 COVID). Headline stat in the deck:
@@ -44,23 +44,23 @@ COVID). Headline stat in the deck:
 Independent random chance would predict 3.7% all-aligned with these per-factor hit rates.
 Observed is 1.7%. So factors are *more* divergent than independence would predict.
 
-### Finding 03 — The Rotation
+### Finding 03 - The Rotation
 A decade-by-decade horizontal bar chart, 7 decades × 6 factors, using **compound** returns
 (not summed). The 2000s row is highlighted because it is the only decade in which the
 Market itself was the losing factor:
 
 > **Market lost 27%. Profitability gained 108%. A 135-percentage-point gap, for an entire decade.**
 
-Hover any factor in any decade for the historical context — real macroeconomic events
+Hover any factor in any decade for the historical context - real macroeconomic events
 (oil shocks, Volcker, Reagan-era LBOs, dot-com, GFC, ZIRP, COVID, AI boom) are tied to the
 factor performance directly.
 
 The chart also reveals that **Momentum lost money in the 2000s in compound terms** (−19%)
-because April 2009's −34% crash erased years of small monthly gains — a fact obscured if
+because April 2009's −34% crash erased years of small monthly gains - a fact obscured if
 you sum monthly returns instead of compounding them.
 
-### Finding 04 — Market vs. Quality
-Two side-by-side bar charts — calm markets (VIX below sample median 17.5) on the left,
+### Finding 04 - Market vs. Quality
+Two side-by-side bar charts - calm markets (VIX below sample median 17.5) on the left,
 fearful markets (VIX above) on the right, both sorted within-panel. Covers **1990–2025**
 (the VIX-publication era). The story is narrower than "everything flips":
 
@@ -68,7 +68,7 @@ fearful markets (VIX above) on the right, both sorted within-panel. Covers **199
 > to worst (−0.23%/mo) in fearful. Profitability goes from middle to top. The other four
 > factors barely move.
 
-Hover any factor for the mechanism — flight-to-quality for RMW, cyclical-stress story for
+Hover any factor for the mechanism - flight-to-quality for RMW, cyclical-stress story for
 Value, aggressive-firm-repricing for CMA, etc.
 
 ---
@@ -77,7 +77,7 @@ Value, aggressive-firm-repricing for CMA, etc.
 
 The page ends with a single editorial paragraph: *no factor wins every season, the factors
 are imperfectly correlated, owning more than one is the whole point.* This is empirical, not
-financial advice — the data show that factor diversification reduces concentration risk
+financial advice - the data show that factor diversification reduces concentration risk
 across most decades, with notable failures (e.g., 2008–09 when correlations spiked).
 
 ---
@@ -131,6 +131,6 @@ will not work because of `d3.json()` fetch requirements.
 Every quantitative claim on this page has been verified against the source data via Python.
 A CFA-style audit was performed before publication (see `AI_USAGE.md` for details). The most
 important correction made during that audit was switching Finding 3 from arithmetic-summed
-returns to compounded returns — which materially changed several numbers (most dramatically,
+returns to compounded returns - which materially changed several numbers (most dramatically,
 Momentum's 2000s went from a small *positive* in summed terms to a clear *loss* in compound
 terms).

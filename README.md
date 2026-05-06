@@ -2,17 +2,17 @@
 
 **Visualizing When Risk Premiums Appear and Disappear**
 
-CMSC 471 — Introduction to Information Visualization · University of Maryland · Spring 2026 · Team 10
+CMSC 471 - Introduction to Information Visualization · University of Maryland · Spring 2026 · Team 10
 
 ---
 
 ## Description
 
-Factor Seasons is a scrollytelling, interactive visualization that makes the time-varying, regime-dependent nature of equity factor returns legible to someone who has never taken a finance class. Users scroll through a guided narrative covering 60+ years of factor performance data, discovering how the six Fama-French factors behave across economic regimes — recessions, rate cycles, and volatility spikes.
+Factor Seasons is a scrollytelling, interactive visualization that makes the time-varying, regime-dependent nature of equity factor returns legible to someone who has never taken a finance class. Users scroll through a guided narrative covering 60+ years of factor performance data, discovering how the six Fama-French factors behave across economic regimes - recessions, rate cycles, and volatility spikes.
 
 ### Key questions explored:
 - Why did Value stocks lose money for 7 straight years (2013–2020) before staging a massive recovery?
-- Why did Momentum — the highest-performing factor for 40 years — crash 83% in just 6 months in 2009?
+- Why did Momentum - the highest-performing factor for 40 years - crash 83% in just 6 months in 2009?
 - How do factor returns systematically differ across recession/expansion, rising/falling rates, and high/low volatility?
 
 ---
@@ -21,26 +21,26 @@ Factor Seasons is a scrollytelling, interactive visualization that makes the tim
 
 | Name | GitHub |
 |---|---|
-| Gregory Seleznev | — |
-| Martin Ye | — |
-| Alex Dong | — |
+| Gregory Seleznev | - |
+| Martin Ye | - |
+| Alex Dong | - |
 
 ---
 
 ## Running Instructions
 
-This is a static web application — no build step, no server required.
+This is a static web application - no build step, no server required.
 
-**Option 1 — Python local server (recommended):**
+**Option 1 - Python local server (recommended):**
 ```bash
 cd factorseasons
 python3 -m http.server 8080
 # Open http://localhost:8080
 ```
 
-**Option 2 — VS Code Live Server:** Open `index.html` with Live Server extension.
+**Option 2 - VS Code Live Server:** Open `index.html` with Live Server extension.
 
-**Option 3 — GitHub Pages:** Push to a GitHub repo and enable Pages from the repo settings. The `index.html` and `data/` directory are all that's needed.
+**Option 3 - GitHub Pages:** Push to a GitHub repo and enable Pages from the repo settings. The `index.html` and `data/` directory are all that's needed.
 
 > Note: Opening `index.html` directly via `file://` will not work because the app fetches JSON data files with `d3.json()`, which requires an HTTP server.
 
@@ -71,7 +71,7 @@ factorseasons/
 
 | Component | Owner(s) | Notes |
 |---|---|---|
-| Data pipeline (Python) — downloading, cleaning, merging all datasets | Gregory | Fama-French, FRED, VIX, regime classification |
+| Data pipeline (Python) - downloading, cleaning, merging all datasets | Gregory | Fama-French, FRED, VIX, regime classification |
 | Scrollytelling layout & IntersectionObserver | Gregory | Sticky chart + narrative steps |
 | Animated cumulative returns chart | Gregory | D3 clipPath animation, annotation overlays |
 | Regime bar charts (business cycle, rates, VIX) | Martin | 3 regime types, animated entry transitions |
@@ -84,16 +84,16 @@ factorseasons/
 
 ## Data Sources
 
-- **Ken French Data Library** — Fama/French 5 Factors (2×3) Monthly, Momentum Factor Monthly, 25 Portfolios on Size and Book-to-Market
-- **FRED (Federal Reserve Economic Data)** — NBER Recession Indicator (USREC), Federal Funds Rate (FEDFUNDS)
-- **CBOE / Yahoo Finance** — VIX Index monthly
+- **Ken French Data Library** - Fama/French 5 Factors (2×3) Monthly, Momentum Factor Monthly, 25 Portfolios on Size and Book-to-Market
+- **FRED (Federal Reserve Economic Data)** - NBER Recession Indicator (USREC), Federal Funds Rate (FEDFUNDS)
+- **CBOE / Yahoo Finance** - VIX Index monthly
 
 ---
 
 ## Acknowledgements
 
-- Eugene Fama & Kenneth French — foundational factor research (1992, 1993, 2015)
-- Narasimhan Jegadeesh & Sheridan Titman — momentum factor (1993)
+- Eugene Fama & Kenneth French - foundational factor research (1992, 1993, 2015)
+- Narasimhan Jegadeesh & Sheridan Titman - momentum factor (1993)
 - D3.js by Mike Bostock
 - Inspired by AQR Capital Management's factor research publications and The Idea Farm newsletter
 - Built with assistance from Claude Code (Anthropic)
