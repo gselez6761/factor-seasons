@@ -231,7 +231,7 @@
     }
 
     .primer-box::before {
-      content: 'A PRIMER';
+      content: '';
       position: absolute;
       top: -.55rem;
       left: 1.5rem;
@@ -285,7 +285,8 @@
 
     .fc-key {
       font-family: var(--sans);
-      font-size: .65rem;
+      font-size: .8rem;
+      font-weight: 600;
       color: var(--muted);
       margin-bottom: .4rem;
     }
@@ -435,7 +436,8 @@
     /* Chart axes & primitives */
     .axis text {
       fill: var(--muted);
-      font-size: 11px;
+      font-size: 13px;
+      font-weight: 500;
       font-family: var(--sans);
     }
 
@@ -669,11 +671,9 @@
 
   <!-- HERO -->
   <header id="hero">
-    <div class="article-kicker">Factor Seasons</div>
-    <h1>How Factor Returns Rotate</h1>
+    <h1>Factor Seasons</h1>
     <p class="article-deck">
-      Sixty years of data. Six systematic risk premia. Four findings on how factor
-      leadership shifts across macroeconomic regimes.
+      Which factors earn their premium — and which go cold — depending on where we are in the economic cycle?
     </p>
     <hr class="article-rule">
     <div class="byline-bar">
@@ -681,7 +681,6 @@
         By <strong>Gregory Seleznev</strong>, <strong>Martin Ye</strong>, and <strong>Alex Dong</strong>
         <span class="sep"></span> University of Maryland
       </span>
-      <span class="read-time">8 min read</span>
     </div>
   </header>
 
@@ -702,7 +701,7 @@
   <!-- PRIMER -->
   <div id="primer">
     <div class="primer-box">
-      <h3>What's a "factor," in one paragraph</h3>
+      <h3>What is a factor?</h3>
       <p>
         A factor is a measurable trait of a company - its size, how cheaply it trades, how
         profitable it is - that has historically been associated with higher returns.
@@ -719,7 +718,7 @@
     <div class="insight-num">01</div>
     <div class="section-break">
       <div class="sec-label">Finding One · The Sixty-Year Race</div>
-      <div class="sec-headline">A Dollar Invested in 1963 Became Forty-Four - or Three.</div>
+      <div class="sec-headline">A Dollar Invested in 1963 Became $44 — or $3.</div>
       <div class="sec-deck">
         Same time period. Same starting capital. Six different rules for picking stocks. The
         chart tracks the growth of $1 in each factor's <strong>academic long-short portfolio</strong>
@@ -754,8 +753,11 @@
       <div class="sec-headline">When Investors Are Afraid, the Market Has Averaged the Weakest Returns.</div>
       <div class="sec-deck">
         Investors who take on more market risk should be compensated with higher returns. In high-fear months
-        specifically, that relationship inverts. We use the VIX - the CBOE's index of expected stock market volatility,
-        often called the "fear gauge" - as a proxy for investor anxiety. We split every month from <strong>1990 through 2025</strong>
+        specifically, that relationship inverts: the broad market — the riskiest exposure of all — posts its
+        weakest average returns, while the most defensive factors quietly outperform. We use the VIX - a real-time index
+        of expected stock market volatility,
+        often called the "fear gauge" - as a proxy for investor anxiety. We split every month from <strong>1990 through
+          2025</strong>
         into "calm" (VIX below its long-run median of 17.5)
         and "fearful" (VIX above). In <strong>fearful months</strong>, the Market loses on
         average and "boring" Profitability wins handily. The other four factors barely move -
@@ -825,11 +827,11 @@
       <div id="chart-decades"></div>
     </div>
     <div class="figure-caption">
-      <strong>How to read this.</strong> Each row is a decade; each bar is one factor's
-      <strong>compounded</strong> cumulative return - i.e. what $1 became - across that decade's
-      months. Greener = bigger gain. The 2000s is the only decade in which the Market itself
-      was the losing factor - and notably, Momentum lost money too, because the April 2009 crash
-      erased years of small monthly gains.
+      <strong>How to read this.</strong> Each panel is one factor. Within each panel, every bar
+      is a decade's <strong>compounded</strong> cumulative return - bars above the zero line are
+      gains, bars below are losses. The 2000s is the only decade in which the Market itself posted
+      a loss; Momentum lost money that decade too, because the April 2009 crash erased years of
+      small monthly gains. Hover any bar for the historical context.
       <br><strong>Source.</strong> Ken French Data Library - monthly factor returns, compounded
       by decade.
     </div>
@@ -838,7 +840,7 @@
   <!-- CLOSING -->
   <section id="closing">
     <div class="lbl">A Closing Thought</div>
-    <h3>There is no permanent winner. Owning more than one factor is the whole point.</h3>
+    <h3>There is no permanent winner. The practical response is diversifying across factors.</h3>
     <p>
       If the past sixty years prove anything, it's that no single rule - not "buy the index,"
       not "buy small caps," not "follow the trend" - works across every economic season. The
@@ -846,10 +848,20 @@
       of gains in eight months. The size premium has weakened significantly in recent decades.
     </p>
     <p>
-      What the data <em>does</em> support is owning a portfolio that exposes you to several
-      factors at once. The factors are imperfectly correlated (only 13 months in 752 had them
-      all moving together). When one is having a bad decade, another has often helped offset the loss.
-
+      What the data <em>does</em> support is owning a portfolio exposed to several factors at once.
+      The factors are imperfectly correlated (only 13 months in 752 had them all moving together).
+      When one is having a bad decade, another has historically helped offset the loss. This is the
+      logic behind <strong>smart beta</strong>: index funds and ETFs that systematically tilt toward
+      one or more factors instead of simply weighting stocks by market size, letting investors capture
+      factor premiums at low cost without an active manager.
+    </p>
+    <p>
+      But the rotation documented here also underlies a more active approach. Many portfolio managers
+      use factor exposure as a lever: overweighting profitability and quality when fear is elevated,
+      rotating toward value when inflation is rising, pulling back on momentum when a trend looks
+      exhausted. The regimes in this article are exactly the signals those managers watch. The
+      difference between smart beta and active factor investing is not what you own, but whether
+      you tilt your holdings based on a view of where the economy is headed.
     </p>
   </section>
 
@@ -921,7 +933,7 @@
         desc: 'Firms that invest conservatively vs. those that aggressively expand. Capital discipline beats empire-building.'
       },
       'Mom': {
-        label: 'Momentum', color: '#9E1A5E', short: 'Winners minus Losers',
+        label: 'Momentum', color: '#0E7C86', short: 'Winners minus Losers',
         desc: 'Recent winners vs. recent losers. Investors update beliefs slowly, so trends persist - until they snap.'
       },
     }
@@ -1023,7 +1035,7 @@
       // $1 baseline
       g.append('line').attr('x1', 0).attr('x2', cw).attr('y1', y(1)).attr('y2', y(1))
         .attr('stroke', C.borderDark).attr('stroke-width', 1)
-      g.append('text').attr('x', 4).attr('y', y(1) - 4)
+      g.append('text').attr('x', 4).attr('y', ch + 48)
         .attr('font-size', 9).attr('font-weight', 700).attr('fill', C.muted)
         .style('font-family', 'IBM Plex Sans,sans-serif').text('$1 (starting capital)')
 
@@ -1035,12 +1047,12 @@
         .call(d3.axisLeft(y).tickValues([1, 2, 5, 10, 20, 50]).tickSize(0).tickPadding(8).tickFormat(d => '$' + d))
         .call(ax => ax.select('.domain').remove())
       g.append('text').attr('x', cw / 2).attr('y', ch + 34).attr('text-anchor', 'middle')
-        .attr('font-size', 9).attr('fill', C.muted).style('font-family', 'IBM Plex Sans,sans-serif')
+        .attr('font-size', 12).attr('font-weight', 600).attr('fill', C.muted).style('font-family', 'IBM Plex Sans,sans-serif')
         .style('letter-spacing', '.06em').style('text-transform', 'uppercase').text('Year')
 
       svg.append('text').attr('transform', 'rotate(-90)')
         .attr('x', -(M.top + ch / 2)).attr('y', 16).attr('text-anchor', 'middle')
-        .attr('font-size', 10).attr('fill', C.muted)
+        .attr('font-size', 12).attr('font-weight', 600).attr('fill', C.muted)
         .style('font-family', 'IBM Plex Sans,sans-serif').style('letter-spacing', '.06em').style('text-transform', 'uppercase')
         .text('Growth of $1 (log scale)')
 
@@ -1152,7 +1164,7 @@
 
       const allVals = annual.flatMap(d => FACTORS.map(f => d[f])).filter(v => v != null && !isNaN(v))
       const maxAbs = Math.max(Math.abs(d3.min(allVals)), Math.abs(d3.max(allVals))) * 0.5
-      const color = d3.scaleDiverging([-maxAbs, 0, maxAbs], d3.interpolateRdYlGn).clamp(true)
+      const color = d3.scaleDiverging(t => t < 0.5 ? d3.interpolate('#A52313', '#FFFFFF')(t * 2) : d3.interpolate('#FFFFFF', '#1A6B3C')((t - 0.5) * 2)).domain([-maxAbs, 0, maxAbs]).clamp(true)
 
       // Color scale legend (rendered after color scale is defined)
       const legendW = 120
@@ -1302,17 +1314,15 @@
       el.innerHTML = ''
 
       const decades = [
-        { label: '1964–1969', lo: '1964', hi: '1969' },
-        { label: '1970s', lo: '1970', hi: '1979' },
-        { label: '1980s', lo: '1980', hi: '1989' },
-        { label: '1990s', lo: '1990', hi: '1999' },
-        { label: '2000s', lo: '2000', hi: '2009', highlight: true },
-        { label: '2010s', lo: '2010', hi: '2019' },
-        { label: '2020s', lo: '2020', hi: '2025' },
+        { label: '1964-69', lo: '1964', hi: '1969' },
+        { label: '1970s',   lo: '1970', hi: '1979' },
+        { label: '1980s',   lo: '1980', hi: '1989' },
+        { label: '1990s',   lo: '1990', hi: '1999' },
+        { label: '2000s',   lo: '2000', hi: '2009', highlight: true },
+        { label: '2010s',   lo: '2010', hi: '2019' },
+        { label: '2020s',   lo: '2020', hi: '2025' },
       ]
 
-      // Compute compound cumulative returns per factor per decade
-      // Compound = (∏(1 + r/100) - 1) * 100, expressed as %.
       decades.forEach(dec => {
         const rows = DB.monthly.filter(r => {
           const yr = r.date.getFullYear().toString()
@@ -1322,130 +1332,129 @@
           let prod = 1
           rows.forEach(r => { if (r[f] != null) prod *= (1 + r[f] / 100) })
           return { f, cum: (prod - 1) * 100 }
-        }).sort((a, b) => b.cum - a.cum)
+        })
         dec.n = rows.length
       })
 
-      const W = Math.min(1100, el.parentElement.clientWidth - 32)
-      const rowH = 120
-      const labelW = 90
-      const M = { top: 16, right: 105, bottom: 26, left: 105 + labelW + 28 }
-      const cw = W - M.left - M.right
-      const H = decades.length * rowH + M.top + M.bottom
+      const containerW = Math.min(1100, el.parentElement.clientWidth - 32)
+      const cols = 3, rows2 = 2
+      const panelGap = 16
+      const panelW = Math.floor((containerW - panelGap * (cols - 1)) / cols)
+
+      const pM = { top: 40, right: 8, bottom: 36, left: 8 }
+      const innerW = panelW - pM.left - pM.right
+      const barW = Math.floor(innerW / decades.length) - 3
+      const panelH = 220
+      const innerH = panelH - pM.top - pM.bottom
 
       const allVals = decades.flatMap(d => d.values.map(v => v.cum))
-      const dataMax = d3.max(allVals)
-      const xMin = -50            // fixed clean bound on the negative side
-      const xMax = dataMax * 1.08 // ~ +278% (data max ~ +257%)
-      const x = d3.scaleLinear().domain([xMin, xMax]).range([0, cw])
+      const yMin = Math.min(d3.min(allVals) * 1.1, -10)
+      const yMax = d3.max(allVals) * 1.1
+      const y = d3.scaleLinear().domain([yMin, yMax]).range([innerH, 0])
+      const yZero = y(0)
 
-      const svg = d3.select(el).append('svg').attr('width', W).attr('height', H)
-      const g = svg.append('g').attr('transform', `translate(${M.left},${M.top})`)
+      const totalPanels = FACTORS.length
+      const totalRows = Math.ceil(totalPanels / cols)
+      const totalH = totalRows * (panelH + panelGap) - panelGap
 
-      // Decade rows
-      decades.forEach((dec, di) => {
-        const yTop = di * rowH
+      const svg = d3.select(el).append('svg')
+        .attr('width', containerW)
+        .attr('height', totalH)
 
-        // Highlight band for the 2000s
-        // Decade label
-        g.append('text').attr('x', -28).attr('y', yTop + 16).attr('text-anchor', 'end')
-          .attr('font-family', 'var(--serif-display), Playfair Display, Georgia, serif')
-          .attr('font-size', 16).attr('font-weight', 700).attr('fill', C.text)
-          .style('font-family', 'Playfair Display,Georgia,serif')
-          .text(dec.label)
-        g.append('text').attr('x', -28).attr('y', yTop + 30).attr('text-anchor', 'end')
-          .attr('font-size', 9).attr('fill', C.muted)
-          .style('font-family', 'IBM Plex Sans,sans-serif').style('font-style', 'italic')
-          .text(`${dec.n} mo`)
+      FACTORS.forEach((f, fi) => {
+        const col = fi % cols
+        const row = Math.floor(fi / cols)
+        const px = col * (panelW + panelGap)
+        const py = row * (panelH + panelGap)
 
-        if (dec.highlight) {
-          g.append('text').attr('x', -28).attr('y', yTop + 46).attr('text-anchor', 'end')
-            .attr('font-size', 8.5).attr('font-weight', 700).attr('fill', C.accent)
-            .style('font-family', 'IBM Plex Sans,sans-serif').style('letter-spacing', '.05em').style('text-transform', 'uppercase')
-            .text('Market lost.')
-          g.append('text').attr('x', -28).attr('y', yTop + 58).attr('text-anchor', 'end')
-            .attr('font-size', 8.5).attr('font-weight', 700).attr('fill', C.accent)
-            .style('font-family', 'IBM Plex Sans,sans-serif').style('letter-spacing', '.05em').style('text-transform', 'uppercase')
-            .text('Quality won.')
-        }
+        const pg = svg.append('g').attr('transform', `translate(${px},${py})`)
 
-        // Bars per factor
-        const barH = 14, barGap = 4
-        const xZero = x(0)
-        g.append('line').attr('x1', xZero).attr('x2', xZero)
-          .attr('y1', yTop + 8).attr('y2', yTop + 8 + 6 * (barH + barGap))
-          .attr('stroke', C.borderDark).attr('stroke-width', 1)
+        // Panel background
+        pg.append('rect').attr('width', panelW).attr('height', panelH)
+          .attr('fill', '#FFFFFF').attr('stroke', '#C8C6C0').attr('stroke-width', 1)
+          .attr('rx', 2)
 
-        // Sort bars: keep canonical FACTORS order so cross-decade comparison is easy
-        FACTORS.forEach((f, fi) => {
-          const v = dec.values.find(x => x.f === f).cum
-          const rank = dec.values.findIndex(x => x.f === f) + 1
-          const by = yTop + 12 + fi * (barH + barGap)
-          const bw = Math.abs(x(v) - xZero)
-          const bx = v >= 0 ? xZero : x(v)
+        // Factor title
+        pg.append('text')
+          .attr('x', panelW / 2).attr('y', 22)
+          .attr('text-anchor', 'middle')
+          .attr('font-size', 13).attr('font-weight', 700)
+          .attr('fill', FM[f].color)
+          .style('font-family', 'IBM Plex Sans,sans-serif')
+          .text(FM[f].label)
+
+        const g = pg.append('g').attr('transform', `translate(${pM.left},${pM.top})`)
+
+        // Zero line
+        g.append('line')
+          .attr('x1', 0).attr('x2', innerW)
+          .attr('y1', yZero).attr('y2', yZero)
+          .attr('stroke', '#1A1A1A').attr('stroke-width', 1)
+
+        // Bars per decade
+        decades.forEach((dec, di) => {
+          const v = dec.values.find(d => d.f === f).cum
+          const rank = [...dec.values].sort((a, b) => b.cum - a.cum).findIndex(d => d.f === f) + 1
+          const bx = di * (barW + 3)
+          const barH = Math.abs(y(v) - yZero)
+          const by = v >= 0 ? yZero - barH : yZero
+          const valTxt = (v >= 0 ? '+' : '') + Math.round(v) + '%'
 
           const barRect = g.append('rect')
-            .attr('x', bx).attr('y', by)
-            .attr('width', 0).attr('height', barH)
-            .attr('fill', FM[f].color).attr('opacity', .88)
-          barRect.transition().duration(550).delay(di * 40 + fi * 30).attr('width', bw)
+            .attr('x', bx).attr('y', v >= 0 ? yZero : yZero)
+            .attr('width', barW).attr('height', 0)
+            .attr('fill', FM[f].color).attr('opacity', .85)
 
-          // Factor label INSIDE or NEXT TO bar
-          const valTxt = (v >= 0 ? '+' : '') + Math.round(v) + '%'
+          barRect.transition().duration(550).delay(fi * 60 + di * 40)
+            .attr('y', by).attr('height', barH)
+
+          // Value label above/below bar
           g.append('text')
-            .attr('x', v >= 0 ? x(v) + 5 : x(v) - 5)
-            .attr('y', by + barH / 2 + .5).attr('dy', '0.35em')
-            .attr('text-anchor', v >= 0 ? 'start' : 'end')
+            .attr('x', bx + barW / 2)
+            .attr('y', v >= 0 ? by - 3 : by + barH + 11)
+            .attr('text-anchor', 'middle')
             .attr('font-size', 9).attr('font-weight', 700)
-            .style('font-family', 'IBM Plex Sans,sans-serif')
             .attr('fill', FM[f].color)
-            .text(`${FM[f].label} ${valTxt}`)
+            .style('font-family', 'IBM Plex Sans,sans-serif')
+            .text(Math.round(v) + '%')
 
-          // Hover hit area covering the whole bar row
+          // Decade label below chart
+          g.append('text')
+            .attr('x', bx + barW / 2).attr('y', innerH + 24)
+            .attr('text-anchor', 'middle')
+            .attr('font-size', 8).attr('fill', '#6B6860')
+            .attr('font-weight', 400)
+            .style('font-family', 'IBM Plex Sans,sans-serif')
+            .text(dec.label)
+
+          // Hover hit area
           g.append('rect')
-            .attr('x', -labelW).attr('y', by - 1)
-            .attr('width', labelW + cw + 8).attr('height', barH + 2)
+            .attr('x', bx).attr('y', 0)
+            .attr('width', barW).attr('height', innerH)
             .attr('fill', 'transparent')
             .style('cursor', 'help')
             .on('mouseover', function (ev) {
-              barRect.attr('opacity', 1).attr('stroke', C.rule).attr('stroke-width', 1)
+              barRect.attr('opacity', 1).attr('stroke', '#1A1A1A').attr('stroke-width', 1)
               const reason = (DECADE_REASONS[dec.lo] && DECADE_REASONS[dec.lo][f]) || ''
               tip.innerHTML = `<div class="tip-date">${dec.label} · #${rank} · ${FM[f].label}</div>
-            <div class="tip-row">
-              <span class="tip-name">Compound return</span>
-              <span class="tip-val" style="color:${v >= 0 ? C.pos : C.neg}">${valTxt}</span>
-            </div>
-            <div class="tip-row">
-              <span class="tip-name">Months</span>
-              <span class="tip-val" style="color:${C.muted}">${dec.n}</span>
-            </div>
-            <div class="tip-explain">${reason}</div>`
+                <div class="tip-row">
+                  <span class="tip-name">Compound return</span>
+                  <span class="tip-val" style="color:${v >= 0 ? C.pos : C.neg}">${valTxt}</span>
+                </div>
+                <div class="tip-row">
+                  <span class="tip-name">Months</span>
+                  <span class="tip-val" style="color:${C.muted}">${dec.n}</span>
+                </div>
+                <div class="tip-explain">${reason}</div>`
               tip.style.opacity = '1'; posTip(ev)
             })
             .on('mousemove', posTip)
             .on('mouseout', function () {
-              barRect.attr('opacity', .88).attr('stroke', null)
+              barRect.attr('opacity', .85).attr('stroke', null)
               tip.style.opacity = '0'
             })
         })
-
-        // Row separator
-        if (di < decades.length - 1) {
-          g.append('line')
-            .attr('x1', -labelW).attr('x2', cw)
-            .attr('y1', yTop + rowH - 4).attr('y2', yTop + rowH - 4)
-            .attr('stroke', C.border).attr('stroke-width', .6)
-        }
       })
-
-      // X axis at the bottom
-      g.append('g').attr('transform', `translate(0, ${decades.length * rowH})`)
-        .call(d3.axisBottom(x).ticks(7).tickSize(0).tickPadding(4).tickFormat(v => d3.format('+.0f')(v) + '%'))
-        .call(ax => { ax.select('.domain').remove(); ax.selectAll('text').attr('fill', C.muted).attr('font-size', 9.5).style('font-family', 'IBM Plex Sans,sans-serif') })
-      g.append('text').attr('x', cw / 2).attr('y', decades.length * rowH + 22)
-        .attr('text-anchor', 'middle').attr('font-size', 9).attr('fill', C.muted)
-        .style('font-family', 'IBM Plex Sans,sans-serif').style('letter-spacing', '.06em').style('text-transform', 'uppercase')
-        .text('Compounded return (%)')
     }
 
     // ─────────────────────────────────────────────────────────
@@ -1602,7 +1611,7 @@
           .call(d3.axisBottom(x).ticks(5).tickSize(0).tickPadding(6).tickFormat(v => d3.format('+.1f')(v) + '%'))
           .call(ax => { ax.select('.domain').remove(); ax.selectAll('text').attr('fill', C.muted).attr('font-size', 9).style('font-family', 'IBM Plex Sans,sans-serif') })
         colG.append('text').attr('x', innerW / 2).attr('y', innerH + 30)
-          .attr('text-anchor', 'middle').attr('font-size', 9).attr('fill', C.muted)
+          .attr('text-anchor', 'middle').attr('font-size', 12).attr('font-weight', 600).attr('fill', C.muted)
           .style('font-family', 'IBM Plex Sans,sans-serif').style('letter-spacing', '.06em').style('text-transform', 'uppercase')
           .text('Avg. monthly return (%)')
       })
