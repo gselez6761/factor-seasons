@@ -623,6 +623,118 @@
       letter-spacing: .05em;
     }
 
+    /* ── Hero meta disclosures (AI Usage / Teammate Contributions) ── */
+    .hero-meta {
+      display: flex;
+      gap: .75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 1.1rem;
+    }
+
+    .meta-disclosure {
+      position: relative;
+    }
+
+    .meta-disclosure summary {
+      font-family: var(--sans);
+      font-size: .63rem;
+      font-weight: 700;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      cursor: pointer;
+      list-style: none;
+      border: 1px solid var(--border);
+      padding: .28rem .8rem;
+      border-radius: 2px;
+      transition: color .15s, border-color .15s;
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+    }
+
+    .meta-disclosure summary::-webkit-details-marker { display: none; }
+
+    .meta-disclosure summary::after {
+      content: '▸';
+      font-size: .55rem;
+      transition: transform .15s;
+    }
+
+    .meta-disclosure[open] summary::after {
+      content: '▾';
+    }
+
+    .meta-disclosure summary:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .meta-panel {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 50%;
+      transform: translateX(-50%);
+      min-width: 300px;
+      max-width: 480px;
+      width: max-content;
+      background: var(--paper);
+      border: 1px solid var(--border);
+      border-top: 2px solid var(--accent);
+      padding: 1rem 1.2rem;
+      z-index: 50;
+      box-shadow: 0 4px 18px rgba(0,0,0,.09);
+      font-family: var(--sans);
+      font-size: .75rem;
+      color: var(--text-soft);
+      line-height: 1.55;
+      text-align: left;
+    }
+
+    .meta-panel p + p { margin-top: .5rem; }
+
+    .meta-panel strong { color: var(--text); font-weight: 600; }
+
+    .meta-panel code {
+      font-family: 'IBM Plex Mono', 'Courier New', monospace;
+      font-size: .7rem;
+      background: var(--surface);
+      padding: .1em .3em;
+      border-radius: 2px;
+      color: var(--text);
+    }
+
+    .meta-panel table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: .3rem;
+      font-size: .73rem;
+    }
+
+    .meta-panel th {
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      font-size: .62rem;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      padding: .3rem .4rem;
+      text-align: left;
+    }
+
+    .meta-panel td {
+      padding: .35rem .4rem;
+      border-bottom: 1px solid var(--surface2);
+      vertical-align: top;
+    }
+
+    .meta-panel td:first-child { font-weight: 600; white-space: nowrap; color: var(--text); }
+
+    @media (max-width: 860px) {
+      .meta-panel { position: static; transform: none; width: auto; min-width: 0; max-width: 100%; margin-top: .5rem; }
+    }
+
     @media (max-width: 860px) {
       .footer-grid {
         grid-template-columns: 1fr;
@@ -681,6 +793,35 @@
         By <strong>Gregory Seleznev</strong>, <strong>Martin Ye</strong>, and <strong>Alex Dong</strong>
         <span class="sep"></span> University of Maryland
       </span>
+    </div>
+
+    <div class="hero-meta">
+      <details class="meta-disclosure">
+        <summary>AI Usage Documentation</summary>
+        <div class="meta-panel">
+          <p><strong>Tool:</strong> Claude Code (Anthropic) &mdash; Sonnet 4.6 (default) and Opus 4.7 (major rebuild). Plugin: <code>frontend-design</code> for the WSJ aesthetic.</p>
+          <p><strong>What AI did:</strong> Wrote D3 chart code, scrollytelling IntersectionObserver logic, and CSS redesign under team direction. Ran a CFA-level copy audit and flagged five real issues in the data presentation.</p>
+          <p><strong>What the team did:</strong> Produced all data (Python pipeline from Ken French, FRED, and CBOE). Verified every quantitative claim against source data. Made all editorial, visual, and analytical judgment calls. Caught and corrected nine specific AI errors before publishing &mdash; including a compounding-vs-summing bug that reversed Momentum's 2000s story.</p>
+          <p style="color:var(--muted)">Full documentation with prompts, corrections, and reflections in <code>AI_USAGE.md</code> in the repository.</p>
+        </div>
+      </details>
+
+      <details class="meta-disclosure">
+        <summary>Teammate Contributions</summary>
+        <div class="meta-panel">
+          <table>
+            <thead>
+              <tr><th>Team Member</th><th>Contribution</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Gregory Seleznev</td><td>Data pipeline (Python), scrollytelling layout &amp; IntersectionObserver, animated cumulative returns chart, visual design &amp; CSS</td></tr>
+              <tr><td>Martin Ye</td><td>Regime bar charts (business cycle, rates, VIX), annual factor heatmap</td></tr>
+              <tr><td>Alex Dong</td><td>25-Portfolio Size &times; Book-to-Market explorer</td></tr>
+              <tr><td>All three</td><td>Narrative text, factor explanations, and editorial review</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
     </div>
   </header>
 
@@ -909,8 +1050,13 @@
     //  Constants
     // ─────────────────────────────────────────────────────────
 
+    // Six factors from the Fama-French 5-factor model (Mkt-RF, SMB, HML, RMW, CMA) plus
+    // Momentum (Jegadeesh & Titman 1993). Keys match column names in all JSON data files.
     const FACTORS = ['Mkt-RF', 'SMB', 'HML', 'RMW', 'CMA', 'Mom']
 
+    // Factor metadata. Colors are hand-chosen for perceptual distinctiveness on the cream
+    // background and are used consistently across all four charts — do not use a D3 color
+    // scale here, as that would break cross-chart visual identity.
     const FM = {
       'Mkt-RF': {
         label: 'Market', color: '#1B3D6B', short: 'Stocks minus T-bills',
@@ -938,6 +1084,8 @@
       },
     }
 
+    // Color palette mirroring :root CSS custom properties. D3 doesn't read CSS variables
+    // directly, so these are duplicated here. Keep in sync with :root if colors change.
     const C = {
       bg: '#FAF9F7', paper: '#FFFFFF', surface: '#F2F1ED',
       border: '#C8C6C0', borderDark: '#999490', rule: '#1A1A1A',
@@ -945,7 +1093,11 @@
       accent: '#C8232C', navy: '#1B3D6B', pos: '#1A6B3C', neg: '#A52313', amber: '#C26A00',
     }
 
+    // Single global data store. All render functions read from DB so they can safely
+    // re-render on window resize without triggering new network requests.
     const DB = {}
+    // Date parser matching the 'YYYY-MM-DD' string format used in cumulative and monthly JSON files.
+    // annual_6f.json uses a different format (Unix timestamp) and is handled separately below.
     const pd = d3.timeParse('%Y-%m-%d')
     const tip = document.getElementById('tooltip')
 
@@ -953,13 +1105,20 @@
     //  Load data
     // ─────────────────────────────────────────────────────────
 
+    // Load all three data files in parallel. The three files cover different time resolutions:
+    // cumulative is pre-computed running totals, annual is calendar-year aggregates for the
+    // heatmap, and monthly_regimes is the full monthly series with regime labels attached.
     Promise.all([
       d3.json('data/cumulative_6f.json'),
       d3.json('data/annual_6f.json'),
       d3.json('data/monthly_6f_regimes.json'),
     ]).then(([cum, annual, monthly]) => {
       DB.cumulative = cum.map(d => ({ ...d, date: pd(d.date) }))
+      // annual_6f.json stores year as a Unix timestamp integer (milliseconds since epoch
+      // for Jan 1 of that year), not a date string. new Date(+d.date, 0, 1) converts it.
       DB.annual = annual.map(d => ({ ...d, date: new Date(+d.date, 0, 1) }))
+      // monthly_6f_regimes.json includes vix_regime ('low'/'high'), rec_regime, and
+      // rate_regime labels pre-computed by the Python data pipeline using sample-period medians.
       DB.monthly = monthly.map(d => ({ ...d, date: pd(d.date) }))
 
       buildFactorCards()
@@ -1013,7 +1172,9 @@
       const cw = W - M.left - M.right
       const ch = H - M.top - M.bottom
 
-      // Convert cumulative % to dollar value: $1 → 1 + cum/100
+      // Convert stored cumulative % to a dollar value anchored at $1 at t=0.
+      // The JSON stores total return since July 1963 as a percentage (e.g. 4300 = 44×).
+      // Formula: $1 × (1 + cum/100) gives the current value of $1 invested at inception.
       const rows = DB.cumulative.map(d => {
         const out = { date: d.date }
         FACTORS.forEach(f => { out[f] = d[f] != null ? 1 + d[f] / 100 : null })
@@ -1022,6 +1183,9 @@
 
       const x = d3.scaleTime().domain(d3.extent(rows, d => d.date)).range([0, cw])
       const allY = rows.flatMap(r => FACTORS.map(f => r[f]).filter(v => v != null && v > 0))
+      // Log scale: equal vertical distance = equal multiplicative growth, so a straight line
+      // means steady compounding. Without log scale the 44× winner would flatten every other
+      // line into the baseline and the spread among lower-returning factors would be invisible.
       const y = d3.scaleLog().domain([d3.min(allY) * .9, d3.max(allY) * 1.1]).range([ch, 0])
 
       const svg = d3.select(el).append('svg').attr('width', W).attr('height', H)
@@ -1068,7 +1232,9 @@
           .attr('d', lineGen(f))
       })
 
-      // Legend (top-left) — click to isolate a factor
+      // Legend (top-left) — click any row to isolate that factor (dims others to 7% opacity).
+      // Clicking the same factor again restores all. The selectedFactor variable is local to
+      // renderCumulative so it resets on each resize re-render, which is the desired behavior.
       let selectedFactor = null
       const legRowH = 20, legPad = 8
       const legW = 110, legH = legPad + FACTORS.length * legRowH + legPad
@@ -1107,7 +1273,9 @@
           .text(FM[f].label)
       })
 
-      // Hover crosshair
+      // Hover crosshair: an invisible full-chart <rect> captures mousemove events so the
+      // tooltip fires anywhere in the chart area, not just on a line. The bisector finds the
+      // nearest data point in O(log n) time; d0/d1 logic handles the array boundaries.
       const crossLine = g.append('line').attr('y1', 0).attr('y2', ch)
         .attr('class', 'crosshair-line').style('opacity', 0)
       g.append('rect').attr('width', cw).attr('height', ch).attr('fill', 'none').attr('pointer-events', 'all')
@@ -1156,6 +1324,10 @@
       const svgW = ny * cw + M.left + M.right
       const svgH = totalH + 40
 
+      // viewBox + width:'100%' makes the SVG responsive without JavaScript. The heatmap is
+      // ~1000px wide (62 years × 16px), which overflows on mobile — viewBox lets it scale
+      // down smoothly instead of clipping. Other charts use explicit pixel widths because
+      // they're re-rendered on resize anyway.
       const svg = d3.select(el).append('svg')
         .attr('width', '100%').attr('viewBox', `0 0 ${svgW} ${svgH}`)
         .attr('preserveAspectRatio', 'xMinYMid meet').style('display', 'block')
@@ -1163,7 +1335,13 @@
       const g = svg.append('g').attr('transform', `translate(${M.left},${M.top})`)
 
       const allVals = annual.flatMap(d => FACTORS.map(f => d[f])).filter(v => v != null && !isNaN(v))
+      // maxAbs * 0.5 intentionally compresses the color domain to half the true range.
+      // At full range, most annual returns cluster near zero and the heatmap looks uniformly grey.
+      // Compressing to ±half-range saturates the colors earlier, making winning/losing years
+      // visually clear. The `.clamp(true)` on the scale prevents outliers from exceeding the palette.
       const maxAbs = Math.max(Math.abs(d3.min(allVals)), Math.abs(d3.max(allVals))) * 0.5
+      // Custom diverging scale rather than d3.interpolateRdYlGn because the built-in scale's
+      // yellow midpoint is too bright against the cream page background and reads as "good."
       const color = d3.scaleDiverging(t => t < 0.5 ? d3.interpolate('#A52313', '#FFFFFF')(t * 2) : d3.interpolate('#FFFFFF', '#1A6B3C')((t - 0.5) * 2)).domain([-maxAbs, 0, maxAbs]).clamp(true)
 
       // Color scale legend (rendered after color scale is defined)
@@ -1205,6 +1383,9 @@
           if (v == null || isNaN(v)) return
           const cellG = g.append('g').attr('transform', `translate(${yi * cw}, ${fi * chr})`)
             .attr('class', v >= 0 ? 'hm-cell hm-winner' : 'hm-cell hm-loser')
+          // Double-rect pattern: first rect carries the fill color; a second transparent
+          // rect on top handles all mouse events. This avoids changing opacity on the colored
+          // rect during hover (which would conflict with the Winners/Losers toggle opacity).
           cellG.append('rect').attr('width', cw - 1).attr('height', chr - 1).attr('rx', 1)
             .attr('fill', color(v)).attr('opacity', .94)
           cellG.append('rect').attr('width', cw - 1).attr('height', chr - 1).attr('fill', 'transparent')
@@ -1329,6 +1510,12 @@
           return yr >= dec.lo && yr <= dec.hi
         })
         dec.values = FACTORS.map(f => {
+          // Compound return: multiply (1 + monthly_return/100) for every month in the decade.
+          // Arithmetic summing — simply adding monthly percentages — gives wrong results because
+          // it ignores the path dependency. A −34% month (Apr 2009 Momentum crash) wipes out
+          // far more than 34 pp of prior gains when compounded. The original chart used arithmetic
+          // sums and showed Momentum as a small winner in the 2000s; compound returns show it lost
+          // 19% for the decade. See AI_USAGE.md Correction 5 for the full story.
           let prod = 1
           rows.forEach(r => { if (r[f] != null) prod *= (1 + r[f] / 100) })
           return { f, cum: (prod - 1) * 100 }
@@ -1347,6 +1534,10 @@
       const panelH = 220
       const innerH = panelH - pM.top - pM.bottom
 
+      // Shared y-axis domain across all six factor panels. Using a single domain means bar
+      // heights are comparable across panels (e.g. Size's tiny returns look appropriately
+      // short next to Momentum's large returns). A per-panel y-axis would make every factor
+      // look equally dramatic regardless of actual magnitude.
       const allVals = decades.flatMap(d => d.values.map(v => v.cum))
       const yMin = Math.min(d3.min(allVals) * 1.1, -10)
       const yMax = d3.max(allVals) * 1.1
@@ -1488,12 +1679,19 @@
       const calm = DB.monthly.filter(d => d.vix_regime === 'low')
       const fear = DB.monthly.filter(d => d.vix_regime === 'high')
 
+      // 17.5 is the median VIX value over the 1990-2025 sample period. Using the median
+      // splits the dataset into two equal halves by month count (n ≈ 217 each), which makes
+      // the comparison statistically clean. Common round-number thresholds (20, 25) would
+      // classify most months as "calm" and make the "fearful" sample unrepresentative.
+      // The vix_regime labels in monthly_6f_regimes.json were pre-computed by the Python
+      // pipeline using this same 17.5 threshold.
       const groups = [
         { key: 'calm', label: 'Calm markets', sub: 'VIX below 17.5', n: calm.length, rows: calm },
         { key: 'fear', label: 'Fearful markets', sub: 'VIX above 17.5', n: fear.length, rows: fear },
       ]
 
-      // Compute means
+      // Each panel is sorted independently by mean return within that regime. The ranking
+      // differs between calm and fearful months — that difference is the chart's main point.
       groups.forEach(gp => {
         gp.values = FACTORS.map(f => ({
           f,
@@ -1502,6 +1700,9 @@
       })
 
       const allVals = groups.flatMap(gp => gp.values.map(v => v.mean))
+      // Expand the x-axis domain 15% beyond the largest mean return so value labels
+      // don't clip at the chart edge. The 0.05 floor prevents a near-zero domain in an
+      // edge case where all factors have near-zero means.
       const xMax = Math.max(0.05, d3.max(allVals.map(Math.abs))) * 1.15
 
       const W = Math.min(1100, el.parentElement.clientWidth - 32)
@@ -1573,7 +1774,9 @@
             .attr('fill', m >= 0 ? C.pos : C.neg)
             .text(d3.format('+.2f')(m) + '%/mo')
 
-          // Hover hit area covering the full row width
+          // Hit area extends 90px left of the bar (covering the factor label) and spans
+          // the full chart width, so hovering anywhere in the row triggers the tooltip —
+          // not just the narrow bar itself, which would be difficult to hit on short bars.
           const hitG = colG.append('g').style('cursor', 'help')
           hitG.append('rect')
             .attr('x', -90).attr('y', yPos - 1)
@@ -1628,6 +1831,8 @@
     //  Utilities
     // ─────────────────────────────────────────────────────────
 
+    // Positions the tooltip near the cursor. Flips to the left side of the cursor
+    // if the tooltip (width 220px) would extend past the right edge of the viewport.
     function posTip(ev) {
       const tw = 220
       const lx = ev.clientX + 22 + tw > window.innerWidth ? ev.clientX - tw - 14 : ev.clientX + 22
@@ -1635,13 +1840,19 @@
       tip.style.top = Math.min(ev.clientY - 10, window.innerHeight - 240) + 'px'
     }
 
+    // WCAG 2.1 relative luminance (IEC 61966-2-1 sRGB gamma). Returns [0,1].
+    // Intended for choosing black vs. white text over a colored background:
+    // lum > 0.179 → dark text, lum ≤ 0.179 → white text.
+    // Retained for potential future use (e.g. if cell labels are re-added to the heatmap).
     function getLum(hex) {
       const c = d3.color(hex); if (!c) return .5
       const lin = v => { v /= 255; return v <= .03928 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4 }
       return .2126 * lin(c.r) + .7152 * lin(c.g) + .0722 * lin(c.b)
     }
 
-    // Resize
+    // Debounced resize: re-render all charts after the user stops resizing for 250ms.
+    // All four render functions clear and rebuild the SVG from scratch on each call,
+    // so they correctly adapt to the new container width without incremental updates.
     let _rzTimer
     window.addEventListener('resize', () => {
       clearTimeout(_rzTimer)
