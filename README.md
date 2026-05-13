@@ -33,6 +33,6 @@ Must be served over HTTP (not `file://`) because the app loads JSON data with `d
 
 ## Data Sources
 
-- **Ken French Data Library** - monthly factor returns (Mkt-RF, SMB, HML, RMW, CMA, Mom)
-- **FRED / NBER** - recession indicator (USREC)
-- **CBOE** - VIX monthly volatility index (from 1990)
+- **[Ken French Data Library](https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html)** - monthly factor returns (Mkt-RF, SMB, HML, RMW, CMA, Mom)
+- **[FRED / NBER](https://fred.stlouisfed.org/series/USREC)** - recession indicator (USREC)
+- **[CBOE VIX](https://www.cboe.com/tradable_products/vix/)** - monthly volatility index (from 1990)
