@@ -74,9 +74,8 @@ factorseasons/
 | Data pipeline (Python) - downloading, cleaning, merging all datasets | Gregory | Fama-French, FRED, VIX, regime classification |
 | Scrollytelling layout & IntersectionObserver | Gregory | Sticky chart + narrative steps |
 | Animated cumulative returns chart | Gregory | D3 clipPath animation, annotation overlays |
-| Regime bar charts (business cycle, rates, VIX) | Martin | 3 regime types, animated entry transitions |
-| Annual factor heatmap | Martin | RdYlGn diverging scale, luminance-adaptive text |
-| 25-Portfolio explorer | Alex | 5×5 heatmap, regime filter dropdown |
+| Iterative design and feedback on visualizations | Martin | |
+| Iterative design and feedback on visualizations | Alex | |
 | Narrative text & factor explanations | All | Plain-language accessible to non-finance audiences |
 | Visual design & CSS | Gregory | Dark theme, responsive layout |
 
