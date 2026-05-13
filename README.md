@@ -74,7 +74,7 @@ factorseasons/
 | Data pipeline (Python) - downloading, cleaning, merging all datasets | Gregory | Fama-French, FRED, VIX, regime classification |
 | Scrollytelling layout & IntersectionObserver | Gregory | Sticky chart + narrative steps |
 | Animated cumulative returns chart | Gregory | D3 clipPath animation, annotation overlays |
-| Iterative design and feedback on visualizations | Martin | |
+| Legend and timeframe selector (context brush) on cumulative returns chart | Martin | |
 | Iterative design and feedback on visualizations | Alex | |
 | Narrative text & factor explanations | All | Plain-language accessible to non-finance audiences |
 | Visual design & CSS | Gregory | Dark theme, responsive layout |

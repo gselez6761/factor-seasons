@@ -216,6 +216,41 @@
     }
 
     /* Primer */
+    .lede-dataset-head {
+      font-family: var(--serif-body);
+      font-size: 1rem;
+      font-weight: 600;
+      font-style: italic;
+      color: var(--text-soft);
+      margin-top: 1.5rem;
+      margin-bottom: .5rem;
+    }
+
+    .lede-dataset-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: .3rem;
+    }
+
+    .lede-dataset-list li {
+      font-family: var(--serif-body);
+      font-size: 1rem;
+      line-height: 1.75;
+      color: var(--text-soft);
+      padding-left: 1rem;
+      position: relative;
+    }
+
+    .lede-dataset-list li::before {
+      content: '–';
+      position: absolute;
+      left: 0;
+      color: var(--muted-light);
+    }
+
     #primer {
       max-width: 880px;
       margin: 0 auto;
@@ -375,7 +410,15 @@
       overflow-x: auto;
     }
 
-    .heatmap-controls {
+    .chart-controls {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      margin-bottom: .75rem;
+      flex-wrap: wrap;
+    }
+
+.heatmap-controls {
       display: flex;
       gap: .5rem;
       margin-bottom: .75rem;
@@ -623,20 +666,23 @@
       letter-spacing: .05em;
     }
 
-    /* ── Hero meta disclosures (AI Usage / Teammate Contributions) ── */
+    /* ── Hero meta accordion (AI Usage / Teammate Contributions) ── */
     .hero-meta {
       display: flex;
-      gap: .75rem;
-      justify-content: center;
-      flex-wrap: wrap;
+      flex-direction: column;
+      align-items: center;
       margin-top: 1.1rem;
+      gap: 0;
     }
 
-    .meta-disclosure {
-      position: relative;
+    .meta-btns {
+      display: flex;
+      gap: .6rem;
+      flex-wrap: wrap;
+      justify-content: center;
     }
 
-    .meta-disclosure summary {
+    .meta-btn {
       font-family: var(--sans);
       font-size: .63rem;
       font-weight: 700;
@@ -644,56 +690,56 @@
       text-transform: uppercase;
       color: var(--muted);
       cursor: pointer;
-      list-style: none;
+      background: none;
       border: 1px solid var(--border);
       padding: .28rem .8rem;
       border-radius: 2px;
-      transition: color .15s, border-color .15s;
+      transition: color .15s, border-color .15s, background .15s;
       display: flex;
       align-items: center;
-      gap: .4rem;
+      gap: .35rem;
     }
 
-    .meta-disclosure summary::-webkit-details-marker { display: none; }
+    .meta-btn::after { content: '▸'; font-size: .55rem; }
+    .meta-btn.active::after { content: '▾'; }
 
-    .meta-disclosure summary::after {
-      content: '▸';
-      font-size: .55rem;
-      transition: transform .15s;
-    }
-
-    .meta-disclosure[open] summary::after {
-      content: '▾';
-    }
-
-    .meta-disclosure summary:hover {
+    .meta-btn:hover, .meta-btn.active {
       border-color: var(--accent);
       color: var(--accent);
     }
 
     .meta-panel {
-      position: absolute;
-      top: calc(100% + 6px);
-      left: 50%;
-      transform: translateX(-50%);
-      min-width: 300px;
-      max-width: 480px;
-      width: max-content;
+      display: none;
+      width: 100%;
+      max-width: 760px;
       background: var(--paper);
       border: 1px solid var(--border);
       border-top: 2px solid var(--accent);
-      padding: 1rem 1.2rem;
-      z-index: 50;
-      box-shadow: 0 4px 18px rgba(0,0,0,.09);
+      margin-top: .6rem;
+      padding: 1.25rem 1.5rem;
       font-family: var(--sans);
-      font-size: .75rem;
+      font-size: .76rem;
       color: var(--text-soft);
-      line-height: 1.55;
+      line-height: 1.6;
       text-align: left;
     }
 
-    .meta-panel p + p { margin-top: .5rem; }
+    .meta-panel.open { display: block; }
 
+    .meta-section {
+      font-family: var(--sans);
+      font-size: .6rem;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin: 1rem 0 .4rem;
+    }
+
+    .meta-section:first-child { margin-top: 0; }
+
+    .meta-panel p { margin-bottom: .45rem; }
+    .meta-panel p:last-child { margin-bottom: 0; }
     .meta-panel strong { color: var(--text); font-weight: 600; }
 
     .meta-panel code {
@@ -705,11 +751,33 @@
       color: var(--text);
     }
 
+    .meta-panel ul {
+      margin: .3rem 0 .5rem 1.1rem;
+      padding: 0;
+    }
+
+    .meta-panel ul li { margin-bottom: .3rem; }
+
+    .meta-panel .corrections {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .5rem .75rem;
+      margin: .4rem 0;
+    }
+
+    .meta-panel .correction-item {
+      border-left: 2px solid var(--border);
+      padding-left: .6rem;
+      font-size: .72rem;
+    }
+
+    .meta-panel .correction-item strong { display: block; color: var(--text); margin-bottom: .1rem; }
+
     .meta-panel table {
       width: 100%;
       border-collapse: collapse;
       margin-top: .3rem;
-      font-size: .73rem;
+      font-size: .74rem;
     }
 
     .meta-panel th {
@@ -724,16 +792,24 @@
     }
 
     .meta-panel td {
-      padding: .35rem .4rem;
+      padding: .38rem .4rem;
       border-bottom: 1px solid var(--surface2);
       vertical-align: top;
     }
 
     .meta-panel td:first-child { font-weight: 600; white-space: nowrap; color: var(--text); }
 
-    @media (max-width: 860px) {
-      .meta-panel { position: static; transform: none; width: auto; min-width: 0; max-width: 100%; margin-top: .5rem; }
+    .meta-muted { color: var(--muted); font-size: .7rem; margin-top: .75rem; }
+
+    @media (max-width: 600px) {
+      .meta-panel .corrections { grid-template-columns: 1fr; }
     }
+
+    /* ── Slider handle (timeframe selector on cumulative chart) ── */
+    .slider-handle { cursor: ew-resize; }
+    .slider-handle:hover .handle-grip,
+    .slider-handle.dragging .handle-grip { fill: var(--navy); }
+    .slider-selected { fill: var(--navy); fill-opacity: .10; }
 
     @media (max-width: 860px) {
       .footer-grid {
@@ -796,32 +872,85 @@
     </div>
 
     <div class="hero-meta">
-      <details class="meta-disclosure">
-        <summary>AI Usage Documentation</summary>
-        <div class="meta-panel">
-          <p><strong>Tool:</strong> Claude Code (Anthropic) &mdash; Sonnet 4.6 (default) and Opus 4.7 (major rebuild). Plugin: <code>frontend-design</code> for the WSJ aesthetic.</p>
-          <p><strong>What AI did:</strong> Wrote D3 chart code, scrollytelling IntersectionObserver logic, and CSS redesign under team direction. Ran a CFA-level copy audit and flagged five real issues in the data presentation.</p>
-          <p><strong>What the team did:</strong> Produced all data (Python pipeline from Ken French, FRED, and CBOE). Verified every quantitative claim against source data. Made all editorial, visual, and analytical judgment calls. Caught and corrected nine specific AI errors before publishing &mdash; including a compounding-vs-summing bug that reversed Momentum's 2000s story.</p>
-          <p style="color:var(--muted)">Full documentation with prompts, corrections, and reflections in <code>AI_USAGE.md</code> in the repository.</p>
-        </div>
-      </details>
+      <div class="meta-btns">
+        <button class="meta-btn" data-panel="ai">AI Usage Documentation</button>
+        <button class="meta-btn" data-panel="team">Teammate Contributions</button>
+      </div>
 
-      <details class="meta-disclosure">
-        <summary>Teammate Contributions</summary>
-        <div class="meta-panel">
-          <table>
-            <thead>
-              <tr><th>Team Member</th><th>Contribution</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>Gregory Seleznev</td><td>Data pipeline (Python), scrollytelling layout &amp; IntersectionObserver, animated cumulative returns chart, visual design &amp; CSS</td></tr>
-              <tr><td>Martin Ye</td><td>Iterative design and feedback on visualizations</td></tr>
-              <tr><td>Alex Dong</td><td>Iterative design and feedback on visualizations</td></tr>
-              <tr><td>All three</td><td>Narrative text, factor explanations, and editorial review</td></tr>
-            </tbody>
-          </table>
+      <div class="meta-panel" id="meta-panel-ai">
+        <div class="meta-section">Tools</div>
+        <p><strong>Claude Code (Anthropic)</strong> &mdash; Sonnet 4.6 for most edits; Opus 4.7 for the major page rebuild from a 14-step scrollytelling format to the current 4-finding article. The <code>frontend-design</code> plugin was used for the WSJ editorial aesthetic redesign (cream background, Playfair Display headlines, muted factor palette).</p>
+
+        <div class="meta-section">What AI did</div>
+        <ul>
+          <li>Wrote the D3 rendering code for all four charts and the IntersectionObserver scroll-step manager for the original scrollytelling layout</li>
+          <li>Redesigned the visual theme from a dark neon aesthetic to a Wall Street Journal editorial style, given an explicit design brief by the team</li>
+          <li>Researched documented factor phenomena from peer-reviewed literature and proposed the final set of four findings &mdash; debated and selected together with the team</li>
+          <li>Ran Python statistical audits on the data files to verify quantitative claims, including a CFA-level pass that identified five real errors in the data presentation</li>
+          <li>Performed a copy audit scanning all body text for overgeneralizations, fixing nine issues (e.g. "predicts future returns" softened to "historically associated with higher returns")</li>
+          <li>Wrote documentation including <code>AI_USAGE.md</code> and <code>INSIGHTS.md</code> under team direction</li>
+        </ul>
+
+        <div class="meta-section">What the team did</div>
+        <ul>
+          <li>Produced all data via a Python pipeline downloading from Ken French Data Library, FRED, and CBOE/Yahoo Finance &mdash; AI had no involvement in data production</li>
+          <li>Verified every quantitative claim against source data independently; ran separate Python audits when AI-produced numbers needed checking</li>
+          <li>Made every editorial, visual, and analytical judgment call &mdash; deciding what to build, what to cut, and what story to tell</li>
+          <li>Rejected several AI-proposed framings as overclaiming or misleading before they were published</li>
+        </ul>
+
+        <div class="meta-section">Errors caught and corrected by the team</div>
+        <div class="corrections">
+          <div class="correction-item">
+            <strong>Compound vs. summed returns</strong>
+            Decade chart originally used arithmetic sums of monthly returns. Compound returns showed Momentum lost 19% in the 2000s &mdash; not gained 10% as summed. April 2009's &minus;34% single-month crash erased years of small gains.
+          </div>
+          <div class="correction-item">
+            <strong>"The order flips"</strong>
+            AI claimed all six factors invert ranking between calm and fearful months. Only Market and Profitability actually swap; the other four are roughly stationary. Deck rewritten: "a story about two factors trading places."
+          </div>
+          <div class="correction-item">
+            <strong>VIX sample period</strong>
+            AI's deck said "every month since 1963." The VIX wasn't published until 1990. Corrected to "every month from 1990 through 2025."
+          </div>
+          <div class="correction-item">
+            <strong>Long-short portfolio framing</strong>
+            Finding 1 deck called the chart "growth of $1 above the risk-free rate." That's only true for Mkt-RF &mdash; the other five are long-short academic portfolios. Deck rewritten with a caveat on real-world underperformance.
+          </div>
+          <div class="correction-item">
+            <strong>CMA tooltip mechanism</strong>
+            AI explained Investment factor as firms "hoarding cash." CMA is constructed from asset-growth rates, not cash reserves. Replaced with the actual mechanism.
+          </div>
+          <div class="correction-item">
+            <strong>Value drought dates</strong>
+            AI claimed "seven straight years of negative rolling 5-year HML returns" from 2013&ndash;2021. The series doesn't go negative that broadly; copy softened to "drought era" without overclaiming the window.
+          </div>
+          <div class="correction-item">
+            <strong>"Every rally faded" (ZIRP tooltip)</strong>
+            Written in a rewrite and caught by the team before committing. The 2009&ndash;2015 bull market was a sustained rally; the correct observation was that factor <em>leadership</em> rotated, not that rallies reversed.
+          </div>
+          <div class="correction-item">
+            <strong>Stat band clutter</strong>
+            AI added summary stat boxes above the heatmap and portfolio grid. Team rejected them as "metric-dashboardy." Removed; the most important number was folded into the deck instead.
+          </div>
         </div>
-      </details>
+
+        <p class="meta-muted">Full documentation with session logs, prompts, and reflections: <code>AI_USAGE.md</code> in the repository.</p>
+      </div>
+
+      <div class="meta-panel" id="meta-panel-team">
+        <table>
+          <thead>
+            <tr><th>Team Member</th><th>Contribution</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Gregory Seleznev</td><td>Data pipeline (Python), page architecture &amp; layout, animated cumulative returns chart, visual design &amp; CSS</td></tr>
+            <tr><td>Martin Ye</td><td>Legend on the cumulative returns chart, timeframe selector (context brush) on the cumulative returns chart</td></tr>
+            <tr><td>Alex Dong</td><td>Iterative design and feedback on visualizations</td></tr>
+            <tr><td>All three</td><td>Narrative text, factor explanations, and editorial review</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </header>
 
@@ -837,6 +966,12 @@
       Four findings from sixty-two years of data. Which factor wins changes by decade, by
       regime, and by how scared the market is. The charts below show how.
     </p>
+    <p class="lede-dataset-head">Data sources</p>
+    <ul class="lede-dataset-list">
+      <li><strong>Ken French Data Library</strong> - monthly returns for all six factors, July 1963 through December 2025 (752 months)</li>
+      <li><strong>FRED / NBER</strong> - recession indicator (USREC): 1 during recession, 0 during expansion, covering the full sample</li>
+      <li><strong>CBOE VIX</strong> - monthly volatility index ("fear gauge"), available January 1990 onward</li>
+    </ul>
   </div>
 
   <!-- PRIMER -->
@@ -869,6 +1004,9 @@
         first-ever factor, barely triples in sixty years.
       </div>
     </div>
+    <div class="chart-controls">
+      <button class="hm-btn active" id="rec-toggle">Toggle Recessions</button>
+    </div>
     <div class="card-wrap">
       <div class="loading-msg" id="cum-loading">Loading…</div>
       <div id="chart-cumulative"></div>
@@ -890,19 +1028,38 @@
   <section class="insight">
     <div class="insight-num">02</div>
     <div class="section-break">
-      <div class="sec-label">Finding Two · Market vs. Quality</div>
+      <div class="sec-label">Finding Two · Recessions vs. Expansions</div>
+      <div class="sec-headline">During Recessions, the Market Loses - But Defensive Factors Hold.</div>
+      <div class="sec-deck">
+        Using the NBER recession indicator, we split every month from <strong>1963 through 2025</strong>
+        into recession (<strong>85 months</strong>) and expansion (<strong>667 months</strong>).
+        The Market is the clear loser in downturns. The Investment factor (CMA) is the standout
+        winner - conservative firms that avoided aggressive expansion suffer the least when the
+        cycle turns. Momentum nearly disappears in recessions: there are no clean trends to follow
+        when the economy is lurching.
+      </div>
+    </div>
+    <span class="hover-hint">Hover any factor for detail</span>
+    <div class="card-wrap">
+      <div class="loading-msg" id="rec-flip-loading">Loading…</div>
+      <div id="chart-rec-flip"></div>
+    </div>
+    <div class="figure-caption">
+      <strong>How to read this.</strong> Two side-by-side panels - expansion months on the left, recession months
+      on the right. Each row is a factor's average monthly return in that regime, sorted independently within each panel.
+      <br><strong>Hit rate</strong> (in the hover tooltip) is simply how often the factor finished the month positive in that regime - e.g. a 45% hit rate means it was up in 45 out of 100 months. A factor can have a positive average but a low hit rate if rare large gains outweigh frequent small losses, and vice versa.
+      <br><strong>Source.</strong> Ken French Data Library + FRED NBER Recession Indicator (USREC). n = 85 recession months, 667 expansion months.
+    </div>
+
+    <div class="section-break" style="margin-top:2.5rem">
+      <div class="sec-label">Finding Two (cont.) · Market vs. Quality</div>
       <div class="sec-headline">When Investors Are Afraid, the Market Has Averaged the Weakest Returns.</div>
       <div class="sec-deck">
-        Investors who take on more market risk should be compensated with higher returns. In high-fear months
-        specifically, that relationship inverts: the broad market — the riskiest exposure of all — posts its
-        weakest average returns, while the most defensive factors quietly outperform. We use the VIX - a real-time index
-        of expected stock market volatility,
-        often called the "fear gauge" - as a proxy for investor anxiety. We split every month from <strong>1990 through
-          2025</strong>
-        into "calm" (VIX below its long-run median of 17.5)
-        and "fearful" (VIX above). In <strong>fearful months</strong>, the Market loses on
-        average and "boring" Profitability wins handily. The other four factors barely move -
-        so this is really a story about <em>two</em> factors trading places.
+        We use the VIX - a real-time index of expected stock market volatility, often called the "fear gauge" -
+        as a proxy for investor anxiety. We split every month from <strong>1990 through 2025</strong>
+        into "calm" (VIX below its long-run median of 17.5) and "fearful" (VIX above). In
+        <strong>fearful months</strong>, the Market loses on average and "boring" Profitability wins
+        handily. The other four factors barely move - so this is really a story about <em>two</em> factors trading places.
       </div>
     </div>
     <span class="hover-hint">Hover any factor for why it sits where it does</span>
@@ -915,6 +1072,7 @@
       months on the right. Each row is a factor's average monthly return in that regime. The order
       of the bars is sorted within each panel. Read left-to-right, factor by factor: the ranking
       barely resembles itself.
+      <br><strong>Hit rate</strong> (in the hover tooltip) is how often the factor finished the month positive in that regime - e.g. a 45% hit rate means it was up in 45 out of 100 months.
       <br><strong>Source.</strong> Ken French Data Library + CBOE VIX Index. n = 217 months in each regime.
     </div>
   </section>
@@ -1053,6 +1211,8 @@
     // Six factors from the Fama-French 5-factor model (Mkt-RF, SMB, HML, RMW, CMA) plus
     // Momentum (Jegadeesh & Titman 1993). Keys match column names in all JSON data files.
     const FACTORS = ['Mkt-RF', 'SMB', 'HML', 'RMW', 'CMA', 'Mom']
+    // Persists across resize re-renders (renderCumulative clears SVG but not this object).
+    const factorVisible = Object.fromEntries(FACTORS.map(f => [f, true]))
 
     // Factor metadata. Colors are hand-chosen for perceptual distinctiveness on the cream
     // background and are used consistently across all four charts — do not use a D3 color
@@ -1112,7 +1272,8 @@
       d3.json('data/cumulative_6f.json'),
       d3.json('data/annual_6f.json'),
       d3.json('data/monthly_6f_regimes.json'),
-    ]).then(([cum, annual, monthly]) => {
+      d3.json('data/recession_bands.json'),
+    ]).then(([cum, annual, monthly, recBands]) => {
       DB.cumulative = cum.map(d => ({ ...d, date: pd(d.date) }))
       // annual_6f.json stores year as a Unix timestamp integer (milliseconds since epoch
       // for Jan 1 of that year), not a date string. new Date(+d.date, 0, 1) converts it.
@@ -1120,12 +1281,16 @@
       // monthly_6f_regimes.json includes vix_regime ('low'/'high'), rec_regime, and
       // rate_regime labels pre-computed by the Python data pipeline using sample-period medians.
       DB.monthly = monthly.map(d => ({ ...d, date: pd(d.date) }))
+      // recession_bands.json: NBER recession start/end pairs going back to 1854.
+      // Dates parsed here so the context strip can use them directly without re-parsing.
+      DB.recessions = recBands.map(d => ({ start: pd(d.start), end: pd(d.end) }))
 
       buildFactorCards()
       renderCumulative()
       renderHeatmap()
       renderDecades()
       renderVixFlip()
+      renderRecFlip()
 
       // Heatmap toggle buttons
       document.querySelectorAll('.hm-btn').forEach(btn => {
@@ -1137,7 +1302,7 @@
           d3.selectAll('.hm-loser').style('opacity', filter === 'winners' ? 0.08 : null)
         })
       })
-        ;['cum-loading', 'hm-loading', 'dec-loading', 'vix-loading'].forEach(id =>
+        ;['cum-loading', 'hm-loading', 'dec-loading', 'vix-loading', 'rec-flip-loading'].forEach(id =>
           document.getElementById(id).style.display = 'none')
     }).catch(err => console.error('Data load error:', err))
 
@@ -1168,9 +1333,12 @@
       el.innerHTML = ''
       const W = Math.min(1100, el.parentElement.clientWidth - 32)
       const H = 480
-      const M = { top: 24, right: 20, bottom: 40, left: 64 }
+      const M = { top: 24, right: 20, bottom: 28, left: 64 }
       const cw = W - M.left - M.right
       const ch = H - M.top - M.bottom
+      const ctxH = 6      // thin track height
+      const ctxGap = 28   // gap between main chart bottom and slider
+      const totalH = H + ctxGap + ctxH + 24  // 24 for year labels below track
 
       // Convert stored cumulative % to a dollar value anchored at $1 at t=0.
       // The JSON stores total return since July 1963 as a percentage (e.g. 4300 = 44×).
@@ -1181,106 +1349,219 @@
         return out
       })
 
-      const x = d3.scaleTime().domain(d3.extent(rows, d => d.date)).range([0, cw])
+      const fullDomain = d3.extent(rows, d => d.date)
       const allY = rows.flatMap(r => FACTORS.map(f => r[f]).filter(v => v != null && v > 0))
+
+      const x = d3.scaleTime().domain(fullDomain).range([0, cw])
       // Log scale: equal vertical distance = equal multiplicative growth, so a straight line
       // means steady compounding. Without log scale the 44× winner would flatten every other
       // line into the baseline and the spread among lower-returning factors would be invisible.
       const y = d3.scaleLog().domain([d3.min(allY) * .9, d3.max(allY) * 1.1]).range([ch, 0])
 
-      const svg = d3.select(el).append('svg').attr('width', W).attr('height', H)
+      const svg = d3.select(el).append('svg').attr('width', W).attr('height', totalH)
+
+      // Clip path prevents lines from spilling outside the main chart area when the brush
+      // narrows the x domain — without this, lines for dates outside the selection would
+      // still render (just outside the visible axis range).
+      svg.append('defs').append('clipPath').attr('id', 'cum-clip')
+        .append('rect').attr('width', cw).attr('height', ch + 1)
+
       const g = svg.append('g').attr('transform', `translate(${M.left},${M.top})`)
 
-      // Gridlines
-      g.append('g').attr('class', 'grid')
-        .call(d3.axisLeft(y).tickValues([1, 2, 5, 10, 20, 50]).tickSize(-cw).tickFormat(''))
-        .call(ax => { ax.select('.domain').remove(); ax.selectAll('line').attr('stroke', C.border).attr('stroke-dasharray', '2 4') })
+      // Candidate tick values chosen for even visual spacing on a log scale.
+      // y.ticks() on a log scale produces 1,2,3...9,10,20,30... which looks smooshed
+      // between 1-10 and then has large gaps above 10. These candidates step by ~2-3×
+      // each time, giving uniform spacing regardless of the visible domain.
+      const Y_TICK_CANDIDATES = [0.5, 1, 2, 5, 10, 20, 50]
+      function getYTicks() {
+        const [lo, hi] = y.domain()
+        return Y_TICK_CANDIDATES.filter(v => v >= lo && v <= hi)
+      }
 
-      // $1 baseline
-      g.append('line').attr('x1', 0).attr('x2', cw).attr('y1', y(1)).attr('y2', y(1))
+      // Gridlines (rebuilt on each brush update)
+      const gridG = g.append('g').attr('class', 'grid')
+      function redrawGrid() {
+        gridG.call(d3.axisLeft(y).tickValues(getYTicks()).tickSize(-cw).tickFormat(''))
+          .call(ax => { ax.select('.domain').remove(); ax.selectAll('line').attr('stroke', C.border).attr('stroke-dasharray', '2 4') })
+      }
+      redrawGrid()
+
+      // $1 baseline (hidden when the zoomed y domain no longer includes $1)
+      const baseLine = g.append('line').attr('class', 'baseline')
+        .attr('x1', 0).attr('x2', cw).attr('y1', y(1)).attr('y2', y(1))
         .attr('stroke', C.borderDark).attr('stroke-width', 1)
-      g.append('text').attr('x', 4).attr('y', ch + 48)
-        .attr('font-size', 9).attr('font-weight', 700).attr('fill', C.muted)
-        .style('font-family', 'IBM Plex Sans,sans-serif').text('$1 (starting capital)')
 
-      // Axes
-      g.append('g').attr('class', 'axis').attr('transform', `translate(0,${ch})`)
-        .call(d3.axisBottom(x).ticks(d3.timeYear.every(10)).tickSize(0).tickPadding(8))
-        .call(ax => ax.select('.domain').remove())
-      g.append('g').attr('class', 'axis')
-        .call(d3.axisLeft(y).tickValues([1, 2, 5, 10, 20, 50]).tickSize(0).tickPadding(8).tickFormat(d => '$' + d))
-        .call(ax => ax.select('.domain').remove())
-      g.append('text').attr('x', cw / 2).attr('y', ch + 34).attr('text-anchor', 'middle')
-        .attr('font-size', 12).attr('font-weight', 600).attr('fill', C.muted).style('font-family', 'IBM Plex Sans,sans-serif')
-        .style('letter-spacing', '.06em').style('text-transform', 'uppercase').text('Year')
+      // Axes (rebuilt on each brush update)
+      const xAxisG = g.append('g').attr('class', 'x-axis axis').attr('transform', `translate(0,${ch})`)
+      const yAxisG = g.append('g').attr('class', 'y-axis axis')
+      function redrawAxes() {
+        xAxisG.call(d3.axisBottom(x).ticks(d3.timeYear.every(10)).tickSize(0).tickPadding(8))
+          .call(ax => { ax.select('.domain').remove(); ax.selectAll('text').attr('fill', C.muted).style('font-family', 'IBM Plex Sans,sans-serif') })
+        yAxisG.call(d3.axisLeft(y).tickValues(getYTicks()).tickSize(0).tickPadding(8)
+          .tickFormat(d => d >= 1 ? '$' + d : d3.format('$.2f')(d)))
+          .call(ax => { ax.select('.domain').remove(); ax.selectAll('text').attr('fill', C.muted).style('font-family', 'IBM Plex Sans,sans-serif') })
+      }
+      redrawAxes()
 
+      // Axis labels
+      g.append('text').attr('x', cw / 2).attr('y', ch + 24).attr('text-anchor', 'middle')
+        .attr('font-size', 12).attr('font-weight', 600).attr('fill', C.muted)
+        .style('font-family', 'IBM Plex Sans,sans-serif').style('letter-spacing', '.06em').style('text-transform', 'uppercase')
+        .text('Year')
       svg.append('text').attr('transform', 'rotate(-90)')
         .attr('x', -(M.top + ch / 2)).attr('y', 16).attr('text-anchor', 'middle')
         .attr('font-size', 12).attr('font-weight', 600).attr('fill', C.muted)
         .style('font-family', 'IBM Plex Sans,sans-serif').style('letter-spacing', '.06em').style('text-transform', 'uppercase')
         .text('Growth of $1 (log scale)')
 
-      // Lines
+      // Recession bands — drawn before lines so they appear behind them.
+      // Same clip path as lines so bands are masked when the brush narrows the x domain.
+      const recBandsG = g.append('g').attr('clip-path', 'url(#cum-clip)')
+      function drawRecBands() {
+        recBandsG.selectAll('rect').remove()
+        DB.recessions
+          .filter(d => d.end >= x.domain()[0] && d.start <= x.domain()[1])
+          .forEach(d => {
+            const x0 = x(d.start), x1 = x(d.end)
+            recBandsG.append('rect')
+              .attr('x', x0).attr('y', 0)
+              .attr('width', Math.max(1, x1 - x0)).attr('height', ch)
+              .attr('fill', C.accent).attr('opacity', .1)
+          })
+      }
+      drawRecBands()
+
+      // Toggle button wiring — re-use the button injected in the HTML above the chart.
+      // Reset and re-wire on each render (resize clears el.innerHTML and re-runs this function).
+      let recVisible = document.getElementById('rec-toggle').classList.contains('active')
+      recBandsG.style('display', recVisible ? null : 'none')
+      document.getElementById('rec-toggle').onclick = function () {
+        recVisible = !recVisible
+        this.classList.toggle('active', recVisible)
+        recBandsG.style('display', recVisible ? null : 'none')
+      }
+
+      // Lines inside the clip group so they're masked when zoomed
+      const linesG = g.append('g').attr('clip-path', 'url(#cum-clip)')
       const lineGen = f => d3.line()
         .x(d => x(d.date)).y(d => y(d[f]))
         .defined(d => d[f] != null && d[f] > 0).curve(d3.curveMonotoneX)
 
       FACTORS.forEach(f => {
-        g.append('path')
+        linesG.append('path')
           .datum(rows).attr('fill', 'none')
+          .attr('class', 'factor-line').attr('data-f', f)
           .attr('stroke', FM[f].color).attr('stroke-width', 2)
           .attr('d', lineGen(f))
       })
 
-      // Legend (top-left) — click any row to isolate that factor (dims others to 7% opacity).
-      // Clicking the same factor again restores all. The selectedFactor variable is local to
-      // renderCumulative so it resets on each resize re-render, which is the desired behavior.
-      let selectedFactor = null
-      const legRowH = 20, legPad = 8
-      const legW = 110, legH = legPad + FACTORS.length * legRowH + legPad
-      const leg = g.append('g').attr('transform', `translate(4,4)`)
+      // Interactive SVG legend — vertically stacked checkbox list.
+      // factorVisible is module-level so state survives resize re-renders.
+      const legPad = 10, legRowH = 22, saH = 22, divH = 5
+      const legW = 128, legH = legPad + FACTORS.length * legRowH + divH + saH + legPad
+      const cbX = legPad, cbSz = 10
+
+      // Append to svg (not g) so it renders above the crosshair overlay rect in SVG z-order.
+      const leg = svg.append('g').attr('transform', `translate(${M.left + 4},${M.top + 4})`).style('cursor', 'pointer')
 
       leg.append('rect').attr('width', legW).attr('height', legH).attr('rx', 2)
         .attr('fill', C.paper).attr('stroke', C.border).attr('stroke-width', 1).attr('opacity', 0.93)
         .on('mousemove', ev => ev.stopPropagation())
         .on('mouseover', () => { crossLine.style('opacity', 0); tip.style.opacity = '0' })
 
+      // Apply factorVisible state to the drawn lines
+      function applyLines() {
+        FACTORS.forEach(f => {
+          linesG.select(`.factor-line[data-f="${f}"]`).style('display', factorVisible[f] ? null : 'none')
+        })
+      }
+
+      // Per-factor rows (top of legend)
+      const factorsTop = legPad
       FACTORS.forEach((f, i) => {
-        const ry = legPad + i * legRowH
+        const ry = factorsTop + i * legRowH
         const row = leg.append('g').attr('class', 'leg-row').attr('data-f', f)
-          .style('cursor', 'pointer')
+          .attr('transform', `translate(0,${ry})`)
           .on('mousemove', ev => ev.stopPropagation())
           .on('mouseover', ev => ev.stopPropagation())
-          .on('click', () => {
-            selectedFactor = selectedFactor === f ? null : f
-            g.selectAll('path').attr('opacity', function () {
-              const stroke = d3.select(this).attr('stroke')
-              const isSelected = Object.keys(FM).find(k => FM[k].color === stroke) === selectedFactor
-              return selectedFactor === null || isSelected ? 1 : 0.07
-            })
-            leg.selectAll('.leg-row').attr('opacity', function () {
-              const rowF = d3.select(this).attr('data-f')
-              return selectedFactor === null || rowF === selectedFactor ? 1 : 0.3
-            })
-          })
-
-        row.append('rect').attr('x', 0).attr('y', ry).attr('width', legW).attr('height', legRowH).attr('fill', 'transparent')
-        row.append('line').attr('x1', legPad).attr('x2', legPad + 16).attr('y1', ry + legRowH / 2).attr('y2', ry + legRowH / 2)
-          .attr('stroke', FM[f].color).attr('stroke-width', 2.5)
-        row.append('text').attr('x', legPad + 22).attr('y', ry + legRowH / 2).attr('dy', '0.35em')
+        row.append('rect').attr('width', legW).attr('height', legRowH).attr('fill', 'transparent')
+        row.append('rect').attr('class', 'chk-box').attr('data-f', f)
+          .attr('x', cbX).attr('y', (legRowH - cbSz) / 2)
+          .attr('width', cbSz).attr('height', cbSz).attr('rx', 1).attr('stroke-width', 1.5)
+        row.append('text').attr('class', 'chk-label').attr('data-f', f)
+          .attr('x', cbX + cbSz + 7).attr('y', legRowH / 2).attr('dy', '0.35em')
           .attr('font-size', 11).attr('font-weight', 600)
-          .style('font-family', 'IBM Plex Sans,sans-serif').attr('fill', FM[f].color)
-          .text(FM[f].label)
+          .style('font-family', 'IBM Plex Sans,sans-serif').text(FM[f].label)
       })
+
+      // "Select All" row at the bottom
+      const saTop = legPad + FACTORS.length * legRowH + divH
+      leg.append('line')
+        .attr('x1', legPad).attr('x2', legW - legPad)
+        .attr('y1', legPad + FACTORS.length * legRowH + divH / 2)
+        .attr('y2', legPad + FACTORS.length * legRowH + divH / 2)
+        .attr('stroke', C.border).attr('stroke-width', 0.5)
+      const saRow = leg.append('g').attr('transform', `translate(0,${saTop})`)
+        .on('mousemove', ev => ev.stopPropagation())
+        .on('mouseover', ev => ev.stopPropagation())
+      saRow.append('rect').attr('width', legW).attr('height', saH).attr('fill', 'transparent')
+      const saBox = saRow.append('rect').attr('x', cbX).attr('y', (saH - cbSz) / 2)
+        .attr('width', cbSz).attr('height', cbSz).attr('rx', 1).attr('stroke-width', 1.5)
+      const saCheck = saRow.append('text').attr('x', cbX + cbSz / 2).attr('y', (saH - cbSz) / 2 + cbSz - 1)
+        .attr('text-anchor', 'middle').attr('font-size', 9).attr('font-weight', 700)
+        .style('font-family', 'IBM Plex Sans,sans-serif').attr('pointer-events', 'none').text('✓')
+      const saLabel = saRow.append('text').attr('x', cbX + cbSz + 7).attr('y', saH / 2).attr('dy', '0.35em')
+        .attr('font-size', 11).attr('font-weight', 700)
+        .style('font-family', 'IBM Plex Sans,sans-serif').text('Select All')
+
+      // Wire clicks
+      saRow.on('click', () => {
+        const allOn = FACTORS.every(f => factorVisible[f])
+        FACTORS.forEach(f => { factorVisible[f] = !allOn })
+        applyLines(); updateLegend()
+      })
+      FACTORS.forEach(f => {
+        leg.select(`.leg-row[data-f="${f}"]`).on('click', () => {
+          factorVisible[f] = !factorVisible[f]
+          applyLines(); updateLegend()
+        })
+      })
+
+      // Redraw all checkbox fills/labels to match factorVisible
+      function updateLegend() {
+        const allOn = FACTORS.every(f => factorVisible[f])
+        const allOff = FACTORS.every(f => !factorVisible[f])
+        saBox.attr('fill', allOn ? C.text : 'none').attr('stroke', allOff ? C.muted : C.text)
+        saCheck.style('display', allOn ? null : 'none')
+        saLabel.attr('fill', allOff ? C.muted : C.text).attr('opacity', allOff ? 0.45 : 1)
+        FACTORS.forEach(f => {
+          const on = factorVisible[f]
+          leg.select(`.chk-box[data-f="${f}"]`)
+            .attr('fill', on ? FM[f].color : 'none').attr('stroke', on ? FM[f].color : C.muted)
+          leg.select(`.chk-label[data-f="${f}"]`)
+            .attr('fill', on ? FM[f].color : C.muted).attr('opacity', on ? 1 : 0.38)
+        })
+      }
+
+      // Sync lines and legend to current factorVisible state
+      applyLines()
+      updateLegend()
 
       // Hover crosshair: an invisible full-chart <rect> captures mousemove events so the
       // tooltip fires anywhere in the chart area, not just on a line. The bisector finds the
       // nearest data point in O(log n) time; d0/d1 logic handles the array boundaries.
       const crossLine = g.append('line').attr('y1', 0).attr('y2', ch)
         .attr('class', 'crosshair-line').style('opacity', 0)
+      function setLineFocus(focusF) {
+        linesG.selectAll('.factor-line').each(function () {
+          const f = d3.select(this).attr('data-f')
+          d3.select(this).style('opacity', focusF == null || f === focusF ? 1 : 0.15)
+        })
+      }
+
       g.append('rect').attr('width', cw).attr('height', ch).attr('fill', 'none').attr('pointer-events', 'all')
         .on('mousemove', function (ev) {
-          const [mx] = d3.pointer(ev)
+          const [mx, my] = d3.pointer(ev)
           const date = x.invert(mx)
           const bi = d3.bisector(d => d.date).left
           const i = bi(rows, date, 1)
@@ -1288,6 +1569,13 @@
           const d = !d1 ? d0 : !d0 ? d1 : (date - d0.date < d1.date - date ? d0 : d1)
           if (!d) return
           crossLine.style('opacity', 1).attr('x1', x(d.date)).attr('x2', x(d.date))
+          // Find the visible factor whose line is closest to the cursor's y position
+          const visibleFactors = FACTORS.filter(f => factorVisible[f] && d[f] != null)
+          const closest = visibleFactors.reduce((best, f) => {
+            const dist = Math.abs(y(d[f]) - my)
+            return dist < best.dist ? { f, dist } : best
+          }, { f: null, dist: Infinity })
+          setLineFocus(closest.f)
           const sortedFactors = [...FACTORS].sort((a, b) => (d[b] ?? 0) - (d[a] ?? 0))
           const lines = sortedFactors.filter(f => d[f] != null).map(f => {
             return `<div class="tip-row">
@@ -1297,7 +1585,126 @@
           tip.innerHTML = `<div class="tip-date">${d3.timeFormat('%b %Y')(d.date)}</div>${lines}`
           tip.style.opacity = '1'; posTip(ev)
         })
-        .on('mouseleave', () => { crossLine.style('opacity', 0); tip.style.opacity = '0' })
+        .on('mouseleave', () => {
+          crossLine.style('opacity', 0)
+          tip.style.opacity = '0'
+          setLineFocus(null)
+        })
+
+      // ── Slider timeframe selector ─────────────────────────────
+      // A thin track line with two draggable diamond handles. No brushX — just
+      // pointer events on the handle groups. State kept in sliderPos = [left, right]
+      // as pixel offsets along the track.
+      const ctxTop = H + ctxGap
+      const ctxG = svg.append('g').attr('transform', `translate(${M.left},${ctxTop})`)
+
+      const xCtx = d3.scaleTime().domain(fullDomain).range([0, cw])
+
+      // Track: a full-width rounded rect and a highlighted selection rect on top
+      ctxG.append('rect').attr('width', cw).attr('height', ctxH)
+        .attr('fill', C.surface).attr('rx', ctxH / 2)
+
+      const selRect = ctxG.append('rect').attr('class', 'slider-selected')
+        .attr('height', ctxH).attr('rx', ctxH / 2)
+
+      // Year labels
+      ctxG.append('g').attr('transform', `translate(0,${ctxH})`)
+        .call(d3.axisBottom(xCtx).ticks(d3.timeYear.every(10)).tickSize(0).tickPadding(5))
+        .call(ax => {
+          ax.select('.domain').remove()
+          ax.selectAll('text').attr('fill', C.muted).attr('font-size', 9)
+            .style('font-family', 'IBM Plex Sans,sans-serif')
+        })
+
+
+      // onBrush: update x/y domains and redraw main chart
+      function onBrush(pxLeft, pxRight) {
+        if (pxLeft == null) {
+          x.domain(fullDomain)
+        } else {
+          x.domain([xCtx.invert(pxLeft), xCtx.invert(pxRight)])
+        }
+        const [t0, t1] = x.domain()
+        const visY = rows.filter(r => r.date >= t0 && r.date <= t1)
+          .flatMap(r => FACTORS.map(f => r[f]).filter(v => v != null && v > 0))
+        if (visY.length > 1) y.domain([d3.min(visY) * .9, d3.max(visY) * 1.1])
+        const [yLo, yHi] = y.domain()
+        baseLine.attr('y1', y(1)).attr('y2', y(1)).style('opacity', yLo <= 1 && 1 <= yHi ? 1 : 0)
+        redrawAxes()
+        redrawGrid()
+        drawRecBands()
+        linesG.selectAll('.factor-line').each(function () {
+          d3.select(this).attr('d', lineGen(d3.select(this).attr('data-f')))
+        })
+      }
+
+      // Handle geometry
+      const hW = 10, hH = 18, hR = 3
+      const trackMid = ctxH / 2
+
+      let sliderPos = [0, cw]
+
+      function updateSlider(l, r) {
+        sliderPos = [l, r]
+        selRect.attr('x', l).attr('width', r - l)
+        leftHandle.attr('transform', `translate(${l},${trackMid})`)
+        rightHandle.attr('transform', `translate(${r},${trackMid})`)
+        onBrush(l, r)
+      }
+
+      function makeHandle(side) {
+        const g = ctxG.append('g').attr('class', 'slider-handle')
+
+        // Invisible wide hit area so it's easy to grab
+        g.append('rect')
+          .attr('x', -12).attr('y', -hH / 2)
+          .attr('width', 24).attr('height', hH)
+          .attr('fill', 'transparent')
+
+        // Visible pill
+        g.append('rect').attr('class', 'handle-grip')
+          .attr('x', -hW / 2).attr('y', -hH / 2)
+          .attr('width', hW).attr('height', hH).attr('rx', hR)
+          .attr('fill', C.border).attr('stroke', C.borderDark).attr('stroke-width', 1)
+
+        // Three grip lines
+        ;[-3, 0, 3].forEach(dy => {
+          g.append('line')
+            .attr('x1', -3).attr('x2', 3)
+            .attr('y1', dy).attr('y2', dy)
+            .attr('stroke', C.muted).attr('stroke-width', 1).attr('pointer-events', 'none')
+        })
+
+        // Drag behaviour
+        g.call(d3.drag()
+          .on('start', function () { d3.select(this).classed('dragging', true) })
+          .on('drag', function (ev) {
+            const other = side === 'left' ? sliderPos[1] : sliderPos[0]
+            const minGap = 10
+            let px = Math.max(0, Math.min(cw, ev.x))
+            if (side === 'left') px = Math.min(px, other - minGap)
+            else px = Math.max(px, other + minGap)
+            updateSlider(
+              side === 'left' ? px : sliderPos[0],
+              side === 'right' ? px : sliderPos[1]
+            )
+          })
+          .on('end', function () { d3.select(this).classed('dragging', false) })
+        )
+
+        // Double-click on either handle resets to full range
+        g.on('dblclick', () => {
+          updateSlider(0, cw)
+        })
+
+        return g
+      }
+
+      const leftHandle = makeHandle('left')
+      const rightHandle = makeHandle('right')
+
+      // Initialize to full range
+      updateSlider(0, cw)
     }
 
     // ─────────────────────────────────────────────────────────
@@ -1827,6 +2234,157 @@
 
     }
 
+    const REC_REASONS = {
+      expansion: {
+        'Mkt-RF': 'Expansions are the equity market\'s natural habitat. GDP is growing, earnings are rising, and investors are willing to pay for risk - the equity premium is at its most reliable.',
+        'Mom': 'Trending markets are momentum\'s home turf. In a steady expansion, last quarter\'s winners keep winning as capital rotates into already-working positions.',
+        'HML': 'Value earns a modest premium in expansions. Cheap stocks - often cyclical ones - benefit from improving fundamentals, though they rarely beat growth stocks during bull-market peaks.',
+        'SMB': 'The size effect is weak on average, but small caps do slightly better in calm expansions when credit is available and liquidity is ample.',
+        'RMW': 'Profitable firms always earn their premium, but in an expansion the margin is smaller - weaker competitors survive longer when credit is loose, compressing the spread between high and low profitability.',
+        'CMA': 'Conservative firms underperform in expansions. Aggressive capital deployers look smart when demand is rising; not expanding looks cautious in hindsight when growth was there for the taking.',
+      },
+      recession: {
+        'CMA': 'The standout winner in recessions. Firms that avoided aggressive asset growth were less exposed to overpriced acquisitions and excess capex - assets that get marked down hard when the cycle turns.',
+        'RMW': 'Flight to quality. Investors gravitate toward companies with strong, steady earnings that can service debt and survive a demand shock. The weakest firms blow up first.',
+        'HML': 'Value is mixed in recessions. Cheap stocks are often cheap because they are cyclical or financially fragile - exactly the firms that struggle most when the economy contracts.',
+        'SMB': 'Small caps are hit harder in recessions: less liquidity, fewer credit lines, and more exposure to domestic demand. The size factor is roughly flat in recessions on average.',
+        'Mkt-RF': 'The equity premium turns negative in recessions. The market prices in falling earnings and rising default risk; holding stocks instead of T-bills is punished, not rewarded.',
+        'Mom': 'Momentum nearly disappears in recessions. There are no clean trends to follow when the economy is lurching - sector leadership rotates violently, and recent winners become losers fast.',
+      },
+    }
+
+    function renderRecFlip() {
+      const el = document.getElementById('chart-rec-flip')
+      el.innerHTML = ''
+
+      const expand = DB.monthly.filter(d => d.USREC === 0)
+      const recession = DB.monthly.filter(d => d.USREC === 1)
+
+      const groups = [
+        { key: 'expansion', label: 'Expansion', sub: 'USREC = 0 · n = ' + expand.length + ' months', rows: expand },
+        { key: 'recession', label: 'Recession', sub: 'USREC = 1 · n = ' + recession.length + ' months', rows: recession },
+      ]
+
+      groups.forEach(gp => {
+        gp.values = FACTORS.map(f => ({
+          f,
+          mean: d3.mean(gp.rows, r => r[f]),
+        })).sort((a, b) => b.mean - a.mean)
+      })
+
+      const allVals = groups.flatMap(gp => gp.values.map(v => v.mean))
+      const xMax = Math.max(0.05, d3.max(allVals.map(Math.abs))) * 1.15
+
+      const W = Math.min(1100, el.parentElement.clientWidth - 32)
+      const colW = (W - 40) / 2
+      const H = 360
+      const M = { top: 60, right: 20, bottom: 36, left: 90 }
+      const innerW = colW - M.left - M.right
+      const innerH = H - M.top - M.bottom
+
+      const svg = d3.select(el).append('svg').attr('width', W).attr('height', H)
+
+      groups.forEach((gp, gi) => {
+        const cx = gi * (colW + 40)
+        const colG = svg.append('g').attr('transform', `translate(${cx + M.left},${M.top})`)
+
+        svg.append('text').attr('x', cx + M.left + innerW / 2).attr('y', 22)
+          .attr('text-anchor', 'middle')
+          .attr('font-family', 'Playfair Display,Georgia,serif')
+          .attr('font-size', 18).attr('font-weight', 700).attr('fill', C.text)
+          .text(gp.label)
+        svg.append('text').attr('x', cx + M.left + innerW / 2).attr('y', 40)
+          .attr('text-anchor', 'middle')
+          .attr('font-size', 10).attr('fill', C.muted)
+          .style('font-family', 'Source Serif 4,Georgia,serif').style('font-style', 'italic')
+          .text(gp.sub)
+
+        const x = d3.scaleLinear().domain([-xMax, xMax]).range([0, innerW])
+        const y = d3.scaleBand().domain(d3.range(FACTORS.length)).range([0, innerH]).padding(.2)
+
+        colG.append('line').attr('x1', x(0)).attr('x2', x(0)).attr('y1', 0).attr('y2', innerH)
+          .attr('stroke', C.borderDark).attr('stroke-width', 1)
+
+        gp.values.forEach((v, i) => {
+          const f = v.f
+          const m = v.mean
+          const yPos = y(i)
+          const bx = m >= 0 ? x(0) : x(m)
+          const bw = Math.abs(x(m) - x(0))
+          const barH = y.bandwidth()
+          const rank = i + 1
+
+          colG.append('rect')
+            .attr('x', bx).attr('y', yPos)
+            .attr('width', 0).attr('height', barH)
+            .attr('fill', FM[f].color).attr('opacity', .88)
+            .transition().duration(600).delay(gi * 60 + i * 30)
+            .attr('width', bw)
+
+          colG.append('text')
+            .attr('x', -8).attr('y', yPos + barH / 2).attr('dy', '0.35em')
+            .attr('text-anchor', 'end')
+            .attr('font-size', 11).attr('font-weight', 700)
+            .style('font-family', 'IBM Plex Sans,sans-serif')
+            .attr('fill', FM[f].color)
+            .text(FM[f].label)
+
+          colG.append('text')
+            .attr('x', m >= 0 ? x(m) + 5 : x(0) + 5)
+            .attr('y', yPos + barH / 2).attr('dy', '0.35em')
+            .attr('text-anchor', 'start')
+            .attr('font-size', 10).attr('font-weight', 700)
+            .style('font-family', 'IBM Plex Sans,sans-serif')
+            .attr('fill', m >= 0 ? C.pos : C.neg)
+            .text(d3.format('+.2f')(m) + '%/mo')
+
+          const hitG = colG.append('g').style('cursor', 'help')
+          hitG.append('rect')
+            .attr('x', -90).attr('y', yPos - 1)
+            .attr('width', innerW + 100).attr('height', barH + 2)
+            .attr('fill', 'transparent')
+          hitG
+            .on('mouseover', function (ev) {
+              d3.select(this.parentNode).selectAll('rect')
+                .filter(function () { return d3.select(this).attr('fill') === FM[f].color })
+                .attr('opacity', 1)
+              tip.innerHTML = `<div class="tip-date">#${rank} · ${FM[f].label} · ${gp.label}</div>
+            <div class="tip-row">
+              <span class="tip-name">Avg monthly return</span>
+              <span class="tip-val" style="color:${m >= 0 ? C.pos : C.neg}">${d3.format('+.2f')(m)}%</span>
+            </div>
+            <div class="tip-row">
+              <span class="tip-name">Hit rate</span>
+              <span class="tip-val" style="color:${C.muted}">${Math.round(d3.sum(gp.rows, r => r[f] > 0 ? 1 : 0) / gp.rows.filter(r => r[f] != null).length * 100)}%</span>
+            </div>
+            <div class="tip-explain">${REC_REASONS[gp.key][f]}</div>`
+              tip.style.opacity = '1'; posTip(ev)
+            })
+            .on('mousemove', posTip)
+            .on('mouseout', function () {
+              d3.select(this.parentNode).selectAll('rect')
+                .filter(function () { return d3.select(this).attr('fill') === FM[f].color })
+                .attr('opacity', .88)
+              tip.style.opacity = '0'
+            })
+        })
+
+        colG.append('g').attr('transform', `translate(0,${innerH})`)
+          .call(d3.axisBottom(x).ticks(5).tickSize(0).tickPadding(6).tickFormat(v => d3.format('+.1f')(v) + '%'))
+          .call(ax => { ax.select('.domain').remove(); ax.selectAll('text').attr('fill', C.muted).attr('font-size', 9).style('font-family', 'IBM Plex Sans,sans-serif') })
+        colG.append('text').attr('x', innerW / 2).attr('y', innerH + 30)
+          .attr('text-anchor', 'middle').attr('font-size', 12).attr('font-weight', 600).attr('fill', C.muted)
+          .style('font-family', 'IBM Plex Sans,sans-serif').style('letter-spacing', '.06em').style('text-transform', 'uppercase')
+          .text('Avg. monthly return (%)')
+      })
+
+      svg.append('line')
+        .attr('x1', W / 2).attr('x2', W / 2)
+        .attr('y1', 50).attr('y2', H - 30)
+        .attr('stroke', C.border).attr('stroke-width', .8)
+
+    }
+
     // ─────────────────────────────────────────────────────────
     //  Utilities
     // ─────────────────────────────────────────────────────────
@@ -1850,6 +2408,21 @@
       return .2126 * lin(c.r) + .7152 * lin(c.g) + .0722 * lin(c.b)
     }
 
+    // ─────────────────────────────────────────────────────────
+    //  Hero accordion (AI Usage / Teammate Contributions)
+    // ─────────────────────────────────────────────────────────
+
+    // One panel open at a time. Clicking the active button collapses it.
+    document.querySelectorAll('.meta-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = document.getElementById('meta-panel-' + btn.dataset.panel)
+        const isOpen = target.classList.contains('open')
+        document.querySelectorAll('.meta-panel').forEach(p => p.classList.remove('open'))
+        document.querySelectorAll('.meta-btn').forEach(b => b.classList.remove('active'))
+        if (!isOpen) { target.classList.add('open'); btn.classList.add('active') }
+      })
+    })
+
     // Debounced resize: re-render all charts after the user stops resizing for 250ms.
     // All four render functions clear and rebuild the SVG from scratch on each call,
     // so they correctly adapt to the new container width without incremental updates.
@@ -1858,7 +2431,7 @@
       clearTimeout(_rzTimer)
       _rzTimer = setTimeout(() => {
         if (DB.cumulative) {
-          renderCumulative(); renderHeatmap(); renderDecades(); renderVixFlip()
+          renderCumulative(); renderHeatmap(); renderDecades(); renderVixFlip(); renderRecFlip()
         }
       }, 250)
     })
