@@ -418,7 +418,7 @@
       flex-wrap: wrap;
     }
 
-.heatmap-controls {
+    .heatmap-controls {
       display: flex;
       gap: .5rem;
       margin-bottom: .75rem;
@@ -455,6 +455,7 @@
       cursor: default;
       text-decoration: line-through;
     }
+
     .hm-btn.disabled:hover {
       border-color: var(--border);
       color: var(--muted);
@@ -471,6 +472,7 @@
       gap: .35rem;
       margin-left: .25rem;
     }
+
     .rec-swatch {
       display: inline-block;
       width: 14px;
@@ -522,7 +524,9 @@
       z-index: 200;
     }
 
-    .term-tip:hover::after { opacity: 1; }
+    .term-tip:hover::after {
+      opacity: 1;
+    }
 
     .figure-caption {
       font-family: var(--sans);
@@ -774,10 +778,17 @@
       gap: .35rem;
     }
 
-    .meta-btn::after { content: '▸'; font-size: .55rem; }
-    .meta-btn.active::after { content: '▾'; }
+    .meta-btn::after {
+      content: '▸';
+      font-size: .55rem;
+    }
 
-    .meta-btn:hover, .meta-btn.active {
+    .meta-btn.active::after {
+      content: '▾';
+    }
+
+    .meta-btn:hover,
+    .meta-btn.active {
       border-color: var(--accent);
       color: var(--accent);
     }
@@ -798,7 +809,9 @@
       text-align: left;
     }
 
-    .meta-panel.open { display: block; }
+    .meta-panel.open {
+      display: block;
+    }
 
     .meta-section {
       font-family: var(--sans);
@@ -810,11 +823,22 @@
       margin: 1rem 0 .4rem;
     }
 
-    .meta-section:first-child { margin-top: 0; }
+    .meta-section:first-child {
+      margin-top: 0;
+    }
 
-    .meta-panel p { margin-bottom: .45rem; }
-    .meta-panel p:last-child { margin-bottom: 0; }
-    .meta-panel strong { color: var(--text); font-weight: 600; }
+    .meta-panel p {
+      margin-bottom: .45rem;
+    }
+
+    .meta-panel p:last-child {
+      margin-bottom: 0;
+    }
+
+    .meta-panel strong {
+      color: var(--text);
+      font-weight: 600;
+    }
 
     .meta-panel code {
       font-family: 'IBM Plex Mono', 'Courier New', monospace;
@@ -830,7 +854,9 @@
       padding: 0;
     }
 
-    .meta-panel ul li { margin-bottom: .3rem; }
+    .meta-panel ul li {
+      margin-bottom: .3rem;
+    }
 
     .meta-panel .corrections {
       display: grid;
@@ -845,7 +871,11 @@
       font-size: .72rem;
     }
 
-    .meta-panel .correction-item strong { display: block; color: var(--text); margin-bottom: .1rem; }
+    .meta-panel .correction-item strong {
+      display: block;
+      color: var(--text);
+      margin-bottom: .1rem;
+    }
 
     .meta-panel table {
       width: 100%;
@@ -871,19 +901,38 @@
       vertical-align: top;
     }
 
-    .meta-panel td:first-child { font-weight: 600; white-space: nowrap; color: var(--text); }
+    .meta-panel td:first-child {
+      font-weight: 600;
+      white-space: nowrap;
+      color: var(--text);
+    }
 
-    .meta-muted { color: var(--muted); font-size: .7rem; margin-top: .75rem; }
+    .meta-muted {
+      color: var(--muted);
+      font-size: .7rem;
+      margin-top: .75rem;
+    }
 
     @media (max-width: 600px) {
-      .meta-panel .corrections { grid-template-columns: 1fr; }
+      .meta-panel .corrections {
+        grid-template-columns: 1fr;
+      }
     }
 
     /* ── Slider handle (timeframe selector on cumulative chart) ── */
-    .slider-handle { cursor: ew-resize; }
+    .slider-handle {
+      cursor: ew-resize;
+    }
+
     .slider-handle:hover .handle-grip,
-    .slider-handle.dragging .handle-grip { fill: var(--navy); }
-    .slider-selected { fill: var(--navy); fill-opacity: .10; }
+    .slider-handle.dragging .handle-grip {
+      fill: var(--navy);
+    }
+
+    .slider-selected {
+      fill: var(--navy);
+      fill-opacity: .10;
+    }
 
     @media (max-width: 860px) {
       .footer-grid {
@@ -953,23 +1002,35 @@
 
       <div class="meta-panel" id="meta-panel-ai">
         <div class="meta-section">Tools</div>
-        <p><strong>Claude Code (Anthropic)</strong> &mdash; Sonnet 4.6 for most edits; Opus 4.7 for the major page rebuild from a 14-step scrollytelling format to the current 4-finding article. The <code>frontend-design</code> plugin was used for the WSJ editorial aesthetic redesign (cream background, Playfair Display headlines, muted factor palette).</p>
+        <p><strong>Claude Code (Anthropic)</strong> &mdash; Sonnet 4.6 for most edits; Opus 4.7 for the major page
+          rebuild from a 14-step scrollytelling format to the current 4-finding article. The
+          <code>frontend-design</code> plugin was used for the WSJ editorial aesthetic redesign (cream background,
+          Playfair Display headlines, muted factor palette).</p>
 
         <div class="meta-section">What AI did</div>
         <ul>
-          <li>Wrote the D3 rendering code for all four charts and the IntersectionObserver scroll-step manager for the original scrollytelling layout</li>
-          <li>Redesigned the visual theme from a dark neon aesthetic to a Wall Street Journal editorial style, given an explicit design brief by the team</li>
-          <li>Researched documented factor phenomena from peer-reviewed literature and proposed the final set of four findings &mdash; debated and selected together with the team</li>
-          <li>Ran Python statistical audits on the data files to verify quantitative claims, including a CFA-level pass that identified five real errors in the data presentation</li>
-          <li>Performed a copy audit scanning all body text for overgeneralizations, fixing nine issues (e.g. "predicts future returns" softened to "historically associated with higher returns")</li>
-          <li>Wrote documentation including <code>AI_USAGE.md</code> and <code>INSIGHTS.md</code> under team direction</li>
+          <li>Wrote the D3 rendering code for all four charts and the IntersectionObserver scroll-step manager for the
+            original scrollytelling layout</li>
+          <li>Redesigned the visual theme from a dark neon aesthetic to a Wall Street Journal editorial style, given an
+            explicit design brief by the team</li>
+          <li>Researched documented factor phenomena from peer-reviewed literature and proposed the final set of four
+            findings &mdash; debated and selected together with the team</li>
+          <li>Ran Python statistical audits on the data files to verify quantitative claims, including a CFA-level pass
+            that identified five real errors in the data presentation</li>
+          <li>Performed a copy audit scanning all body text for overgeneralizations, fixing nine issues (e.g. "predicts
+            future returns" softened to "historically associated with higher returns")</li>
+          <li>Wrote documentation including <code>AI_USAGE.md</code> and <code>INSIGHTS.md</code> under team direction
+          </li>
         </ul>
 
         <div class="meta-section">What the team did</div>
         <ul>
-          <li>Produced all data via a Python pipeline downloading from Ken French Data Library, FRED, and CBOE/Yahoo Finance &mdash; AI had no involvement in data production</li>
-          <li>Verified every quantitative claim against source data independently; ran separate Python audits when AI-produced numbers needed checking</li>
-          <li>Made every editorial, visual, and analytical judgment call &mdash; deciding what to build, what to cut, and what story to tell</li>
+          <li>Produced all data via a Python pipeline downloading from Ken French Data Library, FRED, and CBOE/Yahoo
+            Finance &mdash; AI had no involvement in data production</li>
+          <li>Verified every quantitative claim against source data independently; ran separate Python audits when
+            AI-produced numbers needed checking</li>
+          <li>Made every editorial, visual, and analytical judgment call &mdash; deciding what to build, what to cut,
+            and what story to tell</li>
           <li>Rejected several AI-proposed framings as overclaiming or misleading before they were published</li>
         </ul>
 
@@ -977,52 +1038,85 @@
         <div class="corrections">
           <div class="correction-item">
             <strong>Compound vs. summed returns</strong>
-            Decade chart originally used arithmetic sums of monthly returns. Compound returns showed Momentum lost 19% in the 2000s &mdash; not gained 10% as summed. April 2009's &minus;34% single-month crash erased years of small gains.
+            Decade chart originally used arithmetic sums of monthly returns. Compound returns showed Momentum lost 19%
+            in the 2000s &mdash; not gained 10% as summed. April 2009's &minus;34% single-month crash erased years of
+            small gains.
           </div>
           <div class="correction-item">
             <strong>"The order flips"</strong>
-            AI claimed all six factors invert ranking between calm and fearful months. Only Market and Profitability actually swap; the other four are roughly stationary. Deck rewritten: "a story about two factors trading places."
+            AI claimed all six factors invert ranking between calm and fearful months. Only Market and Profitability
+            actually swap; the other four are roughly stationary. Deck rewritten: "a story about two factors trading
+            places."
           </div>
           <div class="correction-item">
             <strong>VIX sample period</strong>
-            AI's deck said "every month since 1963." The VIX wasn't published until 1990. Corrected to "every month from 1990 through 2025."
+            AI's deck said "every month since 1963." The VIX wasn't published until 1990. Corrected to "every month from
+            1990 through 2025."
           </div>
           <div class="correction-item">
             <strong>Long-short portfolio framing</strong>
-            Finding 1 deck called the chart "growth of $1 above the risk-free rate." That's only true for Mkt-RF &mdash; the other five are long-short academic portfolios. Deck rewritten with a caveat on real-world underperformance.
+            Finding 1 deck called the chart "growth of $1 above the risk-free rate." That's only true for Mkt-RF &mdash;
+            the other five are long-short academic portfolios. Deck rewritten with a caveat on real-world
+            underperformance.
           </div>
           <div class="correction-item">
             <strong>CMA tooltip mechanism</strong>
-            AI explained Investment factor as firms "hoarding cash." CMA is constructed from asset-growth rates, not cash reserves. Replaced with the actual mechanism.
+            AI explained Investment factor as firms "hoarding cash." CMA is constructed from asset-growth rates, not
+            cash reserves. Replaced with the actual mechanism.
           </div>
           <div class="correction-item">
             <strong>Value drought dates</strong>
-            AI claimed "seven straight years of negative rolling 5-year HML returns" from 2013&ndash;2021. The series doesn't go negative that broadly; copy softened to "drought era" without overclaiming the window.
+            AI claimed "seven straight years of negative rolling 5-year HML returns" from 2013&ndash;2021. The series
+            doesn't go negative that broadly; copy softened to "drought era" without overclaiming the window.
           </div>
           <div class="correction-item">
             <strong>"Every rally faded" (ZIRP tooltip)</strong>
-            Written in a rewrite and caught by the team before committing. The 2009&ndash;2015 bull market was a sustained rally; the correct observation was that factor <em>leadership</em> rotated, not that rallies reversed.
+            Written in a rewrite and caught by the team before committing. The 2009&ndash;2015 bull market was a
+            sustained rally; the correct observation was that factor <em>leadership</em> rotated, not that rallies
+            reversed.
           </div>
           <div class="correction-item">
             <strong>Stat band clutter</strong>
-            AI added summary stat boxes above the heatmap and portfolio grid. Team rejected them as "metric-dashboardy." Removed; the most important number was folded into the deck instead.
+            AI added summary stat boxes above the heatmap and portfolio grid. Team rejected them as "metric-dashboardy."
+            Removed; the most important number was folded into the deck instead.
           </div>
         </div>
 
-        <p class="meta-muted">Factor explanations, tooltip reasoning, and historical event context (e.g. why Value underperforms in crises, why Momentum held up in 2001, VIX vs. recession regime differences) were verified and refined with assistance from Claude (Anthropic). All claims were cross-checked against the source data by the team.</p>
-        <p class="meta-muted">Full documentation with session logs, prompts, and reflections: <code>AI_USAGE.md</code> in the repository.</p>
+        <p class="meta-muted">Factor explanations, tooltip reasoning, and historical event context (e.g. why Value
+          underperforms in crises, why Momentum held up in 2001, VIX vs. recession regime differences) were verified and
+          refined with assistance from Claude (Anthropic). All claims were cross-checked against the source data by the
+          team.</p>
+        <p class="meta-muted">Full documentation with session logs, prompts, and reflections: <code>AI_USAGE.md</code>
+          in the repository.</p>
       </div>
 
       <div class="meta-panel" id="meta-panel-team">
         <table>
           <thead>
-            <tr><th>Team Member</th><th>Contribution</th></tr>
+            <tr>
+              <th>Team Member</th>
+              <th>Contribution</th>
+            </tr>
           </thead>
           <tbody>
-            <tr><td>Gregory Seleznev</td><td>Data pipeline (Python), page architecture &amp; layout, animated cumulative returns chart, visual design &amp; CSS</td></tr>
-            <tr><td>Martin Ye</td><td>Legend on the cumulative returns chart, timeframe selector (context brush) on the cumulative returns chart</td></tr>
-            <tr><td>Alex Dong</td><td>Iterative design and feedback on visualizations</td></tr>
-            <tr><td>All three</td><td>Narrative text, factor explanations, and editorial review</td></tr>
+            <tr>
+              <td>Gregory Seleznev</td>
+              <td>Data pipeline (Python), page architecture &amp; layout, animated cumulative returns chart, visual
+                design &amp; CSS</td>
+            </tr>
+            <tr>
+              <td>Martin Ye</td>
+              <td>Legend on the cumulative returns chart, timeframe selector (context brush) on the cumulative returns
+                chart</td>
+            </tr>
+            <tr>
+              <td>Alex Dong</td>
+              <td>Iterative design and feedback on visualizations</td>
+            </tr>
+            <tr>
+              <td>All three</td>
+              <td>Narrative text, factor explanations, and editorial review</td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -1043,8 +1137,10 @@
     </p>
     <p class="lede-dataset-head">Data sources</p>
     <ul class="lede-dataset-list">
-      <li><strong>Ken French Data Library</strong> - monthly returns for all six factors, July 1963 through December 2025 (752 months)</li>
-      <li><strong>FRED / NBER</strong> - recession indicator (USREC): 1 during recession, 0 during expansion, covering the full sample</li>
+      <li><strong>Ken French Data Library</strong> - monthly returns for all six factors, July 1963 through December
+        2025 (752 months)</li>
+      <li><strong>FRED / NBER</strong> - recession indicator (USREC): 1 during recession, 0 during expansion, covering
+        the full sample</li>
       <li><strong>CBOE VIX</strong> - monthly volatility index ("fear gauge"), available January 1990 onward</li>
     </ul>
   </div>
@@ -1077,11 +1173,7 @@
         expensive, profitable vs. unprofitable, and so on. We strip out the baseline so every line
         measures the same thing: how much each rule paid you for taking on its specific risk.
         <br><br>
-        The actual S&P 500 with dividends reinvested grew far more than $44 - closer to $500 -
-        because most of that growth was the baseline itself. This chart isolates the part where
-        strategy actually mattered.
-        <br><br>
-        Watch what happens. Momentum and the Market run neck-and-neck for decades, until
+        Momentum and the Market run neck-and-neck for decades, until
         Momentum's vertical drop in 2009. Size, the first factor ever documented in academic
         finance, barely triples in sixty years.
       </div>
@@ -1135,9 +1227,13 @@
     </div>
     <div class="figure-caption">
       <strong>How to read this.</strong> Two side-by-side panels - expansion months on the left, recession months
-      on the right. Each row is a factor's average monthly return in that regime, sorted independently within each panel.
-      <br><strong>Hit rate</strong> (in the hover tooltip) is simply how often the factor finished the month positive in that regime - e.g. a 45% hit rate means it was up in 45 out of 100 months. A factor can have a positive average but a low hit rate if rare large gains outweigh frequent small losses, and vice versa.
-      <br><strong>Source.</strong> Ken French Data Library + FRED NBER Recession Indicator (USREC). n = 85 recession months, 667 expansion months.
+      on the right. Each row is a factor's average monthly return in that regime, sorted independently within each
+      panel.
+      <br><strong>Hit rate</strong> (in the hover tooltip) is simply how often the factor finished the month positive in
+      that regime - e.g. a 45% hit rate means it was up in 45 out of 100 months. A factor can have a positive average
+      but a low hit rate if rare large gains outweigh frequent small losses, and vice versa.
+      <br><strong>Source.</strong> Ken French Data Library + FRED NBER Recession Indicator (USREC). n = 85 recession
+      months, 667 expansion months.
     </div>
 
     <div class="section-break" style="margin-top:2.5rem">
@@ -1148,7 +1244,8 @@
         as a proxy for investor anxiety. We split every month from <strong>1990 through 2025</strong>
         into "calm" (VIX below its long-run median of 17.5) and "fearful" (VIX above). In
         <strong>fearful months</strong>, the Market loses on average and "boring" Profitability wins
-        handily. The other four factors barely move - so this is really a story about <em>two</em> factors trading places.
+        handily. The other four factors barely move - so this is really a story about <em>two</em> factors trading
+        places.
       </div>
     </div>
     <span class="hover-hint">Hover any factor for why it sits where it does</span>
@@ -1162,7 +1259,8 @@
       months on the right. Each row is a factor's average monthly return in that regime. The order
       of the bars is sorted within each panel. Read left-to-right, factor by factor: the ranking
       barely resembles itself.
-      <br><strong>Hit rate</strong> (in the hover tooltip) is how often the factor finished the month positive in that regime - e.g. a 45% hit rate means it was up in 45 out of 100 months.
+      <br><strong>Hit rate</strong> (in the hover tooltip) is how often the factor finished the month positive in that
+      regime - e.g. a 45% hit rate means it was up in 45 out of 100 months.
       <br><strong>Source.</strong> Ken French Data Library + CBOE VIX Index. n = 217 months in each regime.
     </div>
   </section>
@@ -1794,13 +1892,13 @@
           .attr('width', hW).attr('height', hH).attr('rx', hR)
           .attr('fill', C.border).attr('stroke', C.borderDark).attr('stroke-width', 1)
 
-        // Three grip lines
-        ;[-3, 0, 3].forEach(dy => {
-          g.append('line')
-            .attr('x1', -3).attr('x2', 3)
-            .attr('y1', dy).attr('y2', dy)
-            .attr('stroke', C.muted).attr('stroke-width', 1).attr('pointer-events', 'none')
-        })
+          // Three grip lines
+          ;[-3, 0, 3].forEach(dy => {
+            g.append('line')
+              .attr('x1', -3).attr('x2', 3)
+              .attr('y1', dy).attr('y2', dy)
+              .attr('stroke', C.muted).attr('stroke-width', 1).attr('pointer-events', 'none')
+          })
 
         // Drag behaviour
         g.call(d3.drag()
@@ -2032,12 +2130,12 @@
 
       const decades = [
         { label: '1964-69', lo: '1964', hi: '1969' },
-        { label: '1970s',   lo: '1970', hi: '1979' },
-        { label: '1980s',   lo: '1980', hi: '1989' },
-        { label: '1990s',   lo: '1990', hi: '1999' },
-        { label: '2000s',   lo: '2000', hi: '2009', highlight: true },
-        { label: '2010s',   lo: '2010', hi: '2019' },
-        { label: '2020s',   lo: '2020', hi: '2025' },
+        { label: '1970s', lo: '1970', hi: '1979' },
+        { label: '1980s', lo: '1980', hi: '1989' },
+        { label: '1990s', lo: '1990', hi: '1999' },
+        { label: '2000s', lo: '2000', hi: '2009', highlight: true },
+        { label: '2010s', lo: '2010', hi: '2019' },
+        { label: '2020s', lo: '2020', hi: '2025' },
       ]
 
       decades.forEach(dec => {
@@ -2411,9 +2509,9 @@
                   <span class="tip-name">Hit rate</span>
                   <span class="tip-val" style="color:${C.muted}">
                     ${Math.round(
-                      d3.sum(gp.rows, r => r[f] > 0 ? 1 : 0) /
-                      gp.rows.filter(r => r[f] != null).length * 100
-                    )}%
+                d3.sum(gp.rows, r => r[f] > 0 ? 1 : 0) /
+                gp.rows.filter(r => r[f] != null).length * 100
+              )}%
                   </span>
                 </div>
                 <div class="tip-explain">${VIX_REASONS[gp.key][f]}</div>
@@ -2671,9 +2769,9 @@
                   <span class="tip-name">Hit rate</span>
                   <span class="tip-val" style="color:${C.muted}">
                     ${Math.round(
-                      d3.sum(gp.rows, r => r[f] > 0 ? 1 : 0) /
-                      gp.rows.filter(r => r[f] != null).length * 100
-                    )}%
+                d3.sum(gp.rows, r => r[f] > 0 ? 1 : 0) /
+                gp.rows.filter(r => r[f] != null).length * 100
+              )}%
                   </span>
                 </div>
                 <div class="tip-explain">${REC_REASONS[gp.key][f]}</div>
