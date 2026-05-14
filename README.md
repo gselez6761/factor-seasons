@@ -14,7 +14,6 @@ The six factors covered: Market (Mkt-RF), Size (SMB), Value (HML), Profitability
 
 ## Team
 
-Gregory Seleznev, Martin Ye, Alex Dong
 | Name | Contribution |
 |---|---|
 | Gregory Seleznev | Data pipeline (Python) - downloading, cleaning, and merging all datasets; page architecture and layout; all four D3 visualizations; narrative text; visual design and CSS |
