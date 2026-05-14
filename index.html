@@ -463,6 +463,36 @@
       line-height: 1.5;
     }
 
+    .term-tip {
+      border-bottom: 1px dashed var(--muted);
+      cursor: help;
+      position: relative;
+    }
+
+    .term-tip::after {
+      content: attr(data-tip);
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--rule);
+      color: #fff;
+      font-family: var(--sans);
+      font-size: .72rem;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 1.5;
+      width: 260px;
+      padding: .55rem .7rem;
+      border-radius: 3px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .15s;
+      z-index: 200;
+    }
+
+    .term-tip:hover::after { opacity: 1; }
+
     .figure-caption {
       font-family: var(--sans);
       font-size: .72rem;
@@ -1008,14 +1038,21 @@
     <div class="insight-num">01</div>
     <div class="section-break">
       <div class="sec-label">Finding One · The Sixty-Year Race</div>
-      <div class="sec-headline">A Dollar Invested in 1963 Became $44 — or $3.</div>
+      <div class="sec-headline">The Same Dollar. Six Different Rules. Wildly Different Outcomes.</div>
       <div class="sec-deck">
-        Same time period. Same starting capital. Six different rules for picking stocks. The
-        chart tracks the growth of $1 in each factor's <strong>academic long-short portfolio</strong>
-        from July 1963 - the Market line is "stocks minus T-bills"; the other five each go long
-        one set of stocks and short another. Momentum and the Market run almost neck-and-neck for
-        decades - until Momentum's vertical drop in 2009. The Size factor, the textbook's
-        first-ever factor, barely triples in sixty years.
+        Each line shows the historical premium earned by following one strategy - the extra return
+        above a simple baseline. For the Market line, the baseline is cash (T-bills). For the other
+        five, the baseline is the opposite side of the bet: small stocks vs. big stocks, cheap vs.
+        expensive, profitable vs. unprofitable, and so on. We strip out the baseline so every line
+        measures the same thing: how much each rule paid you for taking on its specific risk.
+        <br><br>
+        The actual S&P 500 with dividends reinvested grew far more than $44 - closer to $500 -
+        because most of that growth was the baseline itself. This chart isolates the part where
+        strategy actually mattered.
+        <br><br>
+        Watch what happens. Momentum and the Market run neck-and-neck for decades, until
+        Momentum's vertical drop in 2009. Size, the first factor ever documented in academic
+        finance, barely triples in sixty years.
       </div>
     </div>
     <div class="chart-controls">

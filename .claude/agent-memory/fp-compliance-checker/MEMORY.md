@@ -1,0 +1,1 @@
+- [Factor Seasons project state as of 2026-04-17](project_factorseasons_state.md) — implementation status, proposal gaps, missing CMSC471 deliverables for Team 10
