@@ -2140,19 +2140,13 @@
       const calm = DB.monthly.filter(d => d.vix_regime === 'low')
       const fear = DB.monthly.filter(d => d.vix_regime === 'high')
 
-      // 17.5 is the median VIX value over the 1990-2025 sample period. Using the median
-      // splits the dataset into two equal halves by month count (n ≈ 217 each), which makes
-      // the comparison statistically clean. Common round-number thresholds (20, 25) would
-      // classify most months as "calm" and make the "fearful" sample unrepresentative.
-      // The vix_regime labels in monthly_6f_regimes.json were pre-computed by the Python
-      // pipeline using this same 17.5 threshold.
+      let selectedFactor = null
+
       const groups = [
         { key: 'calm', label: 'Calm markets', sub: 'VIX below 17.5', n: calm.length, rows: calm },
         { key: 'fear', label: 'Fearful markets', sub: 'VIX above 17.5', n: fear.length, rows: fear },
       ]
 
-      // Each panel is sorted independently by mean return within that regime. The ranking
-      // differs between calm and fearful months — that difference is the chart's main point.
       groups.forEach(gp => {
         gp.values = FACTORS.map(f => ({
           f,
@@ -2161,9 +2155,6 @@
       })
 
       const allVals = groups.flatMap(gp => gp.values.map(v => v.mean))
-      // Expand the x-axis domain 15% beyond the largest mean return so value labels
-      // don't clip at the chart edge. The 0.05 floor prevents a near-zero domain in an
-      // edge case where all factors have near-zero means.
       const xMax = Math.max(0.05, d3.max(allVals.map(Math.abs))) * 1.15
 
       const W = Math.min(1100, el.parentElement.clientWidth - 32)
@@ -2173,33 +2164,63 @@
       const innerW = colW - M.left - M.right
       const innerH = H - M.top - M.bottom
 
-      const svg = d3.select(el).append('svg').attr('width', W).attr('height', H)
+      const svg = d3.select(el).append('svg')
+        .attr('width', W)
+        .attr('height', H)
+
+      function updateOpacity() {
+        svg.selectAll('rect[data-factor]')
+          .attr('opacity', function () {
+            const f = d3.select(this).attr('data-factor')
+            if (!selectedFactor) return 0.88
+            return f === selectedFactor ? 1 : 0.15
+          })
+      }
 
       groups.forEach((gp, gi) => {
         const cx = gi * (colW + 40)
-        const colG = svg.append('g').attr('transform', `translate(${cx + M.left},${M.top})`)
 
-        // Header
-        svg.append('text').attr('x', cx + M.left + innerW / 2).attr('y', 22)
+        const colG = svg.append('g')
+          .attr('transform', `translate(${cx + M.left},${M.top})`)
+
+        // Headers
+        svg.append('text')
+          .attr('x', cx + M.left + innerW / 2)
+          .attr('y', 22)
           .attr('text-anchor', 'middle')
           .attr('font-family', 'Playfair Display,Georgia,serif')
-          .attr('font-size', 18).attr('font-weight', 700).attr('fill', C.text)
+          .attr('font-size', 18)
+          .attr('font-weight', 700)
+          .attr('fill', C.text)
           .text(gp.label)
-        svg.append('text').attr('x', cx + M.left + innerW / 2).attr('y', 40)
+
+        svg.append('text')
+          .attr('x', cx + M.left + innerW / 2)
+          .attr('y', 40)
           .attr('text-anchor', 'middle')
-          .attr('font-size', 10).attr('fill', C.muted)
-          .style('font-family', 'Source Serif 4,Georgia,serif').style('font-style', 'italic')
+          .attr('font-size', 10)
+          .attr('fill', C.muted)
+          .style('font-family', 'Source Serif 4,Georgia,serif')
+          .style('font-style', 'italic')
           .text(`${gp.sub} · n = ${gp.n} months`)
 
-        // Scales
-        const x = d3.scaleLinear().domain([-xMax, xMax]).range([0, innerW])
-        const y = d3.scaleBand().domain(d3.range(FACTORS.length)).range([0, innerH]).padding(.2)
+        const x = d3.scaleLinear()
+          .domain([-xMax, xMax])
+          .range([0, innerW])
 
-        // Zero line
-        colG.append('line').attr('x1', x(0)).attr('x2', x(0)).attr('y1', 0).attr('y2', innerH)
-          .attr('stroke', C.borderDark).attr('stroke-width', 1)
+        const y = d3.scaleBand()
+          .domain(d3.range(FACTORS.length))
+          .range([0, innerH])
+          .padding(.2)
 
-        // Bars
+        colG.append('line')
+          .attr('x1', x(0))
+          .attr('x2', x(0))
+          .attr('y1', 0)
+          .attr('y2', innerH)
+          .attr('stroke', C.borderDark)
+          .attr('stroke-width', 1)
+
         gp.values.forEach((v, i) => {
           const f = v.f
           const m = v.mean
@@ -2210,101 +2231,138 @@
           const rank = i + 1
 
           colG.append('rect')
-            .attr('x', bx).attr('y', yPos)
-            .attr('width', 0).attr('height', barH)
-            .attr('fill', FM[f].color).attr('opacity', .88)
-            .transition().duration(600).delay(gi * 60 + i * 30)
+            .attr('x', bx)
+            .attr('y', yPos)
+            .attr('width', 0)
+            .attr('height', barH)
+            .attr('fill', FM[f].color)
+            .attr('opacity', 0.88)
+            .attr('data-factor', f)
+            .transition()
+            .duration(600)
+            .delay(gi * 60 + i * 30)
             .attr('width', bw)
 
-          // Factor label (fixed left margin, outside chart area)
           colG.append('text')
-            .attr('x', -8).attr('y', yPos + barH / 2).attr('dy', '0.35em')
+            .attr('x', -8)
+            .attr('y', yPos + barH / 2)
+            .attr('dy', '0.35em')
             .attr('text-anchor', 'end')
-            .attr('font-size', 11).attr('font-weight', 700)
+            .attr('font-size', 11)
+            .attr('font-weight', 700)
             .style('font-family', 'IBM Plex Sans,sans-serif')
             .attr('fill', FM[f].color)
             .text(FM[f].label)
 
-          // Value label (right of bar for positive, right of zero line for negative)
           colG.append('text')
             .attr('x', m >= 0 ? x(m) + 5 : x(0) + 5)
-            .attr('y', yPos + barH / 2).attr('dy', '0.35em')
+            .attr('y', yPos + barH / 2)
+            .attr('dy', '0.35em')
             .attr('text-anchor', 'start')
-            .attr('font-size', 10).attr('font-weight', 700)
+            .attr('font-size', 10)
+            .attr('font-weight', 700)
             .style('font-family', 'IBM Plex Sans,sans-serif')
             .attr('fill', m >= 0 ? C.pos : C.neg)
             .text(d3.format('+.2f')(m) + '%/mo')
 
-          // Hit area extends 90px left of the bar (covering the factor label) and spans
-          // the full chart width, so hovering anywhere in the row triggers the tooltip —
-          // not just the narrow bar itself, which would be difficult to hit on short bars.
           const hitG = colG.append('g').style('cursor', 'help')
+
           hitG.append('rect')
-            .attr('x', -90).attr('y', yPos - 1)
-            .attr('width', innerW + 100).attr('height', barH + 2)
+            .attr('x', -90)
+            .attr('y', yPos - 1)
+            .attr('width', innerW + 100)
+            .attr('height', barH + 2)
             .attr('fill', 'transparent')
+
           hitG
             .on('mouseover', function (ev) {
-              // Highlight the bar
+              if (selectedFactor && selectedFactor !== f) return
+
               d3.select(this.parentNode).selectAll('rect')
-                .filter(function () { return d3.select(this).attr('fill') === FM[f].color })
+                .filter(function () {
+                  return d3.select(this).attr('fill') === FM[f].color
+                })
                 .attr('opacity', 1)
-              tip.innerHTML = `<div class="tip-date">#${rank} · ${FM[f].label} · ${gp.label}</div>
-            <div class="tip-row">
-              <span class="tip-name">Avg monthly return</span>
-              <span class="tip-val" style="color:${m >= 0 ? C.pos : C.neg}">${d3.format('+.2f')(m)}%</span>
-            </div>
-            <div class="tip-row">
-              <span class="tip-name">Hit rate</span>
-              <span class="tip-val" style="color:${C.muted}">${Math.round(d3.sum(gp.rows, r => r[f] > 0 ? 1 : 0) / gp.rows.filter(r => r[f] != null).length * 100)}%</span>
-            </div>
-            <div class="tip-explain">${VIX_REASONS[gp.key][f]}</div>`
-              tip.style.opacity = '1'; posTip(ev)
+
+              tip.innerHTML = `
+                <div class="tip-date">#${rank} · ${FM[f].label} · ${gp.label}</div>
+                <div class="tip-row">
+                  <span class="tip-name">Avg monthly return</span>
+                  <span class="tip-val" style="color:${m >= 0 ? C.pos : C.neg}">
+                    ${d3.format('+.2f')(m)}%
+                  </span>
+                </div>
+                <div class="tip-row">
+                  <span class="tip-name">Hit rate</span>
+                  <span class="tip-val" style="color:${C.muted}">
+                    ${Math.round(
+                      d3.sum(gp.rows, r => r[f] > 0 ? 1 : 0) /
+                      gp.rows.filter(r => r[f] != null).length * 100
+                    )}%
+                  </span>
+                </div>
+                <div class="tip-explain">${VIX_REASONS[gp.key][f]}</div>
+              `
+
+              tip.style.opacity = '1'
+              posTip(ev)
             })
             .on('mousemove', posTip)
             .on('mouseout', function () {
               d3.select(this.parentNode).selectAll('rect')
-                .filter(function () { return d3.select(this).attr('fill') === FM[f].color })
-                .attr('opacity', .88)
+                .filter(function () {
+                  return d3.select(this).attr('fill') === FM[f].color
+                })
+                .attr('opacity', selectedFactor ? (selectedFactor === f ? 1 : 0.15) : 0.88)
+
               tip.style.opacity = '0'
+            })
+            .on('click', function () {
+              if (selectedFactor === f) {
+                selectedFactor = null
+              } else {
+                selectedFactor = f
+              }
+              updateOpacity()
             })
         })
 
-        // X axis
-        colG.append('g').attr('transform', `translate(0,${innerH})`)
-          .call(d3.axisBottom(x).ticks(5).tickSize(0).tickPadding(6).tickFormat(v => d3.format('+.1f')(v) + '%'))
-          .call(ax => { ax.select('.domain').remove(); ax.selectAll('text').attr('fill', C.muted).attr('font-size', 9).style('font-family', 'IBM Plex Sans,sans-serif') })
-        colG.append('text').attr('x', innerW / 2).attr('y', innerH + 30)
-          .attr('text-anchor', 'middle').attr('font-size', 12).attr('font-weight', 600).attr('fill', C.muted)
-          .style('font-family', 'IBM Plex Sans,sans-serif').style('letter-spacing', '.06em').style('text-transform', 'uppercase')
+        colG.append('g')
+          .attr('transform', `translate(0,${innerH})`)
+          .call(d3.axisBottom(x)
+            .ticks(5)
+            .tickSize(0)
+            .tickPadding(6)
+            .tickFormat(v => d3.format('+.1f')(v) + '%')
+          )
+          .call(ax => {
+            ax.select('.domain').remove()
+            ax.selectAll('text')
+              .attr('fill', C.muted)
+              .attr('font-size', 9)
+              .style('font-family', 'IBM Plex Sans,sans-serif')
+          })
+
+        colG.append('text')
+          .attr('x', innerW / 2)
+          .attr('y', innerH + 30)
+          .attr('text-anchor', 'middle')
+          .attr('font-size', 12)
+          .attr('font-weight', 600)
+          .attr('fill', C.muted)
+          .style('font-family', 'IBM Plex Sans,sans-serif')
+          .style('letter-spacing', '.06em')
+          .style('text-transform', 'uppercase')
           .text('Avg. monthly return (%)')
       })
 
-      // Center divider
       svg.append('line')
-        .attr('x1', W / 2).attr('x2', W / 2)
-        .attr('y1', 50).attr('y2', H - 30)
-        .attr('stroke', C.border).attr('stroke-width', .8)
-
-    }
-
-    const REC_REASONS = {
-      expansion: {
-        'Mkt-RF': 'Expansions are the equity market\'s natural habitat. GDP is growing, earnings are rising, and investors are willing to pay for risk - the equity premium is at its most reliable.',
-        'Mom': 'Trending markets are momentum\'s home turf. In a steady expansion, last quarter\'s winners keep winning as capital rotates into already-working positions.',
-        'HML': 'Value earns a modest premium in expansions. Cheap stocks - often cyclical ones - benefit from improving fundamentals, though they rarely beat growth stocks during bull-market peaks.',
-        'SMB': 'The size effect is weak on average, but small caps do slightly better in calm expansions when credit is available and liquidity is ample.',
-        'RMW': 'Profitable firms always earn their premium, but in an expansion the margin is smaller - weaker competitors survive longer when credit is loose, compressing the spread between high and low profitability.',
-        'CMA': 'Conservative firms underperform in expansions. Aggressive capital deployers look smart when demand is rising; not expanding looks cautious in hindsight when growth was there for the taking.',
-      },
-      recession: {
-        'CMA': 'The standout winner in recessions. Firms that avoided aggressive asset growth were less exposed to overpriced acquisitions and excess capex - assets that get marked down hard when the cycle turns.',
-        'RMW': 'Flight to quality. Investors gravitate toward companies with strong, steady earnings that can service debt and survive a demand shock. The weakest firms blow up first.',
-        'HML': 'Value is mixed in recessions. Cheap stocks are often cheap because they are cyclical or financially fragile - exactly the firms that struggle most when the economy contracts.',
-        'SMB': 'Small caps are hit harder in recessions: less liquidity, fewer credit lines, and more exposure to domestic demand. The size factor is roughly flat in recessions on average.',
-        'Mkt-RF': 'The equity premium turns negative in recessions. The market prices in falling earnings and rising default risk; holding stocks instead of T-bills is punished, not rewarded.',
-        'Mom': 'Momentum nearly disappears in recessions. There are no clean trends to follow when the economy is lurching - sector leadership rotates violently, and recent winners become losers fast.',
-      },
+        .attr('x1', W / 2)
+        .attr('x2', W / 2)
+        .attr('y1', 50)
+        .attr('y2', H - 30)
+        .attr('stroke', C.border)
+        .attr('stroke-width', .8)
     }
 
     function renderRecFlip() {
@@ -2314,9 +2372,21 @@
       const expand = DB.monthly.filter(d => d.USREC === 0)
       const recession = DB.monthly.filter(d => d.USREC === 1)
 
+      let selectedFactor = null
+
       const groups = [
-        { key: 'expansion', label: 'Expansion', sub: 'USREC = 0 · n = ' + expand.length + ' months', rows: expand },
-        { key: 'recession', label: 'Recession', sub: 'USREC = 1 · n = ' + recession.length + ' months', rows: recession },
+        {
+          key: 'expansion',
+          label: 'Expansion',
+          sub: 'USREC = 0 · n = ' + expand.length + ' months',
+          rows: expand
+        },
+        {
+          key: 'recession',
+          label: 'Recession',
+          sub: 'USREC = 1 · n = ' + recession.length + ' months',
+          rows: recession
+        },
       ]
 
       groups.forEach(gp => {
@@ -2336,28 +2406,61 @@
       const innerW = colW - M.left - M.right
       const innerH = H - M.top - M.bottom
 
-      const svg = d3.select(el).append('svg').attr('width', W).attr('height', H)
+      const svg = d3.select(el).append('svg')
+        .attr('width', W)
+        .attr('height', H)
+
+      function updateOpacity() {
+        svg.selectAll('rect[data-factor]')
+          .attr('opacity', function () {
+            const f = d3.select(this).attr('data-factor')
+            if (!selectedFactor) return 0.88
+            return f === selectedFactor ? 1 : 0.15
+          })
+      }
 
       groups.forEach((gp, gi) => {
         const cx = gi * (colW + 40)
-        const colG = svg.append('g').attr('transform', `translate(${cx + M.left},${M.top})`)
 
-        svg.append('text').attr('x', cx + M.left + innerW / 2).attr('y', 22)
+        const colG = svg.append('g')
+          .attr('transform', `translate(${cx + M.left},${M.top})`)
+
+        svg.append('text')
+          .attr('x', cx + M.left + innerW / 2)
+          .attr('y', 22)
           .attr('text-anchor', 'middle')
           .attr('font-family', 'Playfair Display,Georgia,serif')
-          .attr('font-size', 18).attr('font-weight', 700).attr('fill', C.text)
+          .attr('font-size', 18)
+          .attr('font-weight', 700)
+          .attr('fill', C.text)
           .text(gp.label)
-        svg.append('text').attr('x', cx + M.left + innerW / 2).attr('y', 40)
+
+        svg.append('text')
+          .attr('x', cx + M.left + innerW / 2)
+          .attr('y', 40)
           .attr('text-anchor', 'middle')
-          .attr('font-size', 10).attr('fill', C.muted)
-          .style('font-family', 'Source Serif 4,Georgia,serif').style('font-style', 'italic')
+          .attr('font-size', 10)
+          .attr('fill', C.muted)
+          .style('font-family', 'Source Serif 4,Georgia,serif')
+          .style('font-style', 'italic')
           .text(gp.sub)
 
-        const x = d3.scaleLinear().domain([-xMax, xMax]).range([0, innerW])
-        const y = d3.scaleBand().domain(d3.range(FACTORS.length)).range([0, innerH]).padding(.2)
+        const x = d3.scaleLinear()
+          .domain([-xMax, xMax])
+          .range([0, innerW])
 
-        colG.append('line').attr('x1', x(0)).attr('x2', x(0)).attr('y1', 0).attr('y2', innerH)
-          .attr('stroke', C.borderDark).attr('stroke-width', 1)
+        const y = d3.scaleBand()
+          .domain(d3.range(FACTORS.length))
+          .range([0, innerH])
+          .padding(.2)
+
+        colG.append('line')
+          .attr('x1', x(0))
+          .attr('x2', x(0))
+          .attr('y1', 0)
+          .attr('y2', innerH)
+          .attr('stroke', C.borderDark)
+          .attr('stroke-width', 1)
 
         gp.values.forEach((v, i) => {
           const f = v.f
@@ -2369,74 +2472,147 @@
           const rank = i + 1
 
           colG.append('rect')
-            .attr('x', bx).attr('y', yPos)
-            .attr('width', 0).attr('height', barH)
-            .attr('fill', FM[f].color).attr('opacity', .88)
-            .transition().duration(600).delay(gi * 60 + i * 30)
+            .attr('x', bx)
+            .attr('y', yPos)
+            .attr('width', 0)
+            .attr('height', barH)
+            .attr('fill', FM[f].color)
+            .attr('opacity', 0.88)
+            .attr('data-factor', f)
+            .transition()
+            .duration(600)
+            .delay(gi * 60 + i * 30)
             .attr('width', bw)
 
           colG.append('text')
-            .attr('x', -8).attr('y', yPos + barH / 2).attr('dy', '0.35em')
+            .attr('x', -8)
+            .attr('y', yPos + barH / 2)
+            .attr('dy', '0.35em')
             .attr('text-anchor', 'end')
-            .attr('font-size', 11).attr('font-weight', 700)
+            .attr('font-size', 11)
+            .attr('font-weight', 700)
             .style('font-family', 'IBM Plex Sans,sans-serif')
             .attr('fill', FM[f].color)
             .text(FM[f].label)
 
           colG.append('text')
             .attr('x', m >= 0 ? x(m) + 5 : x(0) + 5)
-            .attr('y', yPos + barH / 2).attr('dy', '0.35em')
+            .attr('y', yPos + barH / 2)
+            .attr('dy', '0.35em')
             .attr('text-anchor', 'start')
-            .attr('font-size', 10).attr('font-weight', 700)
+            .attr('font-size', 10)
+            .attr('font-weight', 700)
             .style('font-family', 'IBM Plex Sans,sans-serif')
             .attr('fill', m >= 0 ? C.pos : C.neg)
             .text(d3.format('+.2f')(m) + '%/mo')
 
           const hitG = colG.append('g').style('cursor', 'help')
+
           hitG.append('rect')
-            .attr('x', -90).attr('y', yPos - 1)
-            .attr('width', innerW + 100).attr('height', barH + 2)
+            .attr('x', -90)
+            .attr('y', yPos - 1)
+            .attr('width', innerW + 100)
+            .attr('height', barH + 2)
             .attr('fill', 'transparent')
+
           hitG
-            .on('mouseover', function (ev) {
+            .on('mouseover', function () {
+              if (selectedFactor && selectedFactor !== f) return
+
               d3.select(this.parentNode).selectAll('rect')
-                .filter(function () { return d3.select(this).attr('fill') === FM[f].color })
+                .filter(function () {
+                  return d3.select(this).attr('fill') === FM[f].color
+                })
                 .attr('opacity', 1)
-              tip.innerHTML = `<div class="tip-date">#${rank} · ${FM[f].label} · ${gp.label}</div>
-            <div class="tip-row">
-              <span class="tip-name">Avg monthly return</span>
-              <span class="tip-val" style="color:${m >= 0 ? C.pos : C.neg}">${d3.format('+.2f')(m)}%</span>
-            </div>
-            <div class="tip-row">
-              <span class="tip-name">Hit rate</span>
-              <span class="tip-val" style="color:${C.muted}">${Math.round(d3.sum(gp.rows, r => r[f] > 0 ? 1 : 0) / gp.rows.filter(r => r[f] != null).length * 100)}%</span>
-            </div>
-            <div class="tip-explain">${REC_REASONS[gp.key][f]}</div>`
-              tip.style.opacity = '1'; posTip(ev)
+
+              tip.innerHTML = `
+                <div class="tip-date">#${rank} · ${FM[f].label} · ${gp.label}</div>
+                <div class="tip-row">
+                  <span class="tip-name">Avg monthly return</span>
+                  <span class="tip-val" style="color:${m >= 0 ? C.pos : C.neg}">
+                    ${d3.format('+.2f')(m)}%
+                  </span>
+                </div>
+                <div class="tip-row">
+                  <span class="tip-name">Hit rate</span>
+                  <span class="tip-val" style="color:${C.muted}">
+                    ${Math.round(
+                      d3.sum(gp.rows, r => r[f] > 0 ? 1 : 0) /
+                      gp.rows.filter(r => r[f] != null).length * 100
+                    )}%
+                  </span>
+                </div>
+                <div class="tip-explain">${REC_REASONS[gp.key][f]}</div>
+              `
+
+              tip.style.opacity = '1'
+              posTip()
             })
             .on('mousemove', posTip)
             .on('mouseout', function () {
               d3.select(this.parentNode).selectAll('rect')
-                .filter(function () { return d3.select(this).attr('fill') === FM[f].color })
-                .attr('opacity', .88)
+                .filter(function () {
+                  return d3.select(this).attr('fill') === FM[f].color
+                })
+                .attr('opacity', selectedFactor ? (selectedFactor === f ? 1 : 0.15) : 0.88)
+
               tip.style.opacity = '0'
+            })
+            .on('click', function () {
+              if (selectedFactor === f) {
+                selectedFactor = null
+              } else {
+                selectedFactor = f
+              }
+              updateOpacity()
             })
         })
 
-        colG.append('g').attr('transform', `translate(0,${innerH})`)
-          .call(d3.axisBottom(x).ticks(5).tickSize(0).tickPadding(6).tickFormat(v => d3.format('+.1f')(v) + '%'))
-          .call(ax => { ax.select('.domain').remove(); ax.selectAll('text').attr('fill', C.muted).attr('font-size', 9).style('font-family', 'IBM Plex Sans,sans-serif') })
-        colG.append('text').attr('x', innerW / 2).attr('y', innerH + 30)
-          .attr('text-anchor', 'middle').attr('font-size', 12).attr('font-weight', 600).attr('fill', C.muted)
-          .style('font-family', 'IBM Plex Sans,sans-serif').style('letter-spacing', '.06em').style('text-transform', 'uppercase')
+        colG.append('g')
+          .attr('transform', `translate(0,${innerH})`)
+          .call(d3.axisBottom(x)
+            .ticks(5)
+            .tickSize(0)
+            .tickPadding(6)
+            .tickFormat(v => d3.format('+.1f')(v) + '%')
+          )
+          .call(ax => {
+            ax.select('.domain').remove()
+            ax.selectAll('text')
+              .attr('fill', C.muted)
+              .attr('font-size', 9)
+              .style('font-family', 'IBM Plex Sans,sans-serif')
+          })
+
+        colG.append('text')
+          .attr('x', innerW / 2)
+          .attr('y', innerH + 30)
+          .attr('text-anchor', 'middle')
+          .attr('font-size', 12)
+          .attr('font-weight', 600)
+          .attr('fill', C.muted)
+          .style('font-family', 'IBM Plex Sans,sans-serif')
+          .style('letter-spacing', '.06em')
+          .style('text-transform', 'uppercase')
           .text('Avg. monthly return (%)')
       })
 
       svg.append('line')
-        .attr('x1', W / 2).attr('x2', W / 2)
-        .attr('y1', 50).attr('y2', H - 30)
-        .attr('stroke', C.border).attr('stroke-width', .8)
+        .attr('x1', W / 2)
+        .attr('x2', W / 2)
+        .attr('y1', 50)
+        .attr('y2', H - 30)
+        .attr('stroke', C.border)
+        .attr('stroke-width', .8)
 
+      function updateOpacity() {
+        svg.selectAll('rect[data-factor]')
+          .attr('opacity', function () {
+            const f = d3.select(this).attr('data-factor')
+            if (!selectedFactor) return 0.88
+            return f === selectedFactor ? 1 : 0.15
+          })
+      }
     }
 
     // ─────────────────────────────────────────────────────────
