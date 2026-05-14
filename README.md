@@ -17,7 +17,7 @@ The six factors covered: Market (Mkt-RF), Size (SMB), Value (HML), Profitability
 | Name | Contribution |
 |---|---|
 | Gregory Seleznev | Data pipeline (Python) - downloading, cleaning, and merging all datasets; page architecture and layout; all four D3 visualizations; narrative text; visual design and CSS |
-| Martin Ye | Legend on the cumulative returns chart; timeframe selector (slider) on the cumulative returns chart |
+| Martin Ye | Legend on the cumulative returns chart; timeframe selector (slider) on the cumulative returns chart; highlight effect toggle button on the cumulative returns chart |
 | Alex Dong | Iterative design feedback and review across all visualizations |
 ---
 

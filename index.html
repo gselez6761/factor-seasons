@@ -450,6 +450,37 @@
       color: #fff;
     }
 
+    .hm-btn.disabled {
+      opacity: .45;
+      cursor: default;
+      text-decoration: line-through;
+    }
+    .hm-btn.disabled:hover {
+      border-color: var(--border);
+      color: var(--muted);
+    }
+
+    .chart-controls-note {
+      font-family: var(--sans);
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: .04em;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: .35rem;
+      margin-left: .25rem;
+    }
+    .rec-swatch {
+      display: inline-block;
+      width: 14px;
+      height: 10px;
+      background: var(--accent);
+      opacity: .35;
+      border-radius: 1px;
+      flex-shrink: 0;
+    }
+
     .bridge-question {
       max-width: 880px;
       margin: 0 auto;
@@ -1057,7 +1088,8 @@
     </div>
     <div class="chart-controls">
       <button class="hm-btn active" id="rec-toggle">Toggle Recessions</button>
-      <button class="hm-btn active" id="hover-toggle">Toggle Highlight on Hover</button>
+      <button class="hm-btn active" id="hover-toggle">Highlight on Hover</button>
+      <span class="chart-controls-note"><span class="rec-swatch"></span> Red bands = NBER recessions</span>
     </div>
     <div class="card-wrap">
       <div class="loading-msg" id="cum-loading">Loading…</div>
@@ -1351,9 +1383,9 @@
       renderRecFlip()
 
       // Heatmap toggle buttons
-      document.querySelectorAll('.hm-btn').forEach(btn => {
+      document.querySelectorAll('.heatmap-controls .hm-btn').forEach(btn => {
         btn.addEventListener('click', function () {
-          document.querySelectorAll('.hm-btn').forEach(b => b.classList.remove('active'))
+          document.querySelectorAll('.heatmap-controls .hm-btn').forEach(b => b.classList.remove('active'))
           this.classList.add('active')
           const filter = this.dataset.filter
           d3.selectAll('.hm-winner').style('opacity', filter === 'losers' ? 0.08 : null)
@@ -1624,10 +1656,11 @@
 
         d3.select(this)
           .classed('active', hoverHighlightEnabled)
+          .classed('disabled', !hoverHighlightEnabled)
           .text(
             hoverHighlightEnabled
-              ? 'Highlight Hovered Line'
-              : 'Highlight Disabled'
+              ? 'Highlight on Hover'
+              : 'Highlight on Hover'
           )
 
         // Restore all lines immediately when disabled
