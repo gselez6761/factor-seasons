@@ -2402,6 +2402,25 @@
         .attr('stroke-width', .8)
     }
 
+    const REC_REASONS = {
+      expansion: {
+        'Mkt-RF': 'Expansions are the equity market\'s natural habitat. GDP is growing, earnings are rising, and investors are willing to pay for risk - the equity premium is at its most reliable.',
+        'Mom': 'Trending markets are momentum\'s home turf. In a steady expansion, last quarter\'s winners keep winning as capital rotates into already-working positions.',
+        'HML': 'Value earns a modest premium in expansions. Cheap stocks - often cyclical ones - benefit from improving fundamentals, though they rarely beat growth stocks during bull-market peaks.',
+        'SMB': 'The size effect is weak on average, but small caps do slightly better in calm expansions when credit is available and liquidity is ample.',
+        'RMW': 'Profitable firms always earn their premium, but in an expansion the margin is smaller - weaker competitors survive longer when credit is loose, compressing the spread between high and low profitability.',
+        'CMA': 'Conservative firms underperform in expansions. Aggressive capital deployers look smart when demand is rising; not expanding looks cautious in hindsight when growth was there for the taking.',
+      },
+      recession: {
+        'CMA': 'The standout winner in recessions. Firms that avoided aggressive asset growth were less exposed to overpriced acquisitions and excess capex - assets that get marked down hard when the cycle turns.',
+        'RMW': 'Flight to quality. Investors gravitate toward companies with strong, steady earnings that can service debt and survive a demand shock. The weakest firms blow up first.',
+        'HML': 'Value is mixed in recessions. Cheap stocks are often cheap because they are cyclical or financially fragile - exactly the firms that struggle most when the economy contracts.',
+        'SMB': 'Small caps are hit harder in recessions: less liquidity, fewer credit lines, and more exposure to domestic demand. The size factor is roughly flat in recessions on average.',
+        'Mkt-RF': 'The equity premium turns negative in recessions. The market prices in falling earnings and rising default risk; holding stocks instead of T-bills is punished, not rewarded.',
+        'Mom': 'Momentum nearly disappears in recessions. There are no clean trends to follow when the economy is lurching - sector leadership rotates violently, and recent winners become losers fast.',
+      },
+    }
+    
     function renderRecFlip() {
       const el = document.getElementById('chart-rec-flip')
       el.innerHTML = ''
