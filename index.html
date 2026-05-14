@@ -1211,6 +1211,7 @@
       </div>
     </div>
     <span class="hover-hint">Hover any factor in any decade for the historical context</span>
+    <span class="hover-hint">Click to isolate by decade</span>
     <div class="card-wrap">
       <div class="loading-msg" id="dec-loading">Loading…</div>
       <div id="chart-decades"></div>
@@ -2027,6 +2028,8 @@
       const el = document.getElementById('chart-decades')
       el.innerHTML = ''
 
+      let selectedDecade = null
+
       const decades = [
         { label: '1964-69', lo: '1964', hi: '1969' },
         { label: '1970s',   lo: '1970', hi: '1979' },
@@ -2042,22 +2045,20 @@
           const yr = r.date.getFullYear().toString()
           return yr >= dec.lo && yr <= dec.hi
         })
+
         dec.values = FACTORS.map(f => {
-          // Compound return: multiply (1 + monthly_return/100) for every month in the decade.
-          // Arithmetic summing — simply adding monthly percentages — gives wrong results because
-          // it ignores the path dependency. A −34% month (Apr 2009 Momentum crash) wipes out
-          // far more than 34 pp of prior gains when compounded. The original chart used arithmetic
-          // sums and showed Momentum as a small winner in the 2000s; compound returns show it lost
-          // 19% for the decade. See AI_USAGE.md Correction 5 for the full story.
           let prod = 1
-          rows.forEach(r => { if (r[f] != null) prod *= (1 + r[f] / 100) })
+          rows.forEach(r => {
+            if (r[f] != null) prod *= (1 + r[f] / 100)
+          })
           return { f, cum: (prod - 1) * 100 }
         })
+
         dec.n = rows.length
       })
 
       const containerW = Math.min(1100, el.parentElement.clientWidth - 32)
-      const cols = 3, rows2 = 2
+      const cols = 3
       const panelGap = 16
       const panelW = Math.floor((containerW - panelGap * (cols - 1)) / cols)
 
@@ -2067,23 +2068,34 @@
       const panelH = 220
       const innerH = panelH - pM.top - pM.bottom
 
-      // Shared y-axis domain across all six factor panels. Using a single domain means bar
-      // heights are comparable across panels (e.g. Size's tiny returns look appropriately
-      // short next to Momentum's large returns). A per-panel y-axis would make every factor
-      // look equally dramatic regardless of actual magnitude.
       const allVals = decades.flatMap(d => d.values.map(v => v.cum))
       const yMin = Math.min(d3.min(allVals) * 1.1, -10)
       const yMax = d3.max(allVals) * 1.1
+
       const y = d3.scaleLinear().domain([yMin, yMax]).range([innerH, 0])
       const yZero = y(0)
 
-      const totalPanels = FACTORS.length
-      const totalRows = Math.ceil(totalPanels / cols)
+      const totalRows = Math.ceil(FACTORS.length / cols)
       const totalH = totalRows * (panelH + panelGap) - panelGap
 
-      const svg = d3.select(el).append('svg')
+      const svg = d3.select(el)
+        .append('svg')
         .attr('width', containerW)
         .attr('height', totalH)
+
+      function updateHighlight() {
+        svg.selectAll('rect.bar')
+          .attr('opacity', d => {
+            if (!selectedDecade) return 0.85
+            return d.decade === selectedDecade ? 1 : 0.2
+          })
+
+        svg.selectAll('text.value')
+          .attr('opacity', d => {
+            if (!selectedDecade) return 1
+            return d.decade === selectedDecade ? 1 : 0.2
+          })
+      }
 
       FACTORS.forEach((f, fi) => {
         const col = fi % cols
@@ -2091,91 +2103,122 @@
         const px = col * (panelW + panelGap)
         const py = row * (panelH + panelGap)
 
-        const pg = svg.append('g').attr('transform', `translate(${px},${py})`)
+        const pg = svg.append('g')
+          .attr('transform', `translate(${px},${py})`)
 
-        // Panel background
-        pg.append('rect').attr('width', panelW).attr('height', panelH)
-          .attr('fill', '#FFFFFF').attr('stroke', '#C8C6C0').attr('stroke-width', 1)
+        pg.append('rect')
+          .attr('width', panelW)
+          .attr('height', panelH)
+          .attr('fill', '#FFFFFF')
+          .attr('stroke', '#C8C6C0')
           .attr('rx', 2)
 
-        // Factor title
         pg.append('text')
-          .attr('x', panelW / 2).attr('y', 22)
+          .attr('x', panelW / 2)
+          .attr('y', 22)
           .attr('text-anchor', 'middle')
-          .attr('font-size', 13).attr('font-weight', 700)
+          .attr('font-size', 13)
+          .attr('font-weight', 700)
           .attr('fill', FM[f].color)
           .style('font-family', 'IBM Plex Sans,sans-serif')
           .text(FM[f].label)
 
-        const g = pg.append('g').attr('transform', `translate(${pM.left},${pM.top})`)
+        const g = pg.append('g')
+          .attr('transform', `translate(${pM.left},${pM.top})`)
 
-        // Zero line
         g.append('line')
-          .attr('x1', 0).attr('x2', innerW)
-          .attr('y1', yZero).attr('y2', yZero)
-          .attr('stroke', '#1A1A1A').attr('stroke-width', 1)
+          .attr('x1', 0)
+          .attr('x2', innerW)
+          .attr('y1', yZero)
+          .attr('y2', yZero)
+          .attr('stroke', '#1A1A1A')
+          .attr('stroke-width', 1)
 
-        // Bars per decade
         decades.forEach((dec, di) => {
           const v = dec.values.find(d => d.f === f).cum
-          const rank = [...dec.values].sort((a, b) => b.cum - a.cum).findIndex(d => d.f === f) + 1
+
+          const rank =
+            [...dec.values]
+              .sort((a, b) => b.cum - a.cum)
+              .findIndex(d => d.f === f) + 1
+
           const bx = di * (barW + 3)
           const barH = Math.abs(y(v) - yZero)
           const by = v >= 0 ? yZero - barH : yZero
           const valTxt = (v >= 0 ? '+' : '') + Math.round(v) + '%'
 
+          const barData = { decade: dec.lo }
+
           const barRect = g.append('rect')
-            .attr('x', bx).attr('y', v >= 0 ? yZero : yZero)
-            .attr('width', barW).attr('height', 0)
-            .attr('fill', FM[f].color).attr('opacity', .85)
+            .datum(barData)
+            .attr('class', 'bar')
+            .attr('x', bx)
+            .attr('y', v >= 0 ? yZero : yZero)
+            .attr('width', barW)
+            .attr('height', 0)
+            .attr('fill', FM[f].color)
+            .attr('opacity', 0.85)
 
-          barRect.transition().duration(550).delay(fi * 60 + di * 40)
-            .attr('y', by).attr('height', barH)
+          barRect.transition()
+            .duration(550)
+            .delay(fi * 60 + di * 40)
+            .attr('y', by)
+            .attr('height', barH)
 
-          // Value label above/below bar
           g.append('text')
+            .datum(barData)
+            .attr('class', 'value')
             .attr('x', bx + barW / 2)
             .attr('y', v >= 0 ? by - 3 : by + barH + 11)
             .attr('text-anchor', 'middle')
-            .attr('font-size', 9).attr('font-weight', 700)
+            .attr('font-size', 9)
+            .attr('font-weight', 700)
             .attr('fill', FM[f].color)
             .style('font-family', 'IBM Plex Sans,sans-serif')
             .text(Math.round(v) + '%')
 
-          // Decade label below chart
           g.append('text')
-            .attr('x', bx + barW / 2).attr('y', innerH + 24)
+            .attr('x', bx + barW / 2)
+            .attr('y', innerH + 24)
             .attr('text-anchor', 'middle')
-            .attr('font-size', 8).attr('fill', '#6B6860')
-            .attr('font-weight', 400)
-            .style('font-family', 'IBM Plex Sans,sans-serif')
+            .attr('font-size', 8)
+            .attr('fill', '#6B6860')
             .text(dec.label)
 
-          // Hover hit area
           g.append('rect')
-            .attr('x', bx).attr('y', 0)
-            .attr('width', barW).attr('height', innerH)
+            .attr('x', bx)
+            .attr('y', 0)
+            .attr('width', barW)
+            .attr('height', innerH)
             .attr('fill', 'transparent')
-            .style('cursor', 'help')
+            .style('cursor', 'pointer')
             .on('mouseover', function (ev) {
               barRect.attr('opacity', 1).attr('stroke', '#1A1A1A').attr('stroke-width', 1)
+
               const reason = (DECADE_REASONS[dec.lo] && DECADE_REASONS[dec.lo][f]) || ''
+
               tip.innerHTML = `<div class="tip-date">${dec.label} · #${rank} · ${FM[f].label}</div>
                 <div class="tip-row">
                   <span class="tip-name">Compound return</span>
-                  <span class="tip-val" style="color:${v >= 0 ? C.pos : C.neg}">${valTxt}</span>
+                  <span class="tip-val">${valTxt}</span>
                 </div>
                 <div class="tip-row">
                   <span class="tip-name">Months</span>
-                  <span class="tip-val" style="color:${C.muted}">${dec.n}</span>
+                  <span class="tip-val">${dec.n}</span>
                 </div>
                 <div class="tip-explain">${reason}</div>`
-              tip.style.opacity = '1'; posTip(ev)
+
+              tip.style.opacity = '1'
+              posTip(ev)
             })
             .on('mousemove', posTip)
             .on('mouseout', function () {
-              barRect.attr('opacity', .85).attr('stroke', null)
+              barRect.attr('opacity', 0.85).attr('stroke', null)
               tip.style.opacity = '0'
+            })
+            .on('click', function () {
+              selectedDecade = (selectedDecade === dec.lo) ? null : dec.lo
+              updateHighlight()
             })
         })
       })
