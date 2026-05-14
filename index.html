@@ -1020,6 +1020,7 @@
     </div>
     <div class="chart-controls">
       <button class="hm-btn active" id="rec-toggle">Toggle Recessions</button>
+      <button class="hm-btn active" id="hover-toggle">Toggle Highlight on Hover</button>
     </div>
     <div class="card-wrap">
       <div class="loading-msg" id="cum-loading">Loading…</div>
@@ -1570,10 +1571,45 @@
       // nearest data point in O(log n) time; d0/d1 logic handles the array boundaries.
       const crossLine = g.append('line').attr('y1', 0).attr('y2', ch)
         .attr('class', 'crosshair-line').style('opacity', 0)
-      function setLineFocus(focusF) {
+      /*function setLineFocus(focusF) {
         linesG.selectAll('.factor-line').each(function () {
           const f = d3.select(this).attr('data-f')
           d3.select(this).style('opacity', focusF == null || f === focusF ? 1 : 0.15)
+        })
+      }*/
+      // Hover highlight behavior
+      let hoverHighlightEnabled = true;
+
+      d3.select('#hover-toggle').on('click', function () {
+        hoverHighlightEnabled = !hoverHighlightEnabled
+
+        d3.select(this)
+          .classed('active', hoverHighlightEnabled)
+          .text(
+            hoverHighlightEnabled
+              ? 'Highlight Hovered Line'
+              : 'Highlight Disabled'
+          )
+
+        // Restore all lines immediately when disabled
+        if (!hoverHighlightEnabled) {
+          linesG.selectAll('.factor-line')
+            .style('opacity', 1)
+        }
+      })
+
+      function setLineFocus(focusF) {
+        // If highlighting is disabled, keep all lines fully visible
+        if (!hoverHighlightEnabled) {
+          linesG.selectAll('.factor-line')
+            .style('opacity', 1)
+          return
+        }
+
+        linesG.selectAll('.factor-line').each(function () {
+          const f = d3.select(this).attr('data-f')
+          d3.select(this)
+            .style('opacity', focusF == null || f === focusF ? 1 : 0.15)
         })
       }
 
